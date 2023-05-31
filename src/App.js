@@ -1,6 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Dashboard, Landing, Login, ProtectedRoute, ErrorPage } from './pages';
+import {
+	Home,
+	Login,
+	ProtectedRoute,
+	ErrorPage,
+	About,
+	Products,
+	Product,
+	SharedLayout,
+} from './pages';
+import {
+	Dashboard,
+	Order,
+	Orders,
+	ProductPage,
+	ProductsPage,
+	Stats,
+	AddProductPage,
+} from './components/Dashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,24 +34,37 @@ function App() {
 		} else {
 			console.log('user neni');
 		}
-
 		dispatch(fetchUser());
-	}, [dispatch]);
+	}, []);
 
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path='/' element={<Landing />} />
-				<Route path='/login' element={<Login />} />
+				<Route path='/' element={<SharedLayout />}>
+					<Route index element={<Home />} />
+					<Route path='about' element={<About />} />
+					<Route path='products' element={<Products />} />
+					<Route path='products/:productId' element={<Product />} />
+					<Route path='*' element={<ErrorPage />} />
+				</Route>
 				<Route
-					path='/dashboard'
+					path='/admin'
 					element={
 						<ProtectedRoute user={user} isLoading={isLoading}>
-							<Dashboard user={user} />
+							<SharedLayout />
 						</ProtectedRoute>
 					}
-				/>
-				<Route path='*' element={<ErrorPage />} />
+				>
+					<Route index element={<Dashboard />} />
+					<Route path='products' element={<ProductsPage />} />
+					<Route path='products/:productId' element={<ProductPage />} />
+					<Route path='add-product' element={<AddProductPage />} />
+					<Route path='orders' element={<Order />} />
+					<Route path='stats' element={<Stats />} />
+					<Route path='*' element={<ErrorPage />} />
+				</Route>
+
+				<Route path='/login' element={<Login />} />
 			</Routes>
 			<ToastContainer />
 		</BrowserRouter>

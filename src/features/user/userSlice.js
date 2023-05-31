@@ -5,12 +5,13 @@ import customFetch from '../../utils/axios';
 const initialState = {
 	isLoading: false,
 	user: null,
+	error: null,
 };
 
 export const loginUser = createAsyncThunk(
 	'user/loginUser',
 	async (user, thunkAPI) => {
-		console.log('vo funkci');
+		console.log('LOGIN USER');
 		console.log(user);
 		try {
 			const resp = await customFetch.post('/auth/login', user, {
@@ -22,25 +23,28 @@ export const loginUser = createAsyncThunk(
 
 			return resp.data;
 		} catch (error) {
-			console.log(error.response);
+			return thunkAPI.rejectWithValue(error.response.data.msg);
 		}
 	}
 );
 
-export const logoutUser = createAsyncThunk('user/logoutUser', async () => {
-	try {
-		console.log('calling delete route');
-		await customFetch.delete('/auth/logout', {
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			withCredentials: true,
-		}); // Call your logout route using axios
-		return true;
-	} catch (error) {
-		throw new Error('Logout failed');
+export const logoutUser = createAsyncThunk(
+	'user/logoutUser',
+	async (_, thunkAPI) => {
+		try {
+			console.log('calling delete route');
+			await customFetch.delete('/auth/logout', {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				withCredentials: true,
+			}); // Call your logout route using axios
+			return true;
+		} catch (error) {
+			return thunkAPI.rejectWithValue(error.response.data.msg);
+		}
 	}
-});
+);
 
 export const fetchUser = createAsyncThunk(
 	'user/fetchUser',
@@ -49,13 +53,11 @@ export const fetchUser = createAsyncThunk(
 			const response = await customFetch.get('/users/showMe', {
 				withCredentials: true,
 			});
-			console.log('fetchujem usera');
-			console.log(response);
 			return response.data.user;
 		} catch (error) {
 			// Handle error fetching user data
 			console.error(error);
-			throw error;
+			return thunkAPI.rejectWithValue(error.response.data.msg);
 		}
 	}
 );
@@ -68,20 +70,24 @@ const userSlice = createSlice({
 		builder
 			.addCase(loginUser.pending, (state) => {
 				state.isLoading = true;
+				state.error = null;
 			})
 			.addCase(loginUser.fulfilled, (state, { payload }) => {
 				console.log(payload);
 				const { user } = payload;
 				state.isLoading = false;
 				state.user = user;
+				state.error = null;
 				toast.success(`Welcome back ${user.name}`);
 			})
 			.addCase(loginUser.rejected, (state, { payload }) => {
+				state.error = payload;
 				state.isLoading = false;
 				toast.error(payload);
 			})
 			.addCase(fetchUser.pending, (state) => {
 				state.isLoading = true;
+				state.error = null;
 			})
 			.addCase(fetchUser.fulfilled, (state, action) => {
 				state.isLoading = false;
