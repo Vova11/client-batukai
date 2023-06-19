@@ -1,34 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import Form from 'react-bootstrap/Form';
+import FormRow from './FormRow';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { loginUser } from '../features/user/userSlice';
-import FormRow from './FormRow';
+import { toast } from 'react-toastify';
 
 const Login = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { isLoading, user } = useSelector((store) => store.user);
 
-	const [values, setValues] = useState({
+	const [auth, setAuth] = useState({
 		email: '',
 		password: '',
 	});
 
-	const handleChange = (e) => {
+	const handleChangeInput = (e) => {
 		const name = e.target.name;
 		const value = e.target.value;
-		setValues({ ...values, [name]: value });
+		setAuth({ ...auth, [name]: value });
 	};
 
-	const handleSubmit = (e) => {
+	const submitForm = (e) => {
 		e.preventDefault();
-		dispatch(loginUser(values));
+		if (!auth.email && !auth.password) {
+			return toast.error('Please fill in all values');
+		}
+		dispatch(loginUser(auth));
 	};
 
 	useEffect(() => {
 		if (user) {
-			navigate('/admin');
+			navigate('/dashboard');
 		}
 	}, [user, navigate]);
 
@@ -38,31 +43,34 @@ const Login = () => {
 				{alert.show && (
 					<div className={`alert alert-${alert.type}`}>{alert.text}</div>
 				)}
-				<form
+				<Form
 					className={isLoading ? 'form form-loading' : 'form'}
-					onSubmit={handleSubmit}
+					noValidate
+					onSubmit={submitForm}
 				>
+					<h3>LOGIN</h3>
 					{/* single form row */}
 					<FormRow
-						type='email'
+						type='text'
 						name='email'
-						value={values.email}
-						handleChange={handleChange}
+						col='12'
+						label='E-mail'
+						onChange={handleChangeInput}
 					/>
 					{/* end of single form row */}
 					{/* single form row */}
 					<FormRow
 						type='password'
 						name='password'
-						value={values.password}
-						handleChange={handleChange}
+						col='12'
+						label='Password'
+						onChange={handleChangeInput}
 					/>
 					{/* end of single form row */}
 					<button type='submit' className='btn btn-block' disabled={isLoading}>
 						{isLoading ? 'Loading...' : 'Login'}
 					</button>
-					<br />
-					<br />
+
 					<br />
 					<p>
 						Don't have an account?
@@ -72,11 +80,11 @@ const Login = () => {
 					</p>
 					<p>
 						Forgot your password?{' '}
-						<Link to='/forgot-password' className='reset-link'>
+						<Link to='/user/reset-password' className='reset-link'>
 							Reset Password
 						</Link>
 					</p>
-				</form>
+				</Form>
 			</Wrapper>
 		</>
 	);

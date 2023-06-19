@@ -14,7 +14,7 @@ const Hero = () => {
 					designed to provide utmost comfort and support for growing feet,
 					ensuring healthy foot development for your little ones.
 				</p>
-				<Link to='/admin' className='btn'>
+				<Link to='/dashboard' className='btn'>
 					Shop now
 				</Link>
 			</article>

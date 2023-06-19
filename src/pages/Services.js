@@ -7,12 +7,15 @@ const Services = () => {
 			<div className='section-center'>
 				<article className='header'>
 					<h3>
-						custom furniture <br /> built only for you
+						Unleash Your Sole's Personality
+						<br />
 					</h3>
 					<p>
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe
-						dolorum debitis consectetur reprehenderit non aliquam voluptates
-						dolore aut vero consequuntur.
+						Our customer service team is dedicated to ensuring your complete
+						satisfaction, providing prompt assistance and support throughout
+						your shopping experience, from selecting the right size to
+						addressing any concerns you may have, making us your trusted choice
+						for kids shoes.
 					</p>
 				</article>
 				<div className='services-center'>

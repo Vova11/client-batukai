@@ -10,6 +10,7 @@ function useQuery() {
 
 const ResetPassword = () => {
 	const [password, setPassword] = useState('');
+
 	const query = useQuery();
 
 	const handleChange = async (e) => {
@@ -17,8 +18,27 @@ const ResetPassword = () => {
 	};
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		// setLoading(true);
+		if (!password) {
+			// showAlert({ text: 'please enter password' });
+			// setLoading(false);
+			return;
+		}
+		try {
+			const { data } = await axios.post('/api/v1/auth/reset-password', {
+				password,
+				token: query.get('token'),
+				email: query.get('email'),
+			});
+		} catch (error) {
+			console.log(error);
+		}
 	};
-	return <Wrapper className='page'>REGISTER</Wrapper>;
+	return (
+		<Wrapper className='page'>
+			<h2>Reset password</h2>
+		</Wrapper>
+	);
 };
 
 const Wrapper = styled.section`

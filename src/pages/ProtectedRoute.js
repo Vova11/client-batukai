@@ -1,8 +1,16 @@
-import { Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+const ProtectedRoute = ({ children }) => {
+	const { user, isLoading } = useSelector((store) => store.user);
+	const navigate = useNavigate();
 
-const ProtectedRoute = ({ children, user, isLoading }) => {
+	if (isLoading && !user) {
+		return <h2>Loading...</h2>;
+	}
 	if (!user) {
-		return <Navigate to='/login' />;
+		navigate('/login');
+		// return <Navigate to='/login' />;
 	}
 	return children;
 };

@@ -14,6 +14,7 @@ import Contact from './Contact';
 import Services from './Services';
 import Register from './Register';
 import ResetPassword from './ResetPassword';
+import VerifyPage from './Verify';
 export {
 	Login,
 	ProtectedRoute,
@@ -31,4 +32,5 @@ export {
 	Hero,
 	ResetPassword,
 	Register,
+	VerifyPage,
 };

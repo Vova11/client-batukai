@@ -1,89 +1,116 @@
 import { useState } from 'react';
+import axios from 'axios';
+import assets from '../../assets/assets.gif';
 import { useSelector, useDispatch } from 'react-redux';
+import { user } from '../../features/user/userSlice';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import FormRow from '../../pages/FormRow';
-import Col from 'react-bootstrap/Col';
 import ImageList from './ImageList';
-import MainImage from './MainImage';
 import MainImageUpload from './MainImageUpload';
 import MultipleImagesUpload from './MultipleImagesUpload';
 import Spinner from './Spinner';
-import {
-	convertMapToArray,
-	convertBase64,
-	// Other functions...
-} from '../../utils/imageUtils';
+import Col from 'react-bootstrap/Col';
 
 import {
-	handleChange,
+	handleChangeState,
+	clearValues,
 	createProduct,
-	addVariant,
-	removeVariant,
 	uploadMultipleProductImages,
 	uploadSingleProductImage,
-	uploadMainProductImage,
-	clearValues,
 	removeImage,
-	addImages,
-	removeImageFromImages,
-	removeMainImage,
-	setUserId,
 } from '../../features/product/productSlice.js';
+import customFetch from '../../utils/axios';
 
 const AddProductPage = () => {
-	const product = useSelector((store) => store.product);
-	const { isLoading } = useSelector((store) => store.product);
+	const { isEditing } = useSelector((store) => store.product);
 	const { user } = useSelector((store) => store.user);
-
 	const dispatch = useDispatch();
 
-	const handleInputChange = (event, index) => {
-		const { name, value } = event.target;
-		dispatch(handleChange({ name, value, index }));
+	const [loading, setLoading] = useState(false);
+	const [url, setUrl] = useState('');
+
+	const [product, setProduct] = useState({
+		name: '',
+		description: '',
+		price: 0,
+		userId: user.id,
+		image: [],
+		images: [],
+		variants: [
+			{
+				color: '',
+				sizes: '',
+				stock: 0,
+			},
+		],
+	});
+
+	const handleProduct = (e) => {
+		const { name, value } = e.target;
+		setProduct((prevState) => ({
+			...prevState,
+			[name]: value,
+		}));
 	};
 
-	const handleRemoveVariant = (index) => {
-		dispatch(removeVariant(index));
+	const handleVariantChange = (e, index) => {
+		const { name, value } = e.target;
+		const variants = [...product.variants]; // create a copy of the colors array
+		variants[index] = { ...variants[index], [name]: value }; // update the color object at the specified index
+		setProduct({ ...product, variants }); // update the product object with the updated colors array
 	};
 
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		try {
-			const updatedProduct = { ...product, userId: user.id };
-			dispatch(setUserId(user.id));
-			dispatch(createProduct(updatedProduct));
-			console.log(updatedProduct);
-		} catch (error) {
-			console.log(error);
-		}
+	const convertBase64 = (file) => {
+		return new Promise((resolve, reject) => {
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(file);
+
+			fileReader.onload = () => {
+				resolve(fileReader.result);
+			};
+
+			fileReader.onerror = (error) => {
+				reject(error);
+			};
+		});
 	};
 
-	const handleAddVariant = () => {
-		dispatch(addVariant());
+	const convertMapToArray = (data) => {
+		const images = new Map(Object.entries(data));
+		return Array.from(images);
 	};
 
-	//HANDLE IMAGES UPLOAD
+	const handleImageUpload = async (uploadAction, onSuccess, onError) => {
+		setLoading(true);
 
-	const handleImageUpload = async (uploadAction) => {
 		try {
 			const response = await dispatch(uploadAction);
 			const imageUrl = response.payload;
 			const responseConverted = convertMapToArray(imageUrl);
-			// Update state using Redux reducers
-			dispatch(addImages(responseConverted));
+
+			setUrl((prevUrl) => [...prevUrl, ...responseConverted]);
+			setProduct((prevProduct) => ({
+				...prevProduct,
+				images: [...prevProduct.images, ...responseConverted],
+			}));
+
+			onSuccess();
 		} catch (error) {
-			console.log(error);
+			onError(error);
+		} finally {
+			setLoading(false);
 		}
 	};
 
 	const uploadSingleImage = (base64) => {
 		const uploadAction = uploadSingleProductImage(base64);
+		console.log(uploadAction);
 		handleImageUpload(
 			uploadAction,
 			() => {
-				console.log('Image uploaded successfully');
+				alert('Image uploaded successfully');
 			},
 			(error) => {
 				console.error(error);
@@ -97,7 +124,7 @@ const AddProductPage = () => {
 		handleImageUpload(
 			uploadAction,
 			() => {
-				console.log('Images uploaded successfully');
+				alert('Images uploaded successfully');
 			},
 			(error) => {
 				console.error(error);
@@ -109,6 +136,7 @@ const AddProductPage = () => {
 		const files = event.target.files;
 		if (files.length === 1) {
 			const base64 = await convertBase64(files[0]);
+			console.log(base64);
 			uploadSingleImage(base64);
 			return;
 		}
@@ -121,57 +149,115 @@ const AddProductPage = () => {
 		uploadMultipleImages(base64s);
 	};
 
-	const uploadMainImage = async (event) => {
-		try {
-			if (product.image.length > 0) {
-				for (const [publicId, url] of product.image) {
-					await dispatch(removeImage(publicId));
-					dispatch(removeMainImage(publicId));
-				}
-			}
+	const findInMap = (map, key) => {
+		return map.get(key);
+	};
 
-			const file = event.target.files[0];
+	const uploadMainImage = async (event) => {
+		setLoading(true);
+		if (product.image.size > 0) {
+			for (const [publicId, url] of product.image) {
+				await dispatch(removeImage(publicId));
+				product.image.delete(publicId); // Remove the entry from the Map
+			}
+		}
+
+		const file = event.target.files[0];
+		try {
 			const base64 = await convertBase64(file);
 
-			await dispatch(uploadMainProductImage(base64));
+			const res = await customFetch.post(
+				'/products/uploadImage',
+				{
+					image: base64,
+				},
+				{
+					withCredentials: true,
+				}
+			);
+
+			const imageUrl = res.data;
+			const responseConverted = convertMapToArray(imageUrl);
+
+			setProduct((prevProduct) => ({
+				...prevProduct,
+				image: new Map([...prevProduct.image, ...responseConverted]), // Add the new entry to the existing Map
+			}));
+			setLoading(false);
 			alert('Main image uploaded successfully');
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
-	const removeProductImage = async (publicId) => {
-		try {
-			await dispatch(removeImage(publicId));
-			dispatch(removeImageFromImages(publicId));
-		} catch (error) {
-			console.error(error);
-		}
+	const handleAddVariant = () => {
+		setProduct({
+			...product,
+			variants: [...product.variants, { color: '', sizes: '', stock: '' }],
+		});
 	};
 
-	const removeMainProductImage = async (publicId) => {
-		try {
-			await dispatch(removeImage(publicId));
-			dispatch(removeMainImage(publicId));
-		} catch (error) {
-			console.error(error);
-		}
+	const handleRemoveVariant = (index) => {
+		const newVariants = [...product.variants];
+		newVariants.splice(index, 1);
+		setProduct({ ...product, variants: newVariants });
 	};
 
-	// const showImage = () => {
-	// 	if (product.image.length > 0) {
-	// 		product.image.forEach(({ publicId, url }) => {
-	// 			console.log(publicId);
-	// 		});
-	// 	}
-	// };
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		try {
+			dispatch(createProduct(product));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const removeProductImage = (publicId) => {
+		dispatch(removeImage(publicId))
+			.unwrap()
+			.then(() => {
+				setProduct((prevProduct) => {
+					const updatedImages = new Map(prevProduct.images);
+					updatedImages.delete(publicId);
+					return {
+						...prevProduct,
+						images: updatedImages,
+					};
+				});
 
-	// showImage();
+				setUrl((prevUrl) => {
+					const updatedImages = new Map(prevUrl);
+					updatedImages.delete(publicId);
+					return updatedImages;
+				});
 
-	console.log(typeof product.image);
+				alert('Image removed successfully');
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	};
+
+	const showMainImage = () => {
+		return (
+			<ul>
+				{[...product.image].map(([publicId, url]) => (
+					<li key={publicId}>
+						<a href={url} target='_blank' rel='noopener noreferrer'>
+							{url}
+						</a>
+						<button type='button' onClick={() => removeProductImage(publicId)}>
+							Remove image
+						</button>
+					</li>
+				))}
+			</ul>
+		);
+	};
+
 	return (
 		<>
-			<h3>{product.isEditing ? 'Edit Product' : 'Add product'}</h3>
+			<h3>{isEditing ? 'Edit Product' : 'Add product'}</h3>
+
 			<Form onSubmit={handleSubmit}>
 				<Row className='mb-3'>
 					<FormRow
@@ -181,7 +267,7 @@ const AddProductPage = () => {
 						label='Name'
 						name='name'
 						value={product.name}
-						onChange={handleInputChange}
+						onChange={handleProduct}
 					/>
 
 					<FormRow
@@ -191,7 +277,7 @@ const AddProductPage = () => {
 						label='Description'
 						name='description'
 						value={product.description}
-						onChange={handleInputChange}
+						onChange={handleProduct}
 					/>
 
 					<FormRow
@@ -201,7 +287,7 @@ const AddProductPage = () => {
 						id='price'
 						name='price'
 						value={product.price}
-						onChange={handleInputChange}
+						onChange={handleProduct}
 					/>
 				</Row>
 
@@ -215,7 +301,7 @@ const AddProductPage = () => {
 								label='Color'
 								name='color'
 								value={variant.color}
-								onChange={(e) => handleInputChange(e, index)}
+								onChange={(e) => handleVariantChange(e, index)}
 							/>
 
 							<FormRow
@@ -225,7 +311,7 @@ const AddProductPage = () => {
 								name='sizes'
 								label='Size'
 								value={variant.sizes}
-								onChange={(e) => handleInputChange(e, index)}
+								onChange={(e) => handleVariantChange(e, index)}
 							/>
 
 							<FormRow
@@ -235,7 +321,7 @@ const AddProductPage = () => {
 								name='stock'
 								label='stock'
 								value={variant.stock}
-								onChange={(e) => handleInputChange(e, index)}
+								onChange={(e) => handleVariantChange(e, index)}
 							/>
 
 							{index !== 0 && (
@@ -264,32 +350,19 @@ const AddProductPage = () => {
 				<button type='button' onClick={handleAddVariant}>
 					Add Variant
 				</button>
-				<button onClick={() => dispatch(clearValues())}>Clear Values</button>
+
 				<button type='submit'>Submit</button>
 			</Form>
+			<div>{showMainImage()}</div>
 			<div>
-				<MainImage
-					images={product.image}
-					removeImage={removeMainProductImage}
-				/>
+				{url && <ImageList images={url} removeImage={removeProductImage} />}
 			</div>
-			<div>
-				<ImageList images={product.images} removeImage={removeProductImage} />
-			</div>
-			<div>{isLoading && <Spinner />}</div>
+			<div>{loading && <Spinner />}</div>
 		</>
 	);
 };
 
 export default AddProductPage;
-
-// {
-// 	[...product.image].map(([publicId, url]) => (
-// 		<div key={publicId}>
-// 			<p>{url}</p>
-// 		</div>
-// 	));
-// }
 
 // import React, { useState, useEffect } from 'react';
 // import Button from 'react-bootstrap/Button';

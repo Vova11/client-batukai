@@ -1,62 +1,74 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import customFetch from '../../utils/axios';
+import {
+	fetchUserThunk,
+	getUserThunk,
+	loginUserThunk,
+	logoutUserThunk,
+	updateUserThunk,
+} from './userThunk';
 
 const initialState = {
 	isLoading: false,
 	user: null,
+	userObject: {},
 	error: null,
 };
 
 export const loginUser = createAsyncThunk(
 	'user/loginUser',
 	async (user, thunkAPI) => {
-		console.log('LOGIN USER');
-		console.log(user);
-		try {
-			const resp = await customFetch.post('/auth/login', user, {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				withCredentials: true,
-			});
+		return loginUserThunk('/auth/login', user, thunkAPI);
+	}
+);
 
-			return resp.data;
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
+export const registerUser = createAsyncThunk(
+	'user/registerUser',
+	async (user, thunkAPI) => {
+		return loginUserThunk('/auth/register', user, thunkAPI);
+	}
+);
+
+export const getUser = createAsyncThunk(
+	'user/getUser',
+	async (id, thunkAPI) => {
+		return getUserThunk(`/users/${id}`, thunkAPI);
 	}
 );
 
 export const logoutUser = createAsyncThunk(
 	'user/logoutUser',
 	async (_, thunkAPI) => {
-		try {
-			console.log('calling delete route');
-			await customFetch.delete('/auth/logout', {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				withCredentials: true,
-			}); // Call your logout route using axios
-			return true;
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
+		return logoutUserThunk('/auth/logout', thunkAPI);
 	}
 );
 
 export const fetchUser = createAsyncThunk(
 	'user/fetchUser',
 	async (_, thunkAPI) => {
+		return fetchUserThunk('/users/showMe', thunkAPI);
+	}
+);
+
+export const updateUser = createAsyncThunk(
+	'user/updateUser',
+	async (user, thunkAPI) => {
+		return updateUserThunk(`/users/${user.id}`, user, thunkAPI);
+	}
+);
+
+export const verifyEmail = createAsyncThunk(
+	'auth/verifyEmail',
+	async ({ verificationToken, email }, thunkAPI) => {
 		try {
-			const response = await customFetch.get('/users/showMe', {
-				withCredentials: true,
+			const response = await customFetch.post('/auth/verify-email', {
+				verificationToken,
+				email,
 			});
-			return response.data.user;
+			return response.data;
 		} catch (error) {
-			// Handle error fetching user data
-			console.error(error);
+			console.log(error);
 			return thunkAPI.rejectWithValue(error.response.data.msg);
 		}
 	}
@@ -73,7 +85,6 @@ const userSlice = createSlice({
 				state.error = null;
 			})
 			.addCase(loginUser.fulfilled, (state, { payload }) => {
-				console.log(payload);
 				const { user } = payload;
 				state.isLoading = false;
 				state.user = user;
@@ -84,6 +95,22 @@ const userSlice = createSlice({
 				state.error = payload;
 				state.isLoading = false;
 				toast.error(payload);
+			})
+			.addCase(registerUser.pending, (state) => {
+				state.isLoading = true;
+				state.error = null;
+			})
+			.addCase(registerUser.fulfilled, (state, { payload }) => {
+				const { user } = payload;
+				state.isLoading = false;
+				state.user = user;
+				state.error = null;
+				toast.success(`Please verify your email`);
+			})
+			.addCase(registerUser.rejected, (state, { payload }) => {
+				state.error = 'Server Error';
+				state.isLoading = false;
+				toast.error('Server Error');
 			})
 			.addCase(fetchUser.pending, (state) => {
 				state.isLoading = true;
@@ -96,19 +123,49 @@ const userSlice = createSlice({
 			.addCase(fetchUser.rejected, (state) => {
 				state.isLoading = false;
 				state.user = null;
+				state.userObject = {};
 			})
 			.addCase(logoutUser.pending, (state) => {
 				state.isLoading = true;
+				state.user = null;
 			})
-			.addCase(logoutUser.fulfilled, (state, action) => {
+			.addCase(logoutUser.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				state.user = null;
+				toast.success('User was logged out');
 			})
 			.addCase(logoutUser.rejected, (state) => {
 				state.isLoading = false;
 				state.user = null;
+			})
+			.addCase(getUser.pending, (state) => {
+				state.isLoading = true;
+				state.userObject = {};
+			})
+			.addCase(getUser.fulfilled, (state, { payload }) => {
+				const { user } = payload;
+				state.isLoading = false;
+				state.userObject = user;
+			})
+			.addCase(getUser.rejected, (state) => {
+				state.isLoading = false;
+				state.userObject = {};
+			})
+			.addCase(updateUser.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateUser.fulfilled, (state, { payload }) => {
+				const { user } = payload;
+				state.isLoading = true;
+				state.userObject = user;
+				state.user = user;
+				toast.success('User was updated');
+			})
+			.addCase(updateUser.rejected, (state) => {
+				state.isLoading = false;
+				state.userObject = {};
 			});
 	},
 });
-
+export const { toggleSidebar } = userSlice.actions;
 export default userSlice.reducer;

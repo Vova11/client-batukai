@@ -3,22 +3,26 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import {
 	Home,
 	Login,
+	Register,
 	ProtectedRoute,
+	ResetPassword,
 	ErrorPage,
 	About,
 	Products,
 	Product,
+	VerifyPage,
 	SharedLayout,
 } from './pages';
 import {
 	Dashboard,
-	Order,
-	Orders,
 	ProductPage,
 	ProductsPage,
-	Stats,
 	AddProductPage,
+	Stats,
+	Profile,
+	SharedLayout as Layout,
 } from './components/Dashboard';
+
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,13 +33,12 @@ function App() {
 	const { isLoading, user } = useSelector((store) => store.user);
 
 	useEffect(() => {
-		if (user) {
-			console.log('user is loaded', user);
-		} else {
-			console.log('user neni');
+		if (!user) {
+			dispatch(fetchUser());
 		}
-		dispatch(fetchUser());
-	}, []);
+	}, [dispatch, user]);
+
+	// console.log('App.js ', user);
 
 	return (
 		<BrowserRouter>
@@ -45,26 +48,27 @@ function App() {
 					<Route path='about' element={<About />} />
 					<Route path='products' element={<Products />} />
 					<Route path='products/:productId' element={<Product />} />
-					<Route path='*' element={<ErrorPage />} />
+					<Route path='/login' element={<Login />} />
+					<Route path='/register' element={<Register />} />
+					<Route path='/user/verify-email' element={<VerifyPage />} />
+					<Route path='/user/reset-password' element={<ResetPassword />} />
 				</Route>
 				<Route
-					path='/admin'
+					path='/dashboard'
 					element={
-						<ProtectedRoute user={user} isLoading={isLoading}>
-							<SharedLayout />
+						<ProtectedRoute isLoading={isLoading} user={user}>
+							<Layout />
 						</ProtectedRoute>
 					}
 				>
 					<Route index element={<Dashboard />} />
-					<Route path='products' element={<ProductsPage />} />
+					<Route path='all-products' element={<ProductsPage />} />
 					<Route path='products/:productId' element={<ProductPage />} />
 					<Route path='add-product' element={<AddProductPage />} />
-					<Route path='orders' element={<Order />} />
 					<Route path='stats' element={<Stats />} />
-					<Route path='*' element={<ErrorPage />} />
+					<Route path='profile' element={<Profile />} />
 				</Route>
-
-				<Route path='/login' element={<Login />} />
+				<Route path='*' element={<ErrorPage />} />
 			</Routes>
 			<ToastContainer />
 		</BrowserRouter>
