@@ -2,14 +2,16 @@ import AddProductPage from './AddProductPage';
 import Dashboard from './Dashboard';
 import Order from './Order';
 import Orders from './Orders';
-import ProductPage from './Product';
+import ProductPage from './ProductPage';
 import ProductsPage from './ProductsPage';
 import Stats from './Stats';
 import SharedLayout from './SharedLayout';
 import HeaderBar from './HeaderBar';
 import SideBar from './SideBar';
 import Profile from './Profile';
-
+import SearchContainer from './SearchContainer';
+import ProductsContainer from './ProductsContainer';
+import ActionButtons from './ActionButtons';
 export {
 	Dashboard,
 	Order,
@@ -22,4 +24,7 @@ export {
 	HeaderBar,
 	SideBar,
 	Profile,
+	ProductsContainer,
+	SearchContainer,
+	ActionButtons,
 };
