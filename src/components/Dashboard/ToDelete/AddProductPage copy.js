@@ -6,8 +6,16 @@ import Row from 'react-bootstrap/Row';
 import FormRow from '../../pages/FormRow';
 import Col from 'react-bootstrap/Col';
 import ImageList from './ImageList';
+import MainImage from './MainImage';
+import MainImageUpload from './MainImageUpload';
+import MultipleImagesUpload from './MultipleImagesUpload';
 import Spinner from './Spinner';
-import { convertBase64 } from '../../utils/convertBase64';
+import {
+	convertMapToArray,
+	convertBase64,
+	// Other functions...
+} from '../../utils/imageUtils';
+
 import {
 	handleChange,
 	createProduct,
@@ -16,6 +24,7 @@ import {
 	removeVariant,
 	uploadMultipleProductImages,
 	uploadSingleProductImage,
+	uploadMainProductImage,
 	clearValues,
 	removeImage,
 	addImages,
@@ -23,7 +32,6 @@ import {
 	removeMainImage,
 	setUserId,
 } from '../../features/product/productSlice.js';
-import { toast } from 'react-toastify';
 
 const AddProductPage = () => {
 	const product = useSelector((store) => store.product);
@@ -56,7 +64,6 @@ const AddProductPage = () => {
 				);
 				return;
 			}
-
 			dispatch(setUserId(user.id));
 			dispatch(createProduct(updatedProduct));
 		} catch (error) {
@@ -69,55 +76,76 @@ const AddProductPage = () => {
 	};
 
 	//HANDLE IMAGES UPLOAD
-	const [file, setFile] = useState(null);
-	const [base64URL, setBase64URL] = useState('');
-	const [files, setFiles] = useState([]);
-	const [base64URLs, setBase64URLs] = useState([]);
 
-	const handleSingleFileInputChange = async (e) => {
-		const selectedFile = e.target.files[0];
-		if (product.image.length > 0) {
-			toast.error('Before upload please delete existing main image');
+	const handleImageUpload = async (uploadAction) => {
+		try {
+			const response = await dispatch(uploadAction);
+			const imageUrl = response.payload;
+			const responseConverted = convertMapToArray(imageUrl);
+			// Update state using Redux reducers
+			dispatch(addImages(responseConverted));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const uploadSingleImage = (base64) => {
+		const uploadAction = uploadSingleProductImage(base64);
+		handleImageUpload(
+			uploadAction,
+			() => {
+				console.log('Image uploaded successfully');
+			},
+			(error) => {
+				console.error(error);
+			}
+		);
+	};
+
+	const uploadMultipleImages = (images) => {
+		const uploadAction = uploadMultipleProductImages(images);
+
+		handleImageUpload(
+			uploadAction,
+			() => {
+				console.log('Images uploaded successfully');
+			},
+			(error) => {
+				console.error(error);
+			}
+		);
+	};
+
+	const uploadImage = async (event) => {
+		const files = event.target.files;
+		if (files.length === 1) {
+			const base64 = await convertBase64(files[0]);
+			uploadSingleImage(base64);
 			return;
 		}
-		try {
-			const base64Result = await convertBase64(selectedFile);
-			selectedFile['base64'] = base64Result;
-			setBase64URL(base64Result);
-			setFile(selectedFile);
-			dispatch(uploadSingleProductImage(base64Result));
-		} catch (err) {
-			console.log(err);
+
+		const base64s = [];
+		for (var i = 0; i < files.length; i++) {
+			var base = await convertBase64(files[i]);
+			base64s.push(base);
 		}
+		uploadMultipleImages(base64s);
 	};
 
-	const handleMultipleFileInputChange = async (e) => {
-		const selectedFiles = e.target.files;
-		const convertedBase64URLs = [];
-
-		for (let i = 0; i < selectedFiles.length; i++) {
-			const selectedFile = selectedFiles[i];
-
-			try {
-				const base64Result = await convertBase64(selectedFile);
-				selectedFile['base64'] = base64Result;
-				convertedBase64URLs.push(base64Result);
-			} catch (err) {
-				console.log(err);
+	const uploadMainImage = async (event) => {
+		try {
+			if (product.image.length > 0) {
+				for (const [publicId, url] of product.image) {
+					await dispatch(removeImage(publicId));
+					dispatch(removeMainImage(publicId));
+				}
 			}
-		}
-		setBase64URLs(convertedBase64URLs);
-		const result = await dispatch(
-			uploadMultipleProductImages(convertedBase64URLs)
-		);
-		dispatch(addImages(result.payload));
-		setFiles(Array.from(selectedFiles));
-	};
 
-	const removeMainProductImage = async (publicId) => {
-		try {
-			dispatch(removeImage(publicId));
-			dispatch(removeMainImage(publicId));
+			const file = event.target.files[0];
+			const base64 = await convertBase64(file);
+
+			await dispatch(uploadMainProductImage(base64));
+			alert('Main image uploaded successfully');
 		} catch (error) {
 			console.error(error);
 		}
@@ -125,8 +153,17 @@ const AddProductPage = () => {
 
 	const removeProductImage = async (publicId) => {
 		try {
-			dispatch(removeImage(publicId));
+			await dispatch(removeImage(publicId));
 			dispatch(removeImageFromImages(publicId));
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const removeMainProductImage = async (publicId) => {
+		try {
+			await dispatch(removeImage(publicId));
+			dispatch(removeMainImage(publicId));
 		} catch (error) {
 			console.error(error);
 		}
@@ -184,10 +221,10 @@ const AddProductPage = () => {
 							<FormRow
 								col='4'
 								type='text'
-								id={`size-${index}`}
-								name='size'
+								id={`sizes-${index}`}
+								name='sizes'
 								label='Size'
-								value={variant.size}
+								value={variant.sizes}
 								onChange={(e) => handleInputChange(e, index)}
 							/>
 
@@ -215,22 +252,13 @@ const AddProductPage = () => {
 						</Row>
 					</div>
 				))}
-				<div>
-					<input
-						type='file'
-						name='file'
-						onChange={handleSingleFileInputChange}
-					/>
-				</div>
-				<div>
-					<input
-						type='file'
-						name='file'
-						multiple
-						onChange={handleMultipleFileInputChange}
-					/>
-				</div>
 
+				<Row>
+					<MainImageUpload onChange={uploadMainImage} />
+				</Row>
+				<Row>
+					<MultipleImagesUpload onChange={uploadImage} />
+				</Row>
 				<br />
 
 				<button type='button' onClick={handleAddVariant}>
@@ -239,18 +267,15 @@ const AddProductPage = () => {
 				<button type='button' onClick={() => dispatch(clearValues())}>
 					Clear Values
 				</button>
-				<button type='submit'>{!isEditing ? 'Submit' : 'Edit'}</button>
+				<button type='submit'>Submit</button>
 			</Form>
 			<div>
-				{product.image.length > 0 && <p>Main image</p>}
-
-				<ImageList
+				<MainImage
 					images={product.image}
 					removeImage={removeMainProductImage}
 				/>
 			</div>
 			<div>
-				{product.images.length > 0 ? <p>Images</p> : ''}
 				<ImageList images={product.images} removeImage={removeProductImage} />
 			</div>
 

@@ -7,7 +7,6 @@ import {
 	hideLoading,
 	getAllProducts,
 } from '../allProducts/allProductsSlice';
-
 const initialState = {
 	isLoading: false,
 	name: '',
@@ -19,12 +18,17 @@ const initialState = {
 	variants: [
 		{
 			color: '',
-			size: '',
+			sizes: '',
 			stock: 0,
 		},
 	],
 	isEditing: false,
 	editProductId: '',
+};
+
+const convertMapToArray = (data) => {
+	const images = new Map(Object.entries(data));
+	return Array.from(images);
 };
 
 export const createProduct = createAsyncThunk(
@@ -39,7 +43,6 @@ export const createProduct = createAsyncThunk(
 			});
 
 			thunkAPI.dispatch(clearValues());
-			console.log(resp.data);
 			return resp.data;
 		} catch (error) {
 			if (error.response.status === 401) {
@@ -52,6 +55,7 @@ export const createProduct = createAsyncThunk(
 );
 
 /* Handle Images Upload */
+
 export const uploadMultipleProductImages = createAsyncThunk(
 	'product/uploadMultiple',
 	async (images, thunkAPI) => {
@@ -92,7 +96,26 @@ export const uploadSingleProductImage = createAsyncThunk(
 					withCredentials: true,
 				}
 			);
-			console.log(response);
+			return response.data;
+		} catch (error) {
+			return thunkAPI.rejectWithValue(error.response.data.msg);
+		}
+	}
+);
+
+export const uploadMainProductImage = createAsyncThunk(
+	'product/uploadMainImage',
+	async (base64Image, thunkAPI) => {
+		try {
+			const response = await customFetch.post(
+				'/products/uploadImage',
+				{
+					image: base64Image,
+				},
+				{
+					withCredentials: true,
+				}
+			);
 			return response.data;
 		} catch (error) {
 			return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -151,51 +174,34 @@ export const deleteProduct = createAsyncThunk(
 export const editProduct = createAsyncThunk(
 	'product/editProduct',
 	async ({ productId, product }, thunkAPI) => {
-		try {
-			const response = await customFetch.patch(
-				`products/${productId}`,
-				product,
-				{
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					withCredentials: true,
-				}
-			);
-			// Return the response data if needed
-			thunkAPI.dispatch(clearValues());
-			return response.data;
-		} catch (error) {
-			thunkAPI.dispatch(hideLoading());
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
+		console.log(productId);
+		console.log(product);
+		// try {
+		// 	const response = await customFetch.patch(
+		// 		`products/${productId}`,
+		// 		product,
+		// 		{
+		// 			headers: {
+		// 				'Content-Type': 'application/json',
+		// 			},
+		// 			withCredentials: true,
+		// 		}
+		// 	);
+		// 	// Return the response data if needed
+		// 	thunkAPI.dispatch(clearValues());
+		// 	return response.data;
+		// } catch (error) {
+		// 	thunkAPI.dispatch(hideLoading());
+		// 	return thunkAPI.rejectWithValue(error.response.data.msg);
+		// }
 	}
 );
-
-export const updateProductPublished = createAsyncThunk(
-	'product/publishProduct',
-	async ({ id, published }, thunkAPI) => {
-		try {
-			const response = await customFetch.patch(`products/${id}`, published, {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				withCredentials: true,
-			});
-			// Return the response data if needed
-			return response.data;
-		} catch (error) {
-			console.log(error);
-		}
-	}
-);
-
 const productSlice = createSlice({
 	name: 'product',
 	initialState,
 	reducers: {
 		handleChange: (state, { payload: { name, value, index } }) => {
-			if (name === 'color' || name === 'size' || name === 'stock') {
+			if (name === 'color' || name === 'sizes' || name === 'stock') {
 				// Handle variant fields individually
 
 				state.variants[index][name] = value;
@@ -206,7 +212,7 @@ const productSlice = createSlice({
 		addVariant: (state) => {
 			state.variants.push({
 				color: '',
-				size: '',
+				sizes: '',
 				stock: 0,
 			});
 		},
@@ -225,19 +231,23 @@ const productSlice = createSlice({
 		},
 		removeImageFromImages: (state, action) => {
 			const publicId = action.payload;
+			const updatedImagesMap = new Map(state.images);
+			updatedImagesMap.delete(publicId);
+			const updatedImages = Array.from(updatedImagesMap);
 
-			state.images = state.images.filter(
-				(image) => image.publicId !== publicId
-			);
+			return {
+				...state,
+				images: updatedImages,
+			};
 		},
 		addImages: (state, action) => {
-			// state.images = [...state.images, ...action.payload],
 			state.images.push(...action.payload);
 		},
 		setUserId: (state, action) => {
 			state.userId = action.payload;
 		},
 		sedEditProduct: (state, { payload }) => {
+			console.log(payload);
 			return { ...state, isEditing: true, ...payload };
 		},
 	},
@@ -259,10 +269,11 @@ const productSlice = createSlice({
 			.addCase(uploadMultipleProductImages.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(uploadMultipleProductImages.fulfilled, (state, { payload }) => {
+			.addCase(uploadMultipleProductImages.fulfilled, (state, action) => {
 				console.log('Fullfield');
+				console.log(action);
 				state.isLoading = false;
-				toast.success('Images successfully uploaded');
+				toast.success('Image successfully uploaded');
 			})
 			.addCase(uploadMultipleProductImages.rejected, (state, { payload }) => {
 				console.log('Rejected');
@@ -274,7 +285,7 @@ const productSlice = createSlice({
 			})
 			.addCase(uploadSingleProductImage.fulfilled, (state, action) => {
 				console.log('Fullfield');
-				state.image = [...state.image, action.payload];
+				console.log(action);
 				state.isLoading = false;
 				toast.success('Image successfully uploaded');
 			})
@@ -293,6 +304,21 @@ const productSlice = createSlice({
 				console.log('Rejected');
 				state.isLoading = false;
 			})
+			.addCase(uploadMainProductImage.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(uploadMainProductImage.fulfilled, (state, action) => {
+				state.isLoading = false;
+				const imageUrl = action.payload;
+				const responseConverted = convertMapToArray(imageUrl);
+				state.image.push(...responseConverted);
+				toast.success('Image successfully uploaded');
+			})
+			.addCase(uploadMainProductImage.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				state.error = payload;
+				toast.error(payload);
+			})
 			.addCase(deleteProduct.pending, (state) => {
 				state.isLoading = true;
 			})
@@ -310,20 +336,10 @@ const productSlice = createSlice({
 			})
 			.addCase(editProduct.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				toast.success(payload.message);
+				console.log(payload);
+				toast.success(payload);
 			})
 			.addCase(editProduct.rejected, (state, { payload }) => {
-				state.isLoading = false;
-				toast.error(payload);
-			})
-			.addCase(updateProductPublished.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(updateProductPublished.fulfilled, (state, { payload }) => {
-				state.isLoading = false;
-				toast.success('product published');
-			})
-			.addCase(updateProductPublished.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				toast.error(payload);
 			});

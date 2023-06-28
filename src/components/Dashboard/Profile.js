@@ -41,7 +41,6 @@ const Profile = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log('Form submitted:', userData);
 		dispatch(updateUser(userData));
 	};
 
