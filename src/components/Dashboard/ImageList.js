@@ -1,25 +1,44 @@
 import React from 'react';
 import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import Image from 'react-bootstrap/Image';
 import Row from 'react-bootstrap/Row';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
-const ImageList = ({ images, removeImage }) => {
+const ImageList = ({ images, productId, source, removeImage }) => {
 	if (images) {
 		const imageItems = images.map((element, index) => (
-			<span key={index}>
-				<li>{element.publicId}</li>
-				<button type='button' onClick={() => removeImage(element.publicId)}>
-					Remove image
-				</button>
-			</span>
+			<Col xs={12} md={4} key={index} className='mt-2'>
+				<Card>
+					<Card.Img variant='top' src={element.url} />
+					<Card.Body>
+						<Button
+							variant='primary'
+							onClick={() => removeImage(element.publicId, productId, source)}
+						>
+							Remove image
+						</Button>
+					</Card.Body>
+				</Card>
+			</Col>
 		));
-		return <ul>{imageItems}</ul>;
+		return <Row>{imageItems}</Row>;
 	} else {
 		return <p>No images available.</p>;
 	}
 };
 
 export default ImageList;
+
+// <Image src={element.url} rounded fluid />
+// 				<button
+// 					type='button'
+// 					className='btn'
+// 					onClick={() => removeImage(element.publicId, productId, source)}
+// 				>
+// 					Remove image
+// 				</button>
 
 // {
 // 	[...images].map(([publicId, url]) => (

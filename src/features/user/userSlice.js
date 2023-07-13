@@ -1,18 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import customFetch from '../../utils/axios';
 import {
 	fetchUserThunk,
 	getUserThunk,
 	loginUserThunk,
 	logoutUserThunk,
 	updateUserThunk,
+	verifyEmailThunk,
+	clearStoreThunk,
+	resetPasswordThunk,
+	forgotPasswordThunk,
 } from './userThunk';
 
 const initialState = {
 	isLoading: false,
 	user: null,
 	userObject: {},
+	success: '',
 	error: null,
 };
 
@@ -60,24 +64,29 @@ export const updateUser = createAsyncThunk(
 
 export const verifyEmail = createAsyncThunk(
 	'auth/verifyEmail',
-	async ({ verificationToken, email }, thunkAPI) => {
-		try {
-			const response = await customFetch.post('/auth/verify-email', {
-				verificationToken,
-				email,
-			});
-			return response.data;
-		} catch (error) {
-			console.log(error);
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	verifyEmailThunk
 );
+
+export const resetPassword = createAsyncThunk(
+	'auth/resetPassword',
+	resetPasswordThunk
+);
+
+export const forgotPassword = createAsyncThunk(
+	'auth/forgotPassword',
+	forgotPasswordThunk
+);
+
+export const clearStore = createAsyncThunk('user/clearStore', clearStoreThunk);
 
 const userSlice = createSlice({
 	name: 'user',
 	initialState,
-	reducers: {},
+	reducers: {
+		clearSuccessState: (state) => {
+			state.success = '';
+		},
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(loginUser.pending, (state) => {
@@ -101,11 +110,11 @@ const userSlice = createSlice({
 				state.error = null;
 			})
 			.addCase(registerUser.fulfilled, (state, { payload }) => {
-				const { user } = payload;
+				const { user, msg } = payload;
+				state.success = msg;
 				state.isLoading = false;
 				state.user = user;
 				state.error = null;
-				toast.success(`Please verify your email`);
 			})
 			.addCase(registerUser.rejected, (state, { payload }) => {
 				state.error = 'Server Error';
@@ -164,8 +173,33 @@ const userSlice = createSlice({
 			.addCase(updateUser.rejected, (state) => {
 				state.isLoading = false;
 				state.userObject = {};
+			})
+			.addCase(clearStore.rejected, () => {
+				toast.error('There was an error');
+			})
+			.addCase(forgotPassword.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(forgotPassword.fulfilled, (state, { payload }) => {
+				state.success = payload.msg;
+				state.isLoading = false;
+			})
+			.addCase(forgotPassword.rejected, (state, { payload }) => {
+				state.success = payload.msg;
+				state.isLoading = false;
+			})
+			.addCase(resetPassword.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(resetPassword.fulfilled, (state, { payload }) => {
+				state.success = payload.msg;
+				state.isLoading = false;
+			})
+			.addCase(resetPassword.rejected, (state, { payload }) => {
+				state.success = payload.msg;
+				state.isLoading = false;
 			});
 	},
 });
-export const { toggleSidebar } = userSlice.actions;
+export const { toggleSidebar, clearSuccessState } = userSlice.actions;
 export default userSlice.reducer;

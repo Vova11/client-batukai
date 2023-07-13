@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { Button } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row';
 import FormRow from '../../pages/FormRow';
 import Col from 'react-bootstrap/Col';
@@ -50,7 +50,7 @@ const AddProductPage = () => {
 			if (isEditing) {
 				dispatch(
 					editProduct({
-						productId: editProductId,
+						id: editProductId,
 						product: updatedProduct,
 					})
 				);
@@ -114,19 +114,21 @@ const AddProductPage = () => {
 		setFiles(Array.from(selectedFiles));
 	};
 
-	const removeMainProductImage = async (publicId) => {
+	const removeMainProductImage = (publicId, productId, source) => {
+		console.log(publicId, productId, source);
 		try {
-			dispatch(removeImage(publicId));
-			dispatch(removeMainImage(publicId));
+			dispatch(removeImage({ publicId, productId, source }));
+			dispatch(removeMainImage());
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
-	const removeProductImage = async (publicId) => {
+	const removeProductImage = async (publicId, productId, source) => {
+		console.log(publicId, productId, source);
 		try {
-			dispatch(removeImage(publicId));
-			dispatch(removeImageFromImages(publicId));
+			await dispatch(removeImage({ publicId, productId, source }));
+			await dispatch(removeImageFromImages(publicId));
 		} catch (error) {
 			console.error(error);
 		}
@@ -167,9 +169,8 @@ const AddProductPage = () => {
 						onChange={handleInputChange}
 					/>
 				</Row>
-
 				{product.variants.map((variant, index) => (
-					<div key={index}>
+					<div key={index} className='mb-3'>
 						<Row>
 							<FormRow
 								col='4'
@@ -215,43 +216,68 @@ const AddProductPage = () => {
 						</Row>
 					</div>
 				))}
-				<div>
-					<input
-						type='file'
-						name='file'
-						onChange={handleSingleFileInputChange}
-					/>
-				</div>
-				<div>
-					<input
-						type='file'
-						name='file'
-						multiple
-						onChange={handleMultipleFileInputChange}
-					/>
-				</div>
-
+				<Row>
+					<Col md={4}>
+						<input
+							type='file'
+							name='file'
+							onChange={handleSingleFileInputChange}
+						/>
+					</Col>
+					<Col md={4}>
+						<input
+							type='file'
+							name='file'
+							multiple
+							onChange={handleMultipleFileInputChange}
+						/>
+					</Col>
+				</Row>
 				<br />
-
-				<button type='button' onClick={handleAddVariant}>
+				<button type='button' className='btn me-2' onClick={handleAddVariant}>
 					Add Variant
 				</button>
-				<button type='button' onClick={() => dispatch(clearValues())}>
+				<button
+					type='button'
+					className='btn me-2'
+					onClick={() => dispatch(clearValues())}
+				>
 					Clear Values
 				</button>
-				<button type='submit'>{!isEditing ? 'Submit' : 'Edit'}</button>
+				<button type='submit' className='btn'>
+					{!isEditing ? 'Submit' : 'Edit'}
+				</button>
 			</Form>
 			<div>
-				{product.image.length > 0 && <p>Main image</p>}
+				{product.image.length > 0 && (
+					<div className='mt-5'>
+						<h4>Main image</h4>
+						<hr />
+					</div>
+				)}
 
 				<ImageList
 					images={product.image}
+					productId={product.editProductId}
+					source='product'
 					removeImage={removeMainProductImage}
 				/>
 			</div>
 			<div>
-				{product.images.length > 0 ? <p>Images</p> : ''}
-				<ImageList images={product.images} removeImage={removeProductImage} />
+				{product.images.length > 0 ? (
+					<div className='mt-5'>
+						<h4>Images</h4>
+						<hr />
+					</div>
+				) : (
+					''
+				)}
+				<ImageList
+					images={product.images}
+					productId={product.editProductId}
+					source='picture'
+					removeImage={removeProductImage}
+				/>
 			</div>
 
 			<div>{isLoading && <Spinner />}</div>

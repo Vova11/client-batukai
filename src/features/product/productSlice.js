@@ -1,12 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import customFetch from '../../utils/axios';
-import { logoutUser } from '../user/userSlice';
 import {
-	showLoading,
-	hideLoading,
-	getAllProducts,
-} from '../allProducts/allProductsSlice';
+	createProductThunk,
+	deleteProductThunk,
+	uploadMultipleProductImagesThunk,
+	uploadSingleProductImageThunk,
+	removeImageThunk,
+	editProductThunk,
+	updateProductPublishedThunk,
+} from './productThunk';
 
 const initialState = {
 	isLoading: false,
@@ -14,6 +17,7 @@ const initialState = {
 	description: '',
 	price: 0,
 	userId: null,
+	published: false,
 	image: [],
 	images: [],
 	variants: [
@@ -29,165 +33,40 @@ const initialState = {
 
 export const createProduct = createAsyncThunk(
 	'product/createProduct',
-	async (product, thunkAPI) => {
-		try {
-			const resp = await customFetch.post('/products', product, {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				withCredentials: true,
-			});
-
-			thunkAPI.dispatch(clearValues());
-			console.log(resp.data);
-			return resp.data;
-		} catch (error) {
-			if (error.response.status === 401) {
-				thunkAPI.dispatch(logoutUser());
-				return thunkAPI.rejectWithValue('Unauthorized');
-			}
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	createProductThunk
 );
 
 /* Handle Images Upload */
 export const uploadMultipleProductImages = createAsyncThunk(
 	'product/uploadMultiple',
-	async (images, thunkAPI) => {
-		try {
-			const response = await customFetch.post(
-				`/products/uploadMultipleImages`,
-				{
-					images,
-				},
-				{
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					withCredentials: true,
-				}
-			);
-			return response.data;
-		} catch (error) {
-			console.error(error);
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	uploadMultipleProductImagesThunk
 );
 
 export const uploadSingleProductImage = createAsyncThunk(
 	'product/uploadImage',
-	async (base64Image, thunkAPI) => {
-		try {
-			const response = await customFetch.post(
-				'/products/uploadImage',
-				{
-					image: base64Image,
-				},
-				{
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					withCredentials: true,
-				}
-			);
-			console.log(response);
-			return response.data;
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	uploadSingleProductImageThunk
 );
 
 export const removeImage = createAsyncThunk(
 	'product/removeImage',
-	async (publicId, thunkAPI) => {
-		try {
-			const response = customFetch.post(
-				'products/removeImage',
-				{
-					publicId,
-				},
-				{
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					withCredentials: true,
-				}
-			);
-			// Return the response data if needed
-			return response.data;
-		} catch (error) {
-			// Handle the error as needed
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	removeImageThunk
 );
 
 /* DELETE PRODUCT */
 export const deleteProduct = createAsyncThunk(
 	'product/deleteProduct',
-	async (productId, thunkAPI) => {
-		thunkAPI.dispatch(showLoading());
-		try {
-			const response = await customFetch.delete(`products/${productId}`, {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				withCredentials: true,
-			});
-			// Return the response data if needed
-			thunkAPI.dispatch(getAllProducts());
-			return response.data.message;
-		} catch (error) {
-			thunkAPI.dispatch(hideLoading());
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	deleteProductThunk
 );
 
 /* EDIT PRODUCT */
 export const editProduct = createAsyncThunk(
 	'product/editProduct',
-	async ({ productId, product }, thunkAPI) => {
-		try {
-			const response = await customFetch.patch(
-				`products/${productId}`,
-				product,
-				{
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					withCredentials: true,
-				}
-			);
-			// Return the response data if needed
-			thunkAPI.dispatch(clearValues());
-			return response.data;
-		} catch (error) {
-			thunkAPI.dispatch(hideLoading());
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	editProductThunk
 );
 
 export const updateProductPublished = createAsyncThunk(
 	'product/publishProduct',
-	async ({ id, published }, thunkAPI) => {
-		try {
-			const response = await customFetch.patch(`products/${id}`, published, {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				withCredentials: true,
-			});
-			// Return the response data if needed
-			return response.data;
-		} catch (error) {
-			console.log(error);
-		}
-	}
+	updateProductPublishedThunk
 );
 
 const productSlice = createSlice({
@@ -231,7 +110,6 @@ const productSlice = createSlice({
 			);
 		},
 		addImages: (state, action) => {
-			// state.images = [...state.images, ...action.payload],
 			state.images.push(...action.payload);
 		},
 		setUserId: (state, action) => {
@@ -285,9 +163,11 @@ const productSlice = createSlice({
 			.addCase(removeImage.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(removeImage.fulfilled, (state) => {
+			.addCase(removeImage.fulfilled, (state, { payload }) => {
 				console.log('Fullfield');
 				state.isLoading = false;
+				console.log(payload);
+				toast.success('Image removed');
 			})
 			.addCase(removeImage.rejected, (state, action) => {
 				console.log('Rejected');
@@ -320,9 +200,10 @@ const productSlice = createSlice({
 				state.isLoading = true;
 			})
 			.addCase(updateProductPublished.fulfilled, (state, { payload }) => {
+				// Set isLoading to false if necessary
 				state.isLoading = false;
-				toast.success('product published');
 			})
+
 			.addCase(updateProductPublished.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				toast.error(payload);

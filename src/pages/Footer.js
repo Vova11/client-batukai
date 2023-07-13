@@ -1,11 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 const Footer = () => {
 	return (
 		<Container>
 			<h5>
 				&copy; {new Date().getFullYear()}
-				<span> Batukai shop</span>
+				<Link to='/'>
+					<span>Batukai shop</span>
+				</Link>
 			</h5>
 			<h5>All rights reserved</h5>
 		</Container>
@@ -20,6 +23,9 @@ const Container = styled.footer`
 	align-items: center;
 	background: var(--clr-black);
 	text-align: center;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
 	span {
 		color: var(--clr-primary-5);
 	}

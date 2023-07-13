@@ -4,14 +4,24 @@ import { useSelector, useDispatch } from 'react-redux';
 import Spinner from './Spinner';
 import ProductPage from './ProductPage';
 import { getAllProducts } from '../../features/allProducts/allProductsSlice.js';
+import PageBtnContainer from './PageBtnContainer';
 
 const ProductsContainer = () => {
-	const { isLoading, products } = useSelector((store) => store.products);
+	const {
+		isLoading,
+		products,
+		page,
+		totalProducts,
+		numOfPages,
+		search,
+		sort,
+		published,
+	} = useSelector((store) => store.products);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		dispatch(getAllProducts());
-	}, []);
+	}, [page, search, sort, published]);
 
 	if (isLoading) {
 		return <Spinner />;
@@ -24,13 +34,12 @@ const ProductsContainer = () => {
 			</div>
 		);
 	}
-	console.log('Products');
-	console.log(products);
 
 	return (
 		<div>
-			<h5>Products</h5>
-
+			<h5>
+				{totalProducts} products{products.length > 1 && 's'} found
+			</h5>
 			<Table striped bordered hover>
 				<thead>
 					<tr>
@@ -48,6 +57,7 @@ const ProductsContainer = () => {
 					})}
 				</tbody>
 			</Table>
+			{numOfPages > 1 && <PageBtnContainer />}
 		</div>
 	);
 };

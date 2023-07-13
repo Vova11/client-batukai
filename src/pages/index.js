@@ -14,6 +14,7 @@ import Contact from './Contact';
 import Services from './Services';
 import Register from './Register';
 import ResetPassword from './ResetPassword';
+import ForgotPassword from './ForgotPassword';
 import VerifyPage from './Verify';
 export {
 	Login,
@@ -31,6 +32,7 @@ export {
 	Contact,
 	Hero,
 	ResetPassword,
+	ForgotPassword,
 	Register,
 	VerifyPage,
 };
