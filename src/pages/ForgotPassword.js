@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Wrapper from '../assets/wrappers/PasswordWrapper';
 import Form from 'react-bootstrap/Form';
 import FormRow from './FormRow';
 import { useSelector, useDispatch } from 'react-redux';
-import { resetPassword, clearSuccessState } from '../features/user/userSlice';
+import { forgotPassword, clearSuccessState } from '../features/user/userSlice';
 import { toast } from 'react-toastify';
 import Spinner from '../components/Dashboard/Spinner';
-import Wrapper from '../assets/wrappers/PasswordWrapper';
-function useQuery() {
-	return new URLSearchParams(useLocation().search);
-}
 
-const ResetPassword = () => {
-	const { isLoading, success } = useSelector((store) => store.user);
-
-	const [password, setPassword] = useState('');
-	const navigate = useNavigate();
+const ForgotPassword = () => {
 	const dispatch = useDispatch();
-	const query = useQuery();
+	const navigate = useNavigate();
 
-	const handleChangeInput = async (e) => {
-		setPassword(e.target.value);
+	const { isLoading, success } = useSelector((store) => store.user);
+	const [email, setEmail] = useState('');
+
+	const handleChangeInput = (e) => {
+		setEmail(e.target.value);
+	};
+
+	const onSubmit = async (e) => {
+		e.preventDefault();
+
+		if (!email) {
+			return toast.error('Please fill in all values');
+		}
+		dispatch(forgotPassword(email));
 	};
 
 	useEffect(() => {
@@ -33,22 +38,6 @@ const ResetPassword = () => {
 			return () => clearTimeout(timeoutId);
 		}
 	}, [success, navigate, dispatch]);
-
-	const onSubmit = async (e) => {
-		e.preventDefault();
-
-		if (!password) {
-			toast.error({ text: 'please enter password' });
-			return;
-		}
-		dispatch(
-			resetPassword({
-				password,
-				token: query.get('token'),
-				email: query.get('email'),
-			})
-		);
-	};
 
 	if (success !== '') {
 		return (
@@ -69,25 +58,29 @@ const ResetPassword = () => {
 					className={isLoading ? 'form form-loading' : 'form'}
 					onSubmit={onSubmit}
 				>
-					<h4>Reset password</h4>
-					{/* single form row */}
+					<h3>Reset password</h3>
 					<FormRow
-						type='password'
-						name='password'
-						value={password}
+						type='email'
+						name='email'
+						value={email}
 						col='12'
-						label='Password'
+						label='Email'
 						onChange={handleChangeInput}
 					/>
-
 					{/* end of single form row */}
 					<button type='submit' className='btn btn-block' disabled={isLoading}>
-						{isLoading ? 'Please Wait...' : 'New Password'}
+						{isLoading ? 'Loading...' : 'Get reset password link'}
 					</button>
+					<p>
+						Already have an account?{' '}
+						<Link to='/login' className='reset-link'>
+							Login
+						</Link>
+					</p>
 				</Form>
 			)}
 		</Wrapper>
 	);
 };
 
-export default ResetPassword;
+export default ForgotPassword;

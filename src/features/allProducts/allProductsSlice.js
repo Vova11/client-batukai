@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import customFetch from '../../utils/axios';
+import { getAllProductsThunk } from './productsThunk';
 
 const initialFiltersState = {
 	search: '',
 	searchStatus: 'all',
 	searchType: 'all',
+	published: 'all',
 	sort: 'latest',
 	sortOptions: ['latest', 'oldest', 'a-z', 'z-a'],
 };
@@ -15,6 +16,7 @@ const initialState = {
 	products: [],
 	totalProducts: 0,
 	numOfPages: 1,
+	currentPage: 1,
 	page: 1,
 	stats: {},
 	error: null,
@@ -23,16 +25,7 @@ const initialState = {
 
 export const getAllProducts = createAsyncThunk(
 	'allProducts/getProducts',
-	async (_, thunkAPI) => {
-		let url = '/products';
-		try {
-			const resp = await customFetch(url);
-			return resp.data;
-		} catch (error) {
-			console.log(error);
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	getAllProductsThunk
 );
 
 const allProductsSlice = createSlice({
@@ -52,6 +45,18 @@ const allProductsSlice = createSlice({
 				product.published = !product.published;
 			}
 		},
+		handleChange: (state, { payload: { name, value } }) => {
+			state.page = 1;
+			state[name] = value;
+		},
+		clearFilters: (state) => {
+			return { ...state, ...initialFiltersState };
+		},
+		changePage: (state, { payload }) => {
+			state.page = 1;
+			state.page = payload;
+		},
+		clearAllProductsState: (state) => initialState,
 	},
 	extraReducers: (builder) => {
 		builder
@@ -59,17 +64,25 @@ const allProductsSlice = createSlice({
 				state.isLoading = true;
 			})
 			.addCase(getAllProducts.fulfilled, (state, { payload }) => {
-				state.products = payload.products;
 				state.isLoading = false;
+				state.products = payload.products;
+				state.numOfPages = payload.numOfPages;
+				state.totalProducts = payload.totalProducts;
 			})
 			.addCase(getAllProducts.rejected, (state, { payload }) => {
-				console.log('rejected');
-				state.error = payload;
 				state.isLoading = false;
+				state.error = payload;
 				toast.error(payload);
 			});
 	},
 });
-export const { handleToggle, showLoading, hideLoading } =
-	allProductsSlice.actions;
+export const {
+	handleToggle,
+	showLoading,
+	hideLoading,
+	clearFilters,
+	handleChange,
+	changePage,
+	clearAllProductsState,
+} = allProductsSlice.actions;
 export default allProductsSlice.reducer;

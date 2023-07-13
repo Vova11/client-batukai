@@ -4,11 +4,11 @@ import styled from 'styled-components';
 import { FaUserCircle } from 'react-icons/fa';
 import { Dropdown } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { logoutUser } from '../../features/user/userSlice';
+import { logoutUser, clearStore } from '../../features/user/userSlice';
 function HeaderBar({ user }) {
 	const dispatch = useDispatch();
 	const handleLogout = () => {
-		dispatch(logoutUser());
+		dispatch(clearStore());
 	};
 
 	return (

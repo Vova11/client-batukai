@@ -1,14 +1,14 @@
 import customFetch from '../../utils/axios';
 import { logoutUser } from './userSlice';
-
+import {
+	authHeader,
+	checkForUnauthorizedResponse,
+} from '../../utils/authHeader';
+import { clearAllProductsState } from '../allProducts/allProductsSlice';
+import { clearValues } from '../product/productSlice';
 export const loginUserThunk = async (url, user, thunkAPI) => {
 	try {
-		const resp = await customFetch.post(url, user, {
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			withCredentials: true,
-		});
+		const resp = await customFetch.post(url, user, authHeader());
 
 		return resp.data;
 	} catch (error) {
@@ -18,13 +18,7 @@ export const loginUserThunk = async (url, user, thunkAPI) => {
 
 export const registerUserThunk = async (url, user, thunkAPI) => {
 	try {
-		const resp = await customFetch.post(url, user, {
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			withCredentials: true,
-		});
-
+		const resp = await customFetch.post(url, user, authHeader());
 		return resp.data;
 	} catch (error) {
 		return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -33,12 +27,7 @@ export const registerUserThunk = async (url, user, thunkAPI) => {
 
 export const getUserThunk = async (url, thunkAPI) => {
 	try {
-		const resp = await customFetch.get(url, {
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			withCredentials: true,
-		});
+		const resp = await customFetch.get(url, authHeader());
 		return resp.data;
 	} catch (error) {
 		return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -47,12 +36,7 @@ export const getUserThunk = async (url, thunkAPI) => {
 
 export const logoutUserThunk = async (url, thunkAPI) => {
 	try {
-		await customFetch.delete(url, {
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			withCredentials: true,
-		}); // Call your logout route using axios
+		await customFetch.delete(url, authHeader()); // Call your logout route using axios
 		return true;
 	} catch (error) {
 		return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -61,9 +45,7 @@ export const logoutUserThunk = async (url, thunkAPI) => {
 
 export const fetchUserThunk = async (url, thunkAPI) => {
 	try {
-		const response = await customFetch.get(url, {
-			withCredentials: true,
-		});
+		const response = await customFetch.get(url, authHeader());
 		return response.data.user;
 	} catch (error) {
 		// Handle error fetching user data
@@ -73,19 +55,67 @@ export const fetchUserThunk = async (url, thunkAPI) => {
 
 export const updateUserThunk = async (url, user, thunkAPI) => {
 	try {
-		const resp = await customFetch.patch(url, user, {
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			withCredentials: true,
-		});
+		const resp = await customFetch.patch(url, user, authHeader());
 
 		return resp.data;
 	} catch (error) {
-		if (error.response.status === 401) {
-			thunkAPI.dispatch(logoutUser());
-			return thunkAPI.rejectWithValue('Unauthorized! Logging out');
-		}
+		checkForUnauthorizedResponse('Unauthorized! Logging out', thunkAPI);
+		return thunkAPI.rejectWithValue(error.response.data.msg);
+	}
+};
+
+export const clearStoreThunk = async (message, thunkAPI) => {
+	try {
+		thunkAPI.dispatch(logoutUser(message));
+		thunkAPI.dispatch(clearAllProductsState());
+		thunkAPI.dispatch(clearValues());
+		return Promise.resolve();
+	} catch (error) {
+		return Promise.reject();
+	}
+};
+
+export const verifyEmailThunk = async (
+	{ verificationToken, email },
+	thunkAPI
+) => {
+	try {
+		const response = await customFetch.post('/auth/verify-email', {
+			verificationToken,
+			email,
+		});
+		return response.data;
+	} catch (error) {
+		console.log(error);
+		return thunkAPI.rejectWithValue(error.response.data.msg);
+	}
+};
+
+export const resetPasswordThunk = async (
+	{ password, token, email },
+	thunkAPI
+) => {
+	console.log(password);
+	console.log(email);
+	try {
+		const response = await customFetch.post('/auth/reset-password', {
+			password,
+			token,
+			email,
+		});
+		return response.data;
+	} catch (error) {
+		console.log(error);
+		return thunkAPI.rejectWithValue(error.response.data.msg);
+	}
+};
+
+export const forgotPasswordThunk = async (email, thunkAPI) => {
+	console.log('reseting for email: ', email);
+	try {
+		const response = await customFetch.post('/auth/forgot-password', { email });
+		return response.data;
+	} catch (error) {
 		return thunkAPI.rejectWithValue(error.response.data.msg);
 	}
 };

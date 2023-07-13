@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col';
 import { SideBar } from './';
 const SharedLayout = () => {
 	const { user } = useSelector((store) => store.user);
+
 	return (
 		<Wrapper>
 			<main className='bg-color'>

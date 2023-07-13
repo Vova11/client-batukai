@@ -1,96 +1,4 @@
-import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Form from 'react-bootstrap/Form';
-import FormRow from './FormRow';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { loginUser } from '../features/user/userSlice';
-import { toast } from 'react-toastify';
-
-const Login = () => {
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
-	const { isLoading, user } = useSelector((store) => store.user);
-
-	const [auth, setAuth] = useState({
-		email: '',
-		password: '',
-	});
-
-	const handleChangeInput = (e) => {
-		const name = e.target.name;
-		const value = e.target.value;
-		setAuth({ ...auth, [name]: value });
-	};
-
-	const submitForm = (e) => {
-		e.preventDefault();
-		if (!auth.email && !auth.password) {
-			return toast.error('Please fill in all values');
-		}
-		dispatch(loginUser(auth));
-	};
-
-	useEffect(() => {
-		if (user) {
-			navigate('/dashboard');
-		}
-	}, [user, navigate]);
-
-	return (
-		<>
-			<Wrapper className='login-page'>
-				{alert.show && (
-					<div className={`alert alert-${alert.type}`}>{alert.text}</div>
-				)}
-				<Form
-					className={isLoading ? 'form form-loading' : 'form'}
-					noValidate
-					onSubmit={submitForm}
-				>
-					<h3>LOGIN</h3>
-					{/* single form row */}
-					<FormRow
-						type='text'
-						name='email'
-						col='12'
-						label='E-mail'
-						onChange={handleChangeInput}
-					/>
-					{/* end of single form row */}
-					{/* single form row */}
-					<FormRow
-						type='password'
-						name='password'
-						col='12'
-						label='Password'
-						onChange={handleChangeInput}
-					/>
-					{/* end of single form row */}
-					<button type='submit' className='btn btn-block' disabled={isLoading}>
-						{isLoading ? 'Loading...' : 'Login'}
-					</button>
-
-					<br />
-					<p>
-						Don't have an account?
-						<Link to='/register' className='register-link'>
-							Register
-						</Link>
-					</p>
-					<p>
-						Forgot your password?{' '}
-						<Link to='/user/forgot-password' className='reset-link'>
-							Forgot Password
-						</Link>
-					</p>
-				</Form>
-			</Wrapper>
-		</>
-	);
-};
-
-export default Login;
 
 const Wrapper = styled.section`
 	.login-page {
@@ -108,6 +16,49 @@ const Wrapper = styled.section`
 		padding: 45px;
 		text-align: center;
 		box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+	}
+	.success-box {
+		top: 100px;
+		position: relative;
+		z-index: 1;
+		background: #ffffff;
+		max-width: 760px;
+		margin: 0 auto 100px;
+		padding: 45px;
+		text-align: center;
+		box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+		background-color: var(--clr-primary-4);
+		h4,
+		p {
+			color: white;
+		}
+	}
+	.success-box-after-registration {
+		top: 100px;
+		position: relative;
+		z-index: 1;
+		background: #ffffff;
+		max-width: 760px;
+		margin: 0 auto 100px;
+		padding: 45px;
+		text-align: center;
+		box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+
+		h4,
+		p {
+			color: white;
+		}
+	}
+	.spinner {
+		left: 50%;
+		margin-left: -4em;
+		position: relative;
+		top: 200px;
+		top: 40px;
+		.spinner-border {
+			width: 100px;
+			height: 100px;
+		}
 	}
 	.form input {
 		font-family: 'Roboto', sans-serif;
@@ -196,3 +147,4 @@ const Wrapper = styled.section`
 		-moz-osx-font-smoothing: grayscale;
 	}
 `;
+export default Wrapper;

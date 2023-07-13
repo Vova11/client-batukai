@@ -5,13 +5,14 @@ import {
 	Login,
 	Register,
 	ProtectedRoute,
-	ResetPassword,
-	ErrorPage,
 	About,
 	Products,
 	Product,
-	VerifyPage,
 	SharedLayout,
+	ResetPassword,
+	VerifyPage,
+	ForgotPassword,
+	ErrorPage,
 } from './pages';
 import {
 	Dashboard,
@@ -51,6 +52,7 @@ function App() {
 					<Route path='/login' element={<Login />} />
 					<Route path='/register' element={<Register />} />
 					<Route path='/user/verify-email' element={<VerifyPage />} />
+					<Route path='/user/forgot-password' element={<ForgotPassword />} />
 					<Route path='/user/reset-password' element={<ResetPassword />} />
 				</Route>
 				<Route

@@ -40,6 +40,7 @@ const Wrapper = styled.div`
 		padding: 1rem 0;
 		text-transform: capitalize;
 		transition: var(--transition);
+		color: var(--clr-grey-2);
 	}
 	.nav-link:hover {
 		color: var(--grey-900);

@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import { useDispatch } from 'react-redux';
-
 import ActionButtons from './ActionButtons.js';
 import moment from 'moment';
 import { updateProductPublished } from '../../features/product/productSlice.js';
@@ -24,12 +22,15 @@ const ProductPage = (product) => {
 				<label className='toggle-switch'>
 					<input
 						type='checkbox'
-						checked={product.published}
-						onChange={() => handlePublishedToggle(id, published)}
+						checked={published}
+						onChange={() => handlePublishedToggle(id)}
 					/>
-					<span className='slider'></span>
+					<span
+						className={`slider ${published ? 'published' : 'unpublished'}`}
+					></span>
 				</label>
 			</td>
+
 			<td>{date}</td>
 			<td>
 				<ActionButtons {...product} />

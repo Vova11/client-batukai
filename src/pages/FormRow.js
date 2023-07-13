@@ -10,7 +10,6 @@ const FormRow = ({
 	onChange,
 	labelText,
 	controlId,
-	multiple,
 }) => {
 	return (
 		<Form.Group as={Col} md={col}>
@@ -21,7 +20,6 @@ const FormRow = ({
 				id={id}
 				value={value}
 				onChange={onChange}
-				multiple={type === 'file' && multiple} // Render 'multiple' attribute only for 'file' type if 'multiple' prop is true
 			/>
 		</Form.Group>
 
