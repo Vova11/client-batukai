@@ -38,7 +38,7 @@ const ProductsContainer = () => {
 	return (
 		<div>
 			<h5>
-				{totalProducts} products{products.length > 1 && 's'} found
+				{totalProducts} product {products.length > 1 && 's'} found
 			</h5>
 			<Table striped bordered hover>
 				<thead>
@@ -47,6 +47,7 @@ const ProductsContainer = () => {
 						<th>Name</th>
 						<th>Price</th>
 						<th>Published</th>
+						<th>Featured</th>
 						<th>Created At</th>
 						<th>Actions</th>
 					</tr>

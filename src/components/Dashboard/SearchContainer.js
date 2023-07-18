@@ -18,6 +18,7 @@ const SearchContainer = () => {
 		isLoading,
 		search,
 		published,
+		featured,
 		searchStatus,
 		searchType,
 		sort,
@@ -75,6 +76,20 @@ const SearchContainer = () => {
 							{ value: 'all', label: 'all' },
 							{ value: 'true', label: 'published' },
 							{ value: 'false', label: 'not published' },
+						]}
+					/>
+
+					<FormRowSelectPublished
+						col={6}
+						type='select'
+						id='featured'
+						label='featured'
+						name='featured'
+						value={featured}
+						onChange={handleSearch}
+						options={[
+							{ value: 'true', label: 'featured' },
+							{ value: 'false', label: 'not featured' },
 						]}
 					/>
 

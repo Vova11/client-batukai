@@ -13,6 +13,7 @@ import {
 	VerifyPage,
 	ForgotPassword,
 	ErrorPage,
+	SingleProduct,
 } from './pages';
 import {
 	Dashboard,
@@ -26,20 +27,9 @@ import {
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchUser } from './features/user/userSlice';
 
 function App() {
-	const dispatch = useDispatch();
-	const { isLoading, user } = useSelector((store) => store.user);
-
-	useEffect(() => {
-		if (!user) {
-			dispatch(fetchUser());
-		}
-	}, [dispatch, user]);
-
-	// console.log('App.js ', user);
+	console.log('App.js ');
 
 	return (
 		<BrowserRouter>
@@ -48,7 +38,7 @@ function App() {
 					<Route index element={<Home />} />
 					<Route path='about' element={<About />} />
 					<Route path='products' element={<Products />} />
-					<Route path='products/:productId' element={<Product />} />
+					<Route path='products/:productId' element={<SingleProduct />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/register' element={<Register />} />
 					<Route path='/user/verify-email' element={<VerifyPage />} />
@@ -58,7 +48,7 @@ function App() {
 				<Route
 					path='/dashboard'
 					element={
-						<ProtectedRoute isLoading={isLoading} user={user}>
+						<ProtectedRoute>
 							<Layout />
 						</ProtectedRoute>
 					}

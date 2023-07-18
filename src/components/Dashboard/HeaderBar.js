@@ -3,9 +3,10 @@ import Navbar from 'react-bootstrap/Navbar';
 import styled from 'styled-components';
 import { FaUserCircle } from 'react-icons/fa';
 import { Dropdown } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser, clearStore } from '../../features/user/userSlice';
-function HeaderBar({ user }) {
+function HeaderBar() {
+	const { user } = useSelector((store) => store.user);
 	const dispatch = useDispatch();
 	const handleLogout = () => {
 		dispatch(clearStore());
@@ -20,7 +21,7 @@ function HeaderBar({ user }) {
 					<Navbar.Collapse className='justify-content-end'>
 						<Dropdown>
 							<Dropdown.Toggle variant='primary' id='user-dropdown'>
-								<FaUserCircle /> {user?.name} - {user?.role}
+								<FaUserCircle /> ${user?.id} - {user?.email} - {user?.role}
 							</Dropdown.Toggle>
 
 							<Dropdown.Menu>

@@ -139,3 +139,33 @@ export const updateProductPublishedThunk = async (id, thunkAPI) => {
 		return thunkAPI.rejectWithValue(error.response.data.msg);
 	}
 };
+
+export const updateProductFeaturedThunk = async (id, thunkAPI) => {
+	try {
+		const response = await customFetch.patch(`products/featured/${id}`, id, {
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			withCredentials: true,
+		});
+		// Return the response data if needed
+		thunkAPI.dispatch(getAllProducts());
+		return response.data;
+	} catch (error) {
+		return thunkAPI.rejectWithValue(error.response.data.msg);
+	}
+};
+
+export const getProductThunk = async (id, thunkAPI) => {
+	try {
+		const response = await customFetch.get(`products/${id}`, {
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			withCredentials: true,
+		});
+		return response.data;
+	} catch (error) {
+		return thunkAPI.rejectWithValue(error.response.data.msg);
+	}
+};

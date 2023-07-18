@@ -34,12 +34,7 @@ export const registerUser = createAsyncThunk(
 	}
 );
 
-export const getUser = createAsyncThunk(
-	'user/getUser',
-	async (id, thunkAPI) => {
-		return getUserThunk(`/users/${id}`, thunkAPI);
-	}
-);
+export const getUser = createAsyncThunk('user/getUser', getUserThunk);
 
 export const logoutUser = createAsyncThunk(
 	'user/logoutUser',
@@ -48,19 +43,9 @@ export const logoutUser = createAsyncThunk(
 	}
 );
 
-export const fetchUser = createAsyncThunk(
-	'user/fetchUser',
-	async (_, thunkAPI) => {
-		return fetchUserThunk('/users/showMe', thunkAPI);
-	}
-);
+export const fetchUser = createAsyncThunk('user/fetchUser', fetchUserThunk);
 
-export const updateUser = createAsyncThunk(
-	'user/updateUser',
-	async (user, thunkAPI) => {
-		return updateUserThunk(`/users/${user.id}`, user, thunkAPI);
-	}
-);
+export const updateUser = createAsyncThunk('user/updateUser', updateUserThunk);
 
 export const verifyEmail = createAsyncThunk(
 	'auth/verifyEmail',
@@ -98,7 +83,7 @@ const userSlice = createSlice({
 				state.isLoading = false;
 				state.user = user;
 				state.error = null;
-				toast.success(`Welcome back ${user.name}`);
+				toast.success(`Welcome back ${user.email}`);
 			})
 			.addCase(loginUser.rejected, (state, { payload }) => {
 				state.error = payload;
@@ -149,30 +134,26 @@ const userSlice = createSlice({
 			})
 			.addCase(getUser.pending, (state) => {
 				state.isLoading = true;
-				state.userObject = {};
 			})
 			.addCase(getUser.fulfilled, (state, { payload }) => {
-				const { user } = payload;
 				state.isLoading = false;
-				state.userObject = user;
+				state.userObject = payload.user;
 			})
 			.addCase(getUser.rejected, (state) => {
 				state.isLoading = false;
-				state.userObject = {};
+				toast.success('Rejected');
 			})
 			.addCase(updateUser.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(updateUser.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
 				const { user } = payload;
-				state.isLoading = true;
 				state.userObject = user;
-				state.user = user;
 				toast.success('User was updated');
 			})
 			.addCase(updateUser.rejected, (state) => {
 				state.isLoading = false;
-				state.userObject = {};
 			})
 			.addCase(clearStore.rejected, () => {
 				toast.error('There was an error');
@@ -201,5 +182,5 @@ const userSlice = createSlice({
 			});
 	},
 });
-export const { toggleSidebar, clearSuccessState } = userSlice.actions;
+export const { clearSuccessState } = userSlice.actions;
 export default userSlice.reducer;

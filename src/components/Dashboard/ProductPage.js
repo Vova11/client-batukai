@@ -2,15 +2,23 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import ActionButtons from './ActionButtons.js';
 import moment from 'moment';
-import { updateProductPublished } from '../../features/product/productSlice.js';
+import {
+	updateProductPublished,
+	updateProductFeatured,
+	toggleProductState,
+} from '../../features/product/productSlice.js';
 
 const ProductPage = (product) => {
 	const dispatch = useDispatch();
 	const date = moment(product.createdAt).format('MMM Do,YYYY');
-	const { id, name, price, published } = product;
+	const { id, name, price, published, featured } = product;
 
-	const handlePublishedToggle = (id, published) => {
-		dispatch(updateProductPublished({ id, published }));
+	const handlePublishedToggle = (id) => {
+		dispatch(updateProductPublished(id));
+	};
+
+	const handleFeaturedToggle = (id) => {
+		dispatch(updateProductFeatured({ id }));
 	};
 
 	return (
@@ -23,10 +31,22 @@ const ProductPage = (product) => {
 					<input
 						type='checkbox'
 						checked={published}
-						onChange={() => handlePublishedToggle(id)}
+						onChange={() => handlePublishedToggle({ id })}
 					/>
 					<span
 						className={`slider ${published ? 'published' : 'unpublished'}`}
+					></span>
+				</label>
+			</td>
+			<td>
+				<label className='toggle-switch'>
+					<input
+						type='checkbox'
+						checked={featured}
+						onChange={() => handleFeaturedToggle(id)}
+					/>
+					<span
+						className={`slider ${featured ? 'featured' : 'notfeatured'}`}
 					></span>
 				</label>
 			</td>

@@ -8,6 +8,7 @@ const links = [
 	{ id: 2, text: 'all products', path: 'all-products', icon: <MdQueryStats /> },
 	{ id: 3, text: 'add product', path: 'add-product', icon: <FaWpforms /> },
 	{ id: 4, text: 'profile', path: 'profile', icon: <ImProfile /> },
+	{ id: 5, text: 'dashboard', path: '/dashboard', icon: <ImProfile /> },
 ];
 
 export default links;

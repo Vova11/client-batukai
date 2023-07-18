@@ -9,9 +9,12 @@ import {
 	removeImageThunk,
 	editProductThunk,
 	updateProductPublishedThunk,
+	updateProductFeaturedThunk,
+	getProductThunk,
 } from './productThunk';
 
 const initialState = {
+	single_product: {},
 	isLoading: false,
 	name: '',
 	description: '',
@@ -67,6 +70,16 @@ export const editProduct = createAsyncThunk(
 export const updateProductPublished = createAsyncThunk(
 	'product/publishProduct',
 	updateProductPublishedThunk
+);
+
+export const updateProductFeatured = createAsyncThunk(
+	'product/featureProduct',
+	updateProductFeaturedThunk
+);
+
+export const getProduct = createAsyncThunk(
+	'product/getProduct',
+	getProductThunk
 );
 
 const productSlice = createSlice({
@@ -203,8 +216,29 @@ const productSlice = createSlice({
 				// Set isLoading to false if necessary
 				state.isLoading = false;
 			})
-
 			.addCase(updateProductPublished.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				toast.error(payload);
+			})
+			.addCase(updateProductFeatured.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateProductFeatured.fulfilled, (state, { payload }) => {
+				// Set isLoading to false if necessary
+				state.isLoading = false;
+			})
+			.addCase(updateProductFeatured.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				toast.error(payload);
+			})
+			.addCase(getProduct.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getProduct.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.single_product = payload;
+			})
+			.addCase(getProduct.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				toast.error(payload);
 			});

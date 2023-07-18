@@ -23,9 +23,6 @@ const Container = styled.footer`
 	align-items: center;
 	background: var(--clr-black);
 	text-align: center;
-	position: fixed;
-	bottom: 0;
-	width: 100%;
 	span {
 		color: var(--clr-primary-5);
 	}
