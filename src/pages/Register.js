@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import FormRow from './FormRow';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
-import Spinner from '../components/Dashboard/Spinner';
 import Wrapper from '../assets/wrappers/PasswordWrapper';
 import { registerUser, clearSuccessState } from '../features/user/userSlice';
 

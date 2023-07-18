@@ -25,9 +25,9 @@ export const registerUserThunk = async (url, user, thunkAPI) => {
 	}
 };
 
-export const getUserThunk = async (url, thunkAPI) => {
+export const getUserThunk = async (id, thunkAPI) => {
 	try {
-		const resp = await customFetch.get(url, authHeader());
+		const resp = await customFetch.get(`/users/${id}`, authHeader());
 		return resp.data;
 	} catch (error) {
 		return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -43,26 +43,52 @@ export const logoutUserThunk = async (url, thunkAPI) => {
 	}
 };
 
-export const fetchUserThunk = async (url, thunkAPI) => {
+export const fetchUserThunk = async (thunkAPI) => {
 	try {
-		const response = await customFetch.get(url, authHeader());
+		const response = await customFetch.get('/users/showMe', authHeader());
 		return response.data.user;
 	} catch (error) {
+		console.log(error);
 		// Handle error fetching user data
-		return thunkAPI.rejectWithValue(error);
+		return thunkAPI.rejectWithValue(error.response.msg);
 	}
 };
 
-export const updateUserThunk = async (url, user, thunkAPI) => {
+export const updateUserThunk = async (user, thunkAPI) => {
 	try {
-		const resp = await customFetch.patch(url, user, authHeader());
-
+		const resp = await customFetch.patch(
+			`/users/${user.id}`,
+			user,
+			authHeader()
+		);
 		return resp.data;
 	} catch (error) {
 		checkForUnauthorizedResponse('Unauthorized! Logging out', thunkAPI);
 		return thunkAPI.rejectWithValue(error.response.data.msg);
 	}
 };
+
+// export const fetchUserThunk = async (url, thunkAPI) => {
+// 	try {
+// 		const response = await customFetch.get(url, authHeader());
+// 		return response.data.user;
+// 	} catch (error) {
+// 		console.log(error);
+// 		// Handle error fetching user data
+// 		return thunkAPI.rejectWithValue(error.response.msg);
+// 	}
+// };
+
+// export const updateUserThunk = async (url, user, thunkAPI) => {
+// 	try {
+// 		const resp = await customFetch.patch(url, user, authHeader());
+
+// 		return resp.data;
+// 	} catch (error) {
+// 		checkForUnauthorizedResponse('Unauthorized! Logging out', thunkAPI);
+// 		return thunkAPI.rejectWithValue(error.response.data.msg);
+// 	}
+// };
 
 export const clearStoreThunk = async (message, thunkAPI) => {
 	try {

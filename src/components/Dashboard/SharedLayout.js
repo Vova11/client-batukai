@@ -1,19 +1,16 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { HeaderBar } from './';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { SideBar } from './';
 const SharedLayout = () => {
-	const { user } = useSelector((store) => store.user);
-
 	return (
 		<Wrapper>
 			<main className='bg-color'>
-				<HeaderBar user={user} />
+				<HeaderBar />
 				<Container>
 					{/* Stack the columns on mobile by making one full-width and the other half-width */}
 					<Row>
@@ -22,7 +19,7 @@ const SharedLayout = () => {
 						</Col>
 
 						<Col xs={12} md={9}>
-							<div className='page-dashboard '>
+							<div className='page-dashboard'>
 								<Outlet />
 							</div>
 						</Col>
@@ -38,7 +35,6 @@ export default SharedLayout;
 const Wrapper = styled.section`
 	.bg-color {
 		background-color: var(--clr-grey-10);
-		height: 100vh;
 	}
 	.page-dashboard {
 		padding-top: 40px;

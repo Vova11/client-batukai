@@ -16,6 +16,9 @@ import Register from './Register';
 import ResetPassword from './ResetPassword';
 import ForgotPassword from './ForgotPassword';
 import VerifyPage from './Verify';
+import SingleProduct from './SingleProduct';
+import PageHero from './PageHero';
+import ProductImages from './ProductImages';
 export {
 	Login,
 	ProtectedRoute,
@@ -35,4 +38,7 @@ export {
 	ForgotPassword,
 	Register,
 	VerifyPage,
+	SingleProduct,
+	PageHero,
+	ProductImages,
 };

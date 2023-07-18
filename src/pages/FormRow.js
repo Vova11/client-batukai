@@ -10,6 +10,7 @@ const FormRow = ({
 	onChange,
 	labelText,
 	controlId,
+	disabled,
 }) => {
 	return (
 		<Form.Group as={Col} md={col}>
@@ -20,6 +21,7 @@ const FormRow = ({
 				id={id}
 				value={value}
 				onChange={onChange}
+				disabled={disabled}
 			/>
 		</Form.Group>
 
