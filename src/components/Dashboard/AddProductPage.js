@@ -57,7 +57,11 @@ const AddProductPage = () => {
 				return;
 			}
 
+			if (!product.name) {
+				return toast.error('Name can`t be empty')
+			}
 			dispatch(setUserId(user.id));
+			
 			dispatch(createProduct(updatedProduct));
 		} catch (error) {
 			console.log(error);

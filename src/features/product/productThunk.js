@@ -164,6 +164,7 @@ export const getProductThunk = async (id, thunkAPI) => {
 			},
 			withCredentials: true,
 		});
+		console.log(response.data);
 		return response.data;
 	} catch (error) {
 		return thunkAPI.rejectWithValue(error.response.data.msg);

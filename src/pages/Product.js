@@ -4,10 +4,11 @@ import { formatPrice } from '../utils/helpers';
 import { FaSearch } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 const Product = ({ image, name, price, id }) => {
+	
 	return (
 		<Wrapper>
 			<div className='container-product'>
-				<img src={image[0].url} alt={name} />
+				{image.length > 0 ? <img src={image[0].url} alt={name} /> : 'tu bude image'}
 				<Link to={`/products/${id}`} className='link'>
 					<FaSearch />
 				</Link>

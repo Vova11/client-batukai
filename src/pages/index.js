@@ -19,6 +19,7 @@ import VerifyPage from './Verify';
 import SingleProduct from './SingleProduct';
 import PageHero from './PageHero';
 import ProductImages from './ProductImages';
+import ProductVariants from './ProductVariants';
 export {
 	Login,
 	ProtectedRoute,
@@ -41,4 +42,5 @@ export {
 	SingleProduct,
 	PageHero,
 	ProductImages,
+	ProductVariants
 };

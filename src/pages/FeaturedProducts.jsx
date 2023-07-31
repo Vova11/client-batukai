@@ -20,10 +20,17 @@ const FeaturedProducts = () => {
 
 	if (products.length === 0) {
 		return (
-			<div>
-				<h2>No product to display...</h2>
-			</div>
-		);
+			<Wrapper className='section'>
+				<div className='title'>
+					<h2>featured products</h2>
+					<div className='underline'></div>
+				</div>
+				<div className='section-center featured'>
+					<h3>no products to display</h3>
+				</div>
+			</Wrapper >
+			
+		)
 	}
 
 	const randomProducts = [...products]; // Create a copy of the products array

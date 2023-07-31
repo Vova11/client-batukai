@@ -1,41 +1,58 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState  } from 'react';
 import styled from 'styled-components';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProduct } from '../features/product/productSlice';
 import Spinner from '../components/Dashboard/Spinner.js';
 import { formatPrice } from '../utils/helpers';
-import { PageHero, ProductImages } from './';
+import { PageHero, ProductImages, ProductVariants } from './';
 const SingleProduct = () => {
 	const { productId } = useParams();
 	const { isLoading, single_product } = useSelector((store) => store.product);
 
 	const dispatch = useDispatch();
+	// Loading state to track whether single_product is being fetched
+	const [loading, setLoading] = useState(true);
+	
 	useEffect(() => {
-		dispatch(getProduct(productId));
-	}, [dispatch]);
-
-	if (isLoading && !single_product) {
+		dispatch(getProduct(productId)).then(() => {
+		  // After the getProduct action is fulfilled, set loading to false
+		  setLoading(false);
+		});
+	  }, [dispatch, productId]);
+	
+	  if (isLoading || loading || !single_product) {
+		// Show a loading spinner or placeholder while loading
 		return <Spinner />;
-	}
+	  }
 
 	let parsedData = null;
 	let allImages = [];
 
-	if (single_product && single_product.image) {
+	if (single_product && single_product.image && single_product.image.length > 0) {
+		console.log('pico');
 		parsedData = JSON.parse(single_product.image);
 		allImages = single_product.images
-			.map((image) => ({
-				...image,
-				main: false,
-			}))
-			.concat({
-				main: true,
-				publicId: parsedData['publicId'],
-				url: parsedData['url'],
-			});
+		  .map((image) => ({
+			...image,
+			main: false,
+		  }))
+		  .concat({
+			main: true,
+			publicId: parsedData['publicId'],
+			url: parsedData['url'],
+		  });
+	 
+	  }
+	
+
+	if (!single_product) {
+		return <Spinner />; // Add another conditional rendering for loading state
 	}
+
 	const { name, price, description, id } = single_product;
+	
+	
 
 	return (
 		<Wrapper>
@@ -45,7 +62,12 @@ const SingleProduct = () => {
 					back to products
 				</Link>
 				<div className='product-center'>
-					<ProductImages images={allImages} />
+				{single_product?.image?.length > 0 ? (
+          <ProductImages images={allImages} />
+        ) : (
+          // Render a placeholder image if single_product.images is empty or undefined
+          <img src='placeholder_image_url' alt='Placeholder' />
+        )}
 					<section className='content'>
 						<h2>{name}</h2>
 
@@ -63,8 +85,16 @@ const SingleProduct = () => {
 							<span>Brand :</span>
 							Company
 						</p>
+						<p className='info'>
+							<span>Select Size:</span>
+							<ProductVariants variants={single_product?.variants} />
+						</p>
 						<hr />
 					</section>
+					
+					
+						
+					
 				</div>
 			</div>
 		</Wrapper>

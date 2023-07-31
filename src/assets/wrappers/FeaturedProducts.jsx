@@ -16,6 +16,9 @@ const Wrapper = styled.section`
 		margin: 0 auto;
 		text-align: center;
 	}
+	.section-center h3 {
+		margin: 0 auto;
+	}
 	@media (min-width: 576px) {
 		.featured {
 			grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));

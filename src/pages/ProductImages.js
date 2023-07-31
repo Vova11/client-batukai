@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 const ProductImages = ({ images }) => {
+	console.log(images);
 	const [main, setMain] = useState('');
 
 	useEffect(() => {
