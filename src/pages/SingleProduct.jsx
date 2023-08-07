@@ -6,13 +6,15 @@ import { getProduct } from '../features/product/productSlice';
 import Spinner from '../components/Dashboard/Spinner.js';
 import { formatPrice } from '../utils/helpers';
 import { PageHero, ProductImages, ProductVariants } from './';
+
 const SingleProduct = () => {
 	const { productId } = useParams();
 	const { isLoading, single_product } = useSelector((store) => store.product);
-
+	console.log(single_product);
 	const dispatch = useDispatch();
 	// Loading state to track whether single_product is being fetched
 	const [loading, setLoading] = useState(true);
+	 // Check if there's at least one variant with stock > 0
 	
 	useEffect(() => {
 		dispatch(getProduct(productId)).then(() => {
@@ -26,33 +28,13 @@ const SingleProduct = () => {
 		return <Spinner />;
 	  }
 
-	let parsedData = null;
-	let allImages = [];
-
-	if (single_product && single_product.image && single_product.image.length > 0) {
-		console.log('pico');
-		parsedData = JSON.parse(single_product.image);
-		allImages = single_product.images
-		  .map((image) => ({
-			...image,
-			main: false,
-		  }))
-		  .concat({
-			main: true,
-			publicId: parsedData['publicId'],
-			url: parsedData['url'],
-		  });
-	 
-	  }
-	
-
 	if (!single_product) {
 		return <Spinner />; // Add another conditional rendering for loading state
 	}
 
 	const { name, price, description, id } = single_product;
 	
-	
+	const hasStock = single_product.variants.some((variant) => variant.stock > 0);
 
 	return (
 		<Wrapper>
@@ -62,12 +44,9 @@ const SingleProduct = () => {
 					back to products
 				</Link>
 				<div className='product-center'>
-				{single_product?.image?.length > 0 ? (
-          <ProductImages images={allImages} />
-        ) : (
-          // Render a placeholder image if single_product.images is empty or undefined
-          <img src='placeholder_image_url' alt='Placeholder' />
-        )}
+				
+          			<ProductImages images={single_product.images} />
+        
 					<section className='content'>
 						<h2>{name}</h2>
 
@@ -83,13 +62,20 @@ const SingleProduct = () => {
 						</p>
 						<p className='info'>
 							<span>Brand :</span>
-							Company
+							{single_product?.company?.name}
 						</p>
 						<p className='info'>
+							<span>Colour :</span>
+							{single_product?.colour}
+						</p>
+						<p className='info size-contaier'>
 							<span>Select Size:</span>
 							<ProductVariants variants={single_product?.variants} />
 						</p>
 						<hr />
+						{hasStock && (
+							<button className='btn'>Add to cart</button>
+						)}
 					</section>
 					
 					
@@ -124,6 +110,9 @@ const Wrapper = styled.main`
 		span {
 			font-weight: 700;
 		}
+	}
+	.size-contaier {
+		display: block;
 	}
 	@media (min-width: 992px) {
 		.product-center {

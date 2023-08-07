@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import Wrapper from '../assets/wrappers/FeaturedProducts';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -6,9 +6,11 @@ import { getAllProducts } from '../features/allProducts/allProductsSlice.js';
 import Spinner from '../components/Dashboard/Spinner.js';
 import { Product } from './';
 
+
 const FeaturedProducts = () => {
 	const { isLoading, products } = useSelector((store) => store.products);
 	const dispatch = useDispatch();
+	const [isLoadingSpinner, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		dispatch(getAllProducts());
@@ -17,7 +19,7 @@ const FeaturedProducts = () => {
 	if (isLoading) {
 		return <Spinner />;
 	}
-
+	console.log(products);
 	if (products.length === 0) {
 		return (
 			<Wrapper className='section'>
@@ -68,5 +70,7 @@ const FeaturedProducts = () => {
 		</Wrapper>
 	);
 };
+
+
 
 export default FeaturedProducts;

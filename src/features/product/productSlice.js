@@ -5,7 +5,6 @@ import {
 	createProductThunk,
 	deleteProductThunk,
 	uploadMultipleProductImagesThunk,
-	uploadSingleProductImageThunk,
 	removeImageThunk,
 	editProductThunk,
 	updateProductPublishedThunk,
@@ -17,15 +16,16 @@ const initialState = {
 	single_product: {},
 	isLoading: false,
 	name: '',
+	company: '',
+	colour: '',
+	hexColourCode: '',
 	description: '',
 	price: 0,
 	userId: null,
 	published: false,
-	image: [],
 	images: [],
 	variants: [
 		{
-			color: '',
 			size: '',
 			stock: 0,
 		},
@@ -43,11 +43,6 @@ export const createProduct = createAsyncThunk(
 export const uploadMultipleProductImages = createAsyncThunk(
 	'product/uploadMultiple',
 	uploadMultipleProductImagesThunk
-);
-
-export const uploadSingleProductImage = createAsyncThunk(
-	'product/uploadImage',
-	uploadSingleProductImageThunk
 );
 
 export const removeImage = createAsyncThunk(
@@ -87,7 +82,7 @@ const productSlice = createSlice({
 	initialState,
 	reducers: {
 		handleChange: (state, { payload: { name, value, index } }) => {
-			if (name === 'color' || name === 'size' || name === 'stock') {
+			if (name === 'size' || name === 'stock') {
 				// Handle variant fields individually
 
 				state.variants[index][name] = value;
@@ -97,7 +92,6 @@ const productSlice = createSlice({
 		},
 		addVariant: (state) => {
 			state.variants.push({
-				color: '',
 				size: '',
 				stock: 0,
 			});
@@ -108,12 +102,6 @@ const productSlice = createSlice({
 		},
 		clearValues: () => {
 			return initialState;
-		},
-		removeMainImage: (state, action) => {
-			return {
-				...state,
-				image: [],
-			};
 		},
 		removeImageFromImages: (state, action) => {
 			const publicId = action.payload;
@@ -145,33 +133,21 @@ const productSlice = createSlice({
 			.addCase(createProduct.rejected, (state, { payload }) => {
 				console.log('Rejected');
 				state.isLoading = false;
+				console.log(payload);
 				toast.error(payload);
 			})
 			.addCase(uploadMultipleProductImages.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(uploadMultipleProductImages.fulfilled, (state, { payload }) => {
+			.addCase(uploadMultipleProductImages.fulfilled, (state) => {
 				console.log('Fullfield');
 				state.isLoading = false;
 				toast.success('Images successfully uploaded');
 			})
-			.addCase(uploadMultipleProductImages.rejected, (state, { payload }) => {
+			.addCase(uploadMultipleProductImages.rejected, (state) => {
 				console.log('Rejected');
 				state.isLoading = false;
-				toast.error(payload);
-			})
-			.addCase(uploadSingleProductImage.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(uploadSingleProductImage.fulfilled, (state, action) => {
-				console.log('Fullfield');
-				state.image = [...state.image, action.payload];
-				state.isLoading = false;
-				toast.success('Image successfully uploaded');
-			})
-			.addCase(uploadSingleProductImage.rejected, (state, { payload }) => {
-				state.isLoading = false;
-				toast.error(payload);
+				toast.error('Error');
 			})
 			.addCase(removeImage.pending, (state) => {
 				state.isLoading = true;

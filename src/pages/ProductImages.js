@@ -1,36 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import deafult from '../assets/images/capacky-bezove.jpeg';
 const ProductImages = ({ images }) => {
 	console.log(images);
-	const [main, setMain] = useState('');
-
-	useEffect(() => {
-		const mainImage = images.find((image) => image.main === true);
-		if (mainImage) {
-			setMain(mainImage.url);
-		}
-	}, [images]);
-
-	// Wait for the `main` image to be set before rendering it
-	if (!main) {
-		return null; // Render loading state or placeholder
-	}
+	
 
 	return (
 		<Wrapper>
-			<img src={main} alt='' className='main' />
-
-			<div className='gallery'>
-				{images.map((image, index) => (
-					<img
-						src={image.url}
-						alt=''
-						key={index}
-						className={`${image.url === main ? 'active' : ''}`}
-						onClick={() => setMain(image.url)}
-					/>
-				))}
-			</div>
+		{images.length > 0 ? "image" : <img src={deafult} alt="default" /> }	
 		</Wrapper>
 	);
 };

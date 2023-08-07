@@ -5,7 +5,6 @@ import moment from 'moment';
 import {
 	updateProductPublished,
 	updateProductFeatured,
-	toggleProductState,
 } from '../../features/product/productSlice.js';
 
 const ProductPage = (product) => {

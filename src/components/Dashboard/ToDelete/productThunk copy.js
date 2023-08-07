@@ -39,6 +39,26 @@ export const deleteProductThunk = async (productId, thunkAPI) => {
 	}
 };
 
+export const uploadSingleProductImageThunk = async (base64Image, thunkAPI) => {
+	try {
+		const response = await customFetch.post(
+			'/products/uploadImage',
+			{
+				image: base64Image,
+			},
+			{
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				withCredentials: true,
+			}
+		);
+		return response.data;
+	} catch (error) {
+		return thunkAPI.rejectWithValue(error.response.data.msg);
+	}
+};
+
 export const uploadMultipleProductImagesThunk = async (images, thunkAPI) => {
 	try {
 		const response = await customFetch.post(
@@ -88,7 +108,6 @@ export const removeImageThunk = async (
 };
 
 export const editProductThunk = async ({ id, product }, thunkAPI) => {
-	console.log('kokot');
 	try {
 		const response = await customFetch.patch(`products/${id}`, product, {
 			headers: {
@@ -96,12 +115,8 @@ export const editProductThunk = async ({ id, product }, thunkAPI) => {
 			},
 			withCredentials: true,
 		});
-		
-		
 		// Return the response data if needed
 		thunkAPI.dispatch(clearValues());
-		console.log('in thunk');
-		console.log(response.data);
 		return response.data;
 	} catch (error) {
 		thunkAPI.dispatch(hideLoading());

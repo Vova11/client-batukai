@@ -13,7 +13,6 @@ import Spinner from './Spinner';
 import {
 	convertMapToArray,
 	convertBase64,
-	// Other functions...
 } from '../../utils/imageUtils';
 
 import {
