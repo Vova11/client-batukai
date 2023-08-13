@@ -23,6 +23,9 @@ const initialState = {
 	price: 0,
 	userId: null,
 	published: false,
+	featured: false,
+	averageRating: 0,
+	numberOfReviews: 0,
 	images: [],
 	variants: [
 		{
@@ -84,7 +87,6 @@ const productSlice = createSlice({
 		handleChange: (state, { payload: { name, value, index } }) => {
 			if (name === 'size' || name === 'stock') {
 				// Handle variant fields individually
-
 				state.variants[index][name] = value;
 			} else {
 				state[name] = value;
@@ -212,7 +214,6 @@ const productSlice = createSlice({
 			})
 			.addCase(getProduct.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				console.log(payload);
 				state.single_product = payload;
 			})
 			.addCase(getProduct.rejected, (state, { payload }) => {

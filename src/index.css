@@ -233,9 +233,9 @@ Navbar
 nav {
 	background: var(--primary-500);
 	height: 5rem;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	/* display: flex; */
+	/* justify-content: center;
+	align-items: center; */
 }
 .nav-center {
 	width: var(--view-width);
@@ -424,11 +424,10 @@ input:checked + .slider:before {
 
 .spinner {
 	position: absolute;
-    height: 100px;
-    width: 100px;
-    top: 50%;
-    left: 50%;
-    margin-left: -50px;
-    margin-top: -50px;
+	height: 100px;
+	width: 100px;
+	top: 50%;
+	left: 50%;
+	margin-left: -50px;
+	margin-top: -50px;
 }
-

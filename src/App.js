@@ -8,6 +8,7 @@ import {
 	About,
 	Products,
 	Product,
+	Cart,
 	SharedLayout,
 	ResetPassword,
 	VerifyPage,
@@ -36,6 +37,7 @@ function App() {
 					<Route index element={<Home />} />
 					<Route path='about' element={<About />} />
 					<Route path='products' element={<Products />} />
+					<Route path='/cart' element={<Cart />} />
 					<Route path='products/:productId' element={<SingleProduct />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/register' element={<Register />} />

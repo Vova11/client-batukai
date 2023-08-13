@@ -5,11 +5,14 @@ import { FaSearch } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import deafult from '../assets/images/hero-bcg-222.jpeg';
 const Product = ({ images, name, price, id }) => {
-	
 	return (
 		<Wrapper>
 			<div className='container-product'>
-				{images.length > 0 ? <img src={images[0].url} alt={name} /> : <img src={deafult} alt="default" /> }
+				{images.length > 0 ? (
+					<img src={images[0].url} alt={name} />
+				) : (
+					<img src={deafult} alt='default' />
+				)}
 				<Link to={`/products/${id}`} className='link'>
 					<FaSearch />
 				</Link>

@@ -5,12 +5,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getAllProducts } from '../features/allProducts/allProductsSlice.js';
 import Spinner from '../components/Dashboard/Spinner.js';
 import { Product } from './';
-
+import { getThreeRandomProducts } from '../utils/helpers';
 
 const FeaturedProducts = () => {
-	const { isLoading, products } = useSelector((store) => store.products);
+	const { isLoading, featured_products } = useSelector(
+		(store) => store.products
+	);
 	const dispatch = useDispatch();
-	const [isLoadingSpinner, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		dispatch(getAllProducts());
@@ -19,8 +20,8 @@ const FeaturedProducts = () => {
 	if (isLoading) {
 		return <Spinner />;
 	}
-	console.log(products);
-	if (products.length === 0) {
+
+	if (featured_products.length === 0) {
 		return (
 			<Wrapper className='section'>
 				<div className='title'>
@@ -30,24 +31,12 @@ const FeaturedProducts = () => {
 				<div className='section-center featured'>
 					<h3>no products to display</h3>
 				</div>
-			</Wrapper >
-			
-		)
+			</Wrapper>
+		);
 	}
 
-	const randomProducts = [...products]; // Create a copy of the products array
-
-	// Shuffle the array using Fisher-Yates algorithm
-	for (let i = randomProducts.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[randomProducts[i], randomProducts[j]] = [
-			randomProducts[j],
-			randomProducts[i],
-		];
-	}
-
-	// Get the first two elements from the shuffled array
-	const threeRandomProducts = randomProducts.slice(0, 3);
+	// Randomly select 3 products
+	const randomFeaturedProducts = getThreeRandomProducts(featured_products);
 
 	return (
 		<Wrapper className='section'>
@@ -56,12 +45,8 @@ const FeaturedProducts = () => {
 				<div className='underline'></div>
 			</div>
 			<div className='section-center featured'>
-				{threeRandomProducts.map((product) => {
-					return (
-						<Fragment key={product.id}>
-							<Product key={`product-${product.id}`} {...product} />
-						</Fragment>
-					);
+				{randomFeaturedProducts.map((product) => {
+					return <Product key={`product-${product.id}`} {...product} />;
 				})}
 			</div>
 			<Link to='/products' className='btn'>
@@ -70,7 +55,5 @@ const FeaturedProducts = () => {
 		</Wrapper>
 	);
 };
-
-
 
 export default FeaturedProducts;

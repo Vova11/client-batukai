@@ -1,40 +1,42 @@
-import React, { useEffect, useState  } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProduct } from '../features/product/productSlice';
 import Spinner from '../components/Dashboard/Spinner.js';
 import { formatPrice } from '../utils/helpers';
-import { PageHero, ProductImages, ProductVariants } from './';
+import { PageHero, ProductImages, ProductVariants, Stars } from './';
 
 const SingleProduct = () => {
 	const { productId } = useParams();
-	const { isLoading, single_product } = useSelector((store) => store.product);
-	console.log(single_product);
+	const { isLoading, single_product, stars, reviews } = useSelector(
+		(store) => store.product
+	);
+	const { items } = useSelector((store) => store.cart);
+
 	const dispatch = useDispatch();
 	// Loading state to track whether single_product is being fetched
 	const [loading, setLoading] = useState(true);
-	 // Check if there's at least one variant with stock > 0
-	
+	// Check if there's at least one variant with stock > 0
+	console.log(single_product);
 	useEffect(() => {
 		dispatch(getProduct(productId)).then(() => {
-		  // After the getProduct action is fulfilled, set loading to false
-		  setLoading(false);
+			// After the getProduct action is fulfilled, set loading to false
+			setLoading(false);
 		});
-	  }, [dispatch, productId]);
-	
-	  if (isLoading || loading || !single_product) {
+	}, [dispatch, productId]);
+
+	if (isLoading || loading || !single_product) {
 		// Show a loading spinner or placeholder while loading
 		return <Spinner />;
-	  }
+	}
 
 	if (!single_product) {
 		return <Spinner />; // Add another conditional rendering for loading state
 	}
 
-	const { name, price, description, id } = single_product;
-	
-	const hasStock = single_product.variants.some((variant) => variant.stock > 0);
+	const { name, price, description, id, averageRating, numberOfReviews } =
+		single_product;
 
 	return (
 		<Wrapper>
@@ -44,14 +46,12 @@ const SingleProduct = () => {
 					back to products
 				</Link>
 				<div className='product-center'>
-				
-          			<ProductImages images={single_product.images} />
-        
+					<ProductImages images={single_product.images} />
+
 					<section className='content'>
 						<h2>{name}</h2>
-
 						<h5 className='price'>{formatPrice(price)}</h5>
-						<p className='desc'>{description}</p>
+						<Stars stars={averageRating} reviews={numberOfReviews} />
 						<p className='info'>
 							<span>Available : </span>
 							stock
@@ -62,33 +62,33 @@ const SingleProduct = () => {
 						</p>
 						<p className='info'>
 							<span>Brand :</span>
-							{single_product?.company?.name}
-						</p>
-						<p className='info'>
-							<span>Colour :</span>
-							{single_product?.colour}
-						</p>
-						<p className='info size-contaier'>
-							<span>Select Size:</span>
-							<ProductVariants variants={single_product?.variants} />
+							{single_product.company?.name}
 						</p>
 						<hr />
-						{hasStock && (
-							<button className='btn'>Add to cart</button>
-						)}
+						<p className='info'>
+							<span>Colour :</span>
+							<span>
+								<ColorCircle color={single_product.hexColourCode} />
+								{single_product.colour}
+							</span>
+						</p>
+						<div className='info size-container'>
+							<span>Select Size:</span>
+							<ProductVariants product={single_product} />
+						</div>
 					</section>
-					
-					
-						
-					
 				</div>
+				<hr />
+				<p className='desc'>{description}</p>
 			</div>
 		</Wrapper>
 	);
 };
 
 export default SingleProduct;
-
+//  {
+// 		hasStock && <button className='btn'>Add to cart</button>;
+//  }
 const Wrapper = styled.main`
 	.product-center {
 		display: grid;
@@ -111,7 +111,7 @@ const Wrapper = styled.main`
 			font-weight: 700;
 		}
 	}
-	.size-contaier {
+	.size-container {
 		display: block;
 	}
 	@media (min-width: 992px) {
@@ -123,6 +123,15 @@ const Wrapper = styled.main`
 			font-size: 1.25rem;
 		}
 	}
+`;
+
+const ColorCircle = styled.div`
+	width: 20px;
+	height: 20px;
+	background-color: ${(props) => props.color};
+	border-radius: 50%;
+	display: inline-block;
+	margin-right: 10px;
 `;
 
 // import { useEffect } from 'react';

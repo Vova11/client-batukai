@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Spinner from './Spinner';
 import ProductPage from './ProductPage';
 import { getAllProducts } from '../../features/allProducts/allProductsSlice.js';
+
 import PageBtnContainer from './PageBtnContainer';
 
 const ProductsContainer = () => {
@@ -16,12 +17,14 @@ const ProductsContainer = () => {
 		search,
 		sort,
 		published,
+		featured,
 	} = useSelector((store) => store.products);
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		dispatch(getAllProducts());
-	}, [page, search, sort, published]);
+	}, []);
 
 	if (isLoading) {
 		return <Spinner />;
