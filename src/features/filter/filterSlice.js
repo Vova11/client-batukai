@@ -4,7 +4,7 @@ import {
 	hideLoading,
 	getAllProducts,
 } from '../allProducts/allProductsSlice';
-import { logDOM } from '@testing-library/react';
+import { getFilteredProductsThunk } from './filterThunk';
 
 const initialState = {
 	isLoading: false,
@@ -24,6 +24,11 @@ const initialState = {
 		shipping: false,
 	},
 };
+
+export const getFilteredProducts = createAsyncThunk(
+	'filter/getFilteredProducts',
+	getFilteredProductsThunk
+);
 
 const filterSlice = createSlice({
 	name: 'filter',
@@ -53,8 +58,6 @@ const filterSlice = createSlice({
 		},
 		updateFilters: (state, action) => {
 			console.log('updajting');
-			console.log(state.all_products.length);
-			console.log(state.filtered_products.length);
 			const { name, value } = action.payload;
 
 			// Update state.filters with the new value for the specified filter
@@ -65,63 +68,59 @@ const filterSlice = createSlice({
 			if (numericalFields.includes(name)) {
 				state.filters[name] = Number(value);
 			}
+			const { text, category, company, color, price, shipping } = state.filters;
+			const tempProducts = [...state.all_products];
+			// Apply the filter logic based on the filter name
+			let updatedFilteredProducts = tempProducts;
 
-			// Apply the filterProducts logic here
-			let updatedFilteredProducts = state.all_products.filter((product) => {
-				// Check if the product name contains the text filter value
-				const nameMatch = product.name
-					.toLowerCase()
-					.includes(state.filters.text.toLowerCase());
+			if (name === 'price') {
+				updatedFilteredProducts = tempProducts.filter(
+					(product) => product.price <= price
+				);
+			}
 
-				// Check if the product belongs to the selected company
-				const companyMatch =
-					state.filters.company === 'all' ||
-					product.company === state.filters.company;
+			if (name === 'text') {
+				updatedFilteredProducts = tempProducts.filter((product) =>
+					product.name.toLowerCase().includes(text.toLowerCase())
+				);
+			}
 
-				// Check if the product's price is within the specified range
-				const priceMatch = product.price <= state.filters.price;
+			if (name === 'company') {
+				updatedFilteredProducts = updatedFilteredProducts.filter(
+					(product) => company === 'all' || product.company === company
+				);
+			}
 
-				return nameMatch && companyMatch && priceMatch;
-			});
-
-			// Update the filtered products with the updatedFilteredProducts
 			state.filtered_products = updatedFilteredProducts;
 		},
 
 		clearFilters: (state) => initialState,
 	},
 	extraReducers: (builder) => {
-		builder
-			.addCase(getAllProducts.fulfilled, (state, action) => {
-				state.isLoading = false;
+		builder.addCase(getFilteredProducts.fulfilled, (state, action) => {
+			state.isLoading = false;
 
-				const onlyPublishedProducts = action.payload.products.filter(
-					(product) => product.published === true
-				);
-				// Compute unique companies, colors, and categories
-				const uniqueCompanies = [
-					...new Set(onlyPublishedProducts.map((product) => product.company)),
-				];
+			const onlyPublishedProducts = action.payload.products.filter(
+				(product) => product.published === true
+			);
+			// Compute unique companies, colors, and categories
+			const uniqueCompanies = [
+				...new Set(onlyPublishedProducts.map((product) => product.company)),
+			];
 
-				state.all_products = [...onlyPublishedProducts];
-				state.filtered_products = [...onlyPublishedProducts];
-				state.uniqueCompanies = ['all', ...uniqueCompanies];
-				let maxPrice = onlyPublishedProducts.map((p) => p.price);
-				maxPrice = Math.max(...maxPrice);
-				const updatedFilters = {
-					...state.filters,
-					max_price: maxPrice,
-					price: maxPrice,
-				};
-				// Update state.filters with the new filters object
-				state.filters = updatedFilters;
-			})
-			.addCase(getAllProducts.rejected, (state, action) => {
-				state.isLoading = false;
-			})
-			.addCase(getAllProducts.pending, (state, action) => {
-				state.isLoading = true;
-			});
+			state.all_products = [...onlyPublishedProducts];
+			state.filtered_products = [...onlyPublishedProducts];
+			state.uniqueCompanies = ['all', ...uniqueCompanies];
+			let maxPrice = onlyPublishedProducts.map((p) => p.price);
+			maxPrice = Math.max(...maxPrice);
+			const updatedFilters = {
+				...state.filters,
+				max_price: maxPrice,
+				price: maxPrice,
+			};
+			// Update state.filters with the new filters object
+			state.filters = updatedFilters;
+		});
 	},
 });
 
