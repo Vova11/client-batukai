@@ -3,18 +3,19 @@ import { useSelector, dispatch, useDispatch } from 'react-redux';
 import { getAllProducts } from '../features/allProducts/allProductsSlice';
 import Spinner from '../components/Dashboard/Spinner';
 import { Product, GridView, ListView } from './';
-import { getFilteredProducts } from '../features/filter/filterSlice';
+
 const ProductsList = () => {
 	const {
 		isLoading,
 		filtered_products: products,
 		grid_view,
+		filters: { price },
 	} = useSelector((store) => store.filter);
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(getFilteredProducts());
+		dispatch(getAllProducts());
 	}, []);
 
 	if (isLoading) {

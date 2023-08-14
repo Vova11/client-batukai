@@ -4,7 +4,6 @@ import {
 	hideLoading,
 	getAllProducts,
 } from '../allProducts/allProductsSlice';
-import { getFilteredProductsThunk } from './filterThunk';
 
 const initialState = {
 	isLoading: false,
@@ -24,11 +23,6 @@ const initialState = {
 		shipping: false,
 	},
 };
-
-export const getFilteredProducts = createAsyncThunk(
-	'filter/getFilteredProducts',
-	getFilteredProductsThunk
-);
 
 const filterSlice = createSlice({
 	name: 'filter',
@@ -73,19 +67,19 @@ const filterSlice = createSlice({
 			// Apply the filter logic based on the filter name
 			let updatedFilteredProducts = tempProducts;
 
-			if (name === 'price') {
+			if (price) {
 				updatedFilteredProducts = tempProducts.filter(
 					(product) => product.price <= price
 				);
 			}
 
-			if (name === 'text') {
+			if (text) {
 				updatedFilteredProducts = tempProducts.filter((product) =>
-					product.name.toLowerCase().includes(text.toLowerCase())
+					product.name.toLowerCase().startsWith(text.toLowerCase())
 				);
 			}
 
-			if (name === 'company') {
+			if (company) {
 				updatedFilteredProducts = updatedFilteredProducts.filter(
 					(product) => company === 'all' || product.company === company
 				);
@@ -93,34 +87,50 @@ const filterSlice = createSlice({
 
 			state.filtered_products = updatedFilteredProducts;
 		},
-
-		clearFilters: (state) => initialState,
-	},
-	extraReducers: (builder) => {
-		builder.addCase(getFilteredProducts.fulfilled, (state, action) => {
-			state.isLoading = false;
-
-			const onlyPublishedProducts = action.payload.products.filter(
-				(product) => product.published === true
-			);
-			// Compute unique companies, colors, and categories
-			const uniqueCompanies = [
-				...new Set(onlyPublishedProducts.map((product) => product.company)),
-			];
-
-			state.all_products = [...onlyPublishedProducts];
-			state.filtered_products = [...onlyPublishedProducts];
-			state.uniqueCompanies = ['all', ...uniqueCompanies];
-			let maxPrice = onlyPublishedProducts.map((p) => p.price);
-			maxPrice = Math.max(...maxPrice);
+		clearFilters: (state) => {
+			state.filtered_products = state.all_products;
 			const updatedFilters = {
 				...state.filters,
-				max_price: maxPrice,
-				price: maxPrice,
+				company: 'All',
+				category: 'All',
+				price: state.filters.max_price,
 			};
 			// Update state.filters with the new filters object
 			state.filters = updatedFilters;
-		});
+		},
+	},
+	extraReducers: (builder) => {
+		builder
+			.addCase(getAllProducts.fulfilled, (state, action) => {
+				state.isLoading = false;
+
+				const onlyPublishedProducts = action.payload.products.filter(
+					(product) => product.published === true
+				);
+				// Compute unique companies, colors, and categories
+				const uniqueCompanies = [
+					...new Set(onlyPublishedProducts.map((product) => product.company)),
+				];
+
+				state.all_products = [...onlyPublishedProducts];
+				state.filtered_products = [...onlyPublishedProducts];
+				state.uniqueCompanies = ['all', ...uniqueCompanies];
+				let maxPrice = onlyPublishedProducts.map((p) => p.price);
+				maxPrice = Math.max(...maxPrice);
+				const updatedFilters = {
+					...state.filters,
+					max_price: maxPrice,
+					price: maxPrice,
+				};
+				// Update state.filters with the new filters object
+				state.filters = updatedFilters;
+			})
+			.addCase(getAllProducts.rejected, (state, action) => {
+				state.isLoading = false;
+			})
+			.addCase(getAllProducts.pending, (state, action) => {
+				state.isLoading = true;
+			});
 	},
 });
 
