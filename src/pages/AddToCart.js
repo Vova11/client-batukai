@@ -1,11 +1,16 @@
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { addToCart } from '../features/cart/cartSlice';
+import { addToCart, countCartTotal } from '../features/cart/cartSlice';
 import AmountButtons from './AmountButtons';
 import { Link } from 'react-router-dom';
 const AddToCart = ({ item, quantity, setQuantity, size }) => {
 	const dispatch = useDispatch();
-	const { items } = useSelector((store) => store.cart);
+	const { cart } = useSelector((store) => store.cart);
+
+	useEffect(() => {
+		localStorage.setItem('cart', JSON.stringify(cart));
+	}, [cart]);
 
 	const handleIncrement = () => {
 		if (quantity < item.stock) {
@@ -22,25 +27,15 @@ const AddToCart = ({ item, quantity, setQuantity, size }) => {
 	};
 
 	const handleAddToCart = () => {
-		// Check if the item with the same productId and size already exists in the cart
+		// 	// Check if the item with the same productId and size already exists in the cart
 		if (!size) {
 			toast.warning('Please select the size');
 			return;
 		}
 
-		const itemExists = items.some(
-			(cartItem) =>
-				cartItem.productId === item.productId && cartItem.size === item.size
-		);
-
-		if (itemExists) {
-			// Do nothing if the item already exists in the cart
-			toast.warning('Item is already in cart');
-			return;
-		}
-
 		// Add the item to the cart
 		dispatch(addToCart(item));
+		dispatch(countCartTotal());
 		toast.success('Item added to cart');
 		setQuantity(1); // Reset quantity after adding to cart
 	};

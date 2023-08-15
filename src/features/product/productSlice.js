@@ -229,7 +229,6 @@ export const {
 	removeVariant,
 	addImages,
 	removeImageFromImages,
-	removeMainImage,
 	setUserId,
 	sedEditProduct,
 } = productSlice.actions;

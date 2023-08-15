@@ -50,6 +50,9 @@ const ProductVariants = ({ product }) => {
 				item={{
 					productId: product.id,
 					colour: product.colour,
+					name: product.name,
+					price: product.price,
+					image: product.images[0].url,
 					size: selectedSize,
 					quantity: quantity, // Pass the selected quantity to AddToCart
 					stock: selectedVariant.stock,

@@ -1,12 +1,19 @@
+import React, { useEffect } from 'react';
 import { FaShoppingCart, FaUserMinus, FaUserPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { addToCart, countCartTotal } from '../features/cart/cartSlice';
+import { useSelector, useDispatch } from 'react-redux';
 // import { useProductsContext } from '../context/products_context';
 // import { useCartContext } from '../context/cart_context';
 // import { useUserContext } from '../context/user_context';
 const CartButtons = () => {
+	const { total_items, cart } = useSelector((store) => store.cart);
 	// const { closeSidebar } = useProductsContext();
-
+	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(countCartTotal());
+	}, [cart]);
 	// const { loginWithRedirect, myUser, logout } = useUserContext();
 	return (
 		<Wrapper className='cart-btn-wrapper'>
@@ -14,7 +21,7 @@ const CartButtons = () => {
 				Cart
 				<span className='cart-container'>
 					<FaShoppingCart />
-					<span className='cart-value'>12</span>
+					<span className='cart-value'>{total_items}</span>
 				</span>
 			</Link>
 			<Link to='/dashboard' className='cart-btn'>

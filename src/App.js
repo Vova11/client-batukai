@@ -15,6 +15,7 @@ import {
 	ForgotPassword,
 	ErrorPage,
 	SingleProduct,
+	Checkout,
 } from './pages';
 import {
 	Dashboard,
@@ -38,6 +39,7 @@ function App() {
 					<Route path='about' element={<About />} />
 					<Route path='products' element={<Products />} />
 					<Route path='/cart' element={<Cart />} />
+					<Route path='/checkout' element={<Checkout />} />
 					<Route path='products/:productId' element={<SingleProduct />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/register' element={<Register />} />

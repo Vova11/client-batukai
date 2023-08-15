@@ -8,7 +8,7 @@ const Products = () => {
 	return (
 		<main>
 			<PageHero product />
-			<Container>
+			<Container className='section section-center'>
 				<Row>
 					<Col xs='12' lg='3'>
 						<Filters />
