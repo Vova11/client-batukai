@@ -14,8 +14,8 @@ const initialState = {
 	uniqueCompanies: [],
 	filters: {
 		text: '',
-		company: 'All',
-		category: 'All',
+		company: 'all',
+		category: 'all',
 		colour: '',
 		min_price: 0,
 		max_price: 0,
@@ -53,6 +53,7 @@ const filterSlice = createSlice({
 		updateFilters: (state, action) => {
 			console.log('updajting');
 			const { name, value } = action.payload;
+			console.log('tu si');
 
 			// Update state.filters with the new value for the specified filter
 			state.filters[name] = value;
@@ -63,36 +64,32 @@ const filterSlice = createSlice({
 				state.filters[name] = Number(value);
 			}
 			const { text, category, company, color, price, shipping } = state.filters;
-			const tempProducts = [...state.all_products];
+			let tempProducts = [...state.all_products];
 			// Apply the filter logic based on the filter name
-			let updatedFilteredProducts = tempProducts;
 
-			if (price) {
-				updatedFilteredProducts = tempProducts.filter(
-					(product) => product.price <= price
-				);
-			}
-
+			// filter by text
 			if (text) {
-				updatedFilteredProducts = tempProducts.filter((product) =>
+				tempProducts = [...tempProducts].filter((product) =>
 					product.name.toLowerCase().startsWith(text.toLowerCase())
 				);
 			}
 
-			if (company) {
-				updatedFilteredProducts = updatedFilteredProducts.filter(
+			if (company !== 'all') {
+				tempProducts = [...tempProducts].filter(
 					(product) => company === 'all' || product.company === company
 				);
 			}
 
-			state.filtered_products = updatedFilteredProducts;
+			tempProducts = tempProducts.filter((product) => product.price <= price);
+
+			state.filtered_products = tempProducts;
 		},
 		clearFilters: (state) => {
 			state.filtered_products = state.all_products;
 			const updatedFilters = {
 				...state.filters,
-				company: 'All',
-				category: 'All',
+				company: 'all',
+				category: 'all',
 				price: state.filters.max_price,
 			};
 			// Update state.filters with the new filters object
