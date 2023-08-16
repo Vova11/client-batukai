@@ -10,6 +10,10 @@ const initialState = {
 	filtered_products: [],
 	all_products: [],
 	grid_view: true,
+	totalProducts: 0,
+	numOfPages: 1,
+	currentPage: 1,
+	page: 1,
 	sort: 'price-lowest',
 	uniqueCompanies: [],
 	filters: {
@@ -100,10 +104,15 @@ const filterSlice = createSlice({
 		builder
 			.addCase(getAllProducts.fulfilled, (state, action) => {
 				state.isLoading = false;
-
+				console.log('tu si ko');
+				console.log(action.payload);
+				// pagination
+				state.totalProducts = action.payload.totalProducts;
+				state.numOfPages = action.payload.numOfPages;
 				const onlyPublishedProducts = action.payload.products.filter(
 					(product) => product.published === true
 				);
+
 				// Compute unique companies, colors, and categories
 				const uniqueCompanies = [
 					...new Set(onlyPublishedProducts.map((product) => product.company)),

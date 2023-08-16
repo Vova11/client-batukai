@@ -3,13 +3,14 @@ import { useSelector, dispatch, useDispatch } from 'react-redux';
 import { getAllProducts } from '../features/allProducts/allProductsSlice';
 import Spinner from '../components/Dashboard/Spinner';
 import { Product, GridView, ListView } from './';
+import { PageBtnContainer } from '../components/Dashboard';
 
 const ProductsList = () => {
 	const {
 		isLoading,
 		filtered_products: products,
 		grid_view,
-		filters: { price },
+		numOfPages,
 	} = useSelector((store) => store.filter);
 
 	const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const ProductsList = () => {
 	if (isLoading) {
 		return <Spinner />;
 	}
-	console.log(products);
+
 	if (products.length === 0) {
 		return (
 			<div>
@@ -31,10 +32,16 @@ const ProductsList = () => {
 			</div>
 		);
 	}
-	if (grid_view === false) {
-		return <ListView products={products} />;
-	}
-	return <GridView products={products} />;
+	return (
+		<>
+			{grid_view === false ? (
+				<ListView products={products} />
+			) : (
+				<GridView products={products} />
+			)}
+			{numOfPages > 1 && <PageBtnContainer />}
+		</>
+	);
 };
 
 export default ProductsList;
