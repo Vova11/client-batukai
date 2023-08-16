@@ -10,6 +10,7 @@ import { useState, useMemo } from 'react';
 import {
 	handleChange,
 	clearFilters,
+	getAllProducts,
 } from '../../features/allProducts/allProductsSlice';
 
 const SearchContainer = () => {
@@ -31,6 +32,7 @@ const SearchContainer = () => {
 		// Also update the featured field with the same value
 		// if (isLoading) return;
 		dispatch(handleChange({ name, value }));
+		dispatch(getAllProducts());
 	};
 
 	const handleSubmit = (e) => {
