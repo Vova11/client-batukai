@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form';
-import { Button } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row';
 import FormRow from '../../pages/FormRow';
 import Col from 'react-bootstrap/Col';
@@ -58,10 +57,10 @@ const AddProductPage = () => {
 			}
 
 			if (!product.name) {
-				return toast.error('Name can`t be empty')
+				return toast.error('Name can`t be empty');
 			}
 			dispatch(setUserId(user.id));
-			
+
 			dispatch(createProduct(updatedProduct));
 		} catch (error) {
 			console.log(error);
@@ -185,7 +184,7 @@ const AddProductPage = () => {
 								value={variant.size}
 								onChange={(e) => handleInputChange(e, index)}
 							/>
-							
+
 							<FormRow
 								col='6'
 								type='number'

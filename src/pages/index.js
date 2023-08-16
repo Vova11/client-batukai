@@ -34,7 +34,8 @@ import CartItem from './CartItem';
 import CartTotals from './CartTotals';
 import Checkout from './Checkout';
 import OrderForm from './OrderForm';
-
+import ReviewOrder from './ReviewOrder';
+import Payment from './Payment';
 export {
 	Login,
 	ProtectedRoute,
@@ -72,4 +73,6 @@ export {
 	CartTotals,
 	Checkout,
 	OrderForm,
+	ReviewOrder,
+	Payment,
 };

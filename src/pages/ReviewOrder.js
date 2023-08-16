@@ -1,46 +1,73 @@
 import React, { Fragment } from 'react';
-import { useSelector } from 'react-redux';
-import styled from 'styled-components';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { PageHero, OrderForm } from './';
-import { Link } from 'react-router-dom';
+import { Container, Row, Col } from 'react-bootstrap';
+import PageHero from './PageHero';
+import { useNavigate } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import { formatPrice } from '../utils/helpers';
-const Checkout = () => {
+import { useSelector } from 'react-redux';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+
+const ReviewOrder = () => {
+	const navigate = useNavigate();
+	// Read data from local storage
+	const orderFormData = JSON.parse(localStorage.getItem('orderForm'));
+	const cartData = JSON.parse(localStorage.getItem('cart'));
+
 	const { cart, total_items, total_amount, shipping_fee } = useSelector(
 		(store) => store.cart
 	);
+
+	const handleClick = () => {
+		// 👇️ replace set to true
+		navigate('/about', { replace: true });
+	};
 	return (
 		<Wrapper>
-			<PageHero title='Checkout' />
+			<PageHero title='Review order' />
 
 			<Container className='section section-center'>
-				<h2>Place your order</h2>
-				<hr />
 				<Row>
 					<Col xs='12' lg='6'>
-						<OrderForm />
+						<h2>Shipping details:</h2>
+						<p>First Name: {orderFormData.firstName}</p>
+						<p>Last Name: {orderFormData.lastName}</p>
+						<p>Email: {orderFormData.email}</p>
+						<p>City: {orderFormData.city}</p>
+						<p>Address: {orderFormData.address}</p>
+						<p>House number: {orderFormData.houseNumber}</p>
+						<p>Zip Code: {orderFormData.zipCode}</p>
 					</Col>
 					<Col xs lg='6'>
 						<Wrapper>
-							<h4>Your order:</h4>
+							<h2>Your order:</h2>
 							<Card>
 								<Card.Body>
 									<Card.Text>
-										{cart.map((item) => {
-											return (
-												<Fragment>
-													<ul className='product-checkout-list'>
-														<li>Name of product: {item.name}</li>
-														<li>Size: {item.size}</li>
-														<li>Quantity: {item.amount}</li>
-													</ul>
-													<hr />
-												</Fragment>
-											);
-										})}
+										{cartData.map((item) => (
+											<div key={item.id}>
+												<p class='d-flex justify-content-between pb-2'>
+													<span>
+														<strong>Product name</strong>
+													</span>
+													<span>{item.name}</span>
+												</p>
+												<p class='d-flex justify-content-between pb-2'>
+													<span>
+														<strong>Quantity</strong>
+													</span>
+													<span>{item.amount}</span>
+												</p>
+												<p class='d-flex justify-content-between pb-2'>
+													<span>
+														<strong>Price</strong>
+													</span>
+													<span>{formatPrice(item.price)}</span>
+												</p>
+												<hr />
+											</div>
+										))}
+
 										<p class='d-flex justify-content-between pb-2'>
 											<span>Subtotal</span>
 											<span class='font-medium'>
@@ -54,7 +81,6 @@ const Checkout = () => {
 												{formatPrice(shipping_fee)}
 											</span>
 										</p>
-										<hr />
 										<p class='d-flex justify-content-between pb-2'>
 											<span class='font-bold'>Order Total</span>
 											<span class='font-bold'>
@@ -67,10 +93,24 @@ const Checkout = () => {
 						</Wrapper>
 					</Col>
 				</Row>
+				<Row>
+					<Col xs='12'>
+						<div className='link-container'>
+							<Link to='/checkout' className='link-btn'>
+								Go back
+							</Link>
+							<Link to='/pay' className='link-btn'>
+								Pay
+							</Link>
+						</div>
+					</Col>
+				</Row>
 			</Container>
 		</Wrapper>
 	);
 };
+
+export default ReviewOrder;
 
 const Wrapper = styled.section`
 	.text-xs {
@@ -93,7 +133,6 @@ const Wrapper = styled.section`
 	.product-checkout-list {
 		padding-left: 0;
 	}
-
 	.link-container {
 		display: flex;
 		justify-content: space-between;
@@ -112,5 +151,3 @@ const Wrapper = styled.section`
 		cursor: pointer;
 	}
 `;
-
-export default Checkout;

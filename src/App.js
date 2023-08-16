@@ -16,6 +16,8 @@ import {
 	ErrorPage,
 	SingleProduct,
 	Checkout,
+	ReviewOrder,
+	Payment,
 } from './pages';
 import {
 	Dashboard,
@@ -40,6 +42,9 @@ function App() {
 					<Route path='products' element={<Products />} />
 					<Route path='/cart' element={<Cart />} />
 					<Route path='/checkout' element={<Checkout />} />
+					<Route path='/review' element={<ReviewOrder />} />
+					<Route path='/pay' element={<Payment />} />
+
 					<Route path='products/:productId' element={<SingleProduct />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/register' element={<Register />} />
