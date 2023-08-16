@@ -47,7 +47,6 @@ const allProductsSlice = createSlice({
 			}
 		},
 		handleChange: (state, { payload: { name, value } }) => {
-			console.log('handling change');
 			state.page = 1;
 			state[name] = value;
 		},
@@ -55,7 +54,6 @@ const allProductsSlice = createSlice({
 			return { ...state, ...initialFiltersState };
 		},
 		changePage: (state, { payload }) => {
-			state.page = 1;
 			state.page = payload;
 		},
 		clearAllProductsState: (state) => initialState,

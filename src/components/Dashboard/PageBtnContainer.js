@@ -1,7 +1,10 @@
 import React from 'react';
 import Pagination from 'react-bootstrap/Pagination';
 import { useSelector, useDispatch } from 'react-redux';
-import { changePage } from '../../features/allProducts/allProductsSlice';
+import {
+	changePage,
+	getAllProducts,
+} from '../../features/allProducts/allProductsSlice';
 import styled from 'styled-components';
 const PageBtnContainer = () => {
 	const { numOfPages, page } = useSelector((state) => state.products);
@@ -9,6 +12,7 @@ const PageBtnContainer = () => {
 
 	const onPageChange = (pageNumber) => {
 		dispatch(changePage(pageNumber));
+		dispatch(getAllProducts());
 	};
 
 	const renderPaginationItems = () => {
