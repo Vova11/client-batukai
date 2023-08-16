@@ -7,12 +7,14 @@ import {
 	setListView,
 	updateSort,
 } from '../features/filter/filterSlice';
-
+import { handleChange } from '../features/allProducts/allProductsSlice';
+import { getFilterProducts } from '../features/filter/filterSlice';
 const Sort = () => {
 	const {
 		filtered_products: products,
 		grid_view,
 		sort,
+		filtered_products,
 	} = useSelector((store) => store.filter);
 	const dispatch = useDispatch();
 
@@ -20,6 +22,8 @@ const Sort = () => {
 		const selectedSort = event.target.value;
 		console.log(selectedSort);
 		dispatch(updateSort(selectedSort)); // Dispatch the updateSort action with the selected value
+		dispatch(handleChange({ name: 'sort', value: selectedSort })); // Update sort in the state
+		dispatch(getFilterProducts({ ...filtered_products, sort: selectedSort })); // Fetch products with updated sorting
 	};
 
 	return (
@@ -49,10 +53,12 @@ const Sort = () => {
 					onChange={handleSortChange} // Call the handleSortChange function on change
 					className='sort-input'
 				>
+					<option value='oldest'>oldest</option>
+					<option value='latest'>latest</option>
 					<option value='price-lowest'>price (lowest)</option>
 					<option value='price-highest'>price (highest)</option>
-					<option value='name-a'>name (a - z)</option>
-					<option value='name-z'>name (z - a)</option>
+					<option value='a-z'>name (a - z)</option>
+					<option value='z-a'>name (z - a)</option>
 				</select>
 			</form>
 		</Wrapper>

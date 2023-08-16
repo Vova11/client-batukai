@@ -9,7 +9,14 @@ const initialFiltersState = {
 	published: 'all',
 	featured: 'all',
 	sort: 'latest',
-	sortOptions: ['latest', 'oldest', 'a-z', 'z-a'],
+	sortOptions: [
+		'latest',
+		'oldest',
+		'a-z',
+		'z-a',
+		'price-lowest',
+		'price-highest',
+	],
 };
 
 const initialState = {

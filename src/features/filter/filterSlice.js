@@ -28,6 +28,20 @@ const initialState = {
 	},
 };
 
+export const getFilterProducts = createAsyncThunk(
+	'filter/getFilterProducts',
+	async ({ filters, sort }, thunkAPI) => {
+		try {
+			const productsResponse = await thunkAPI.dispatch(
+				getAllProducts({ filters, sort })
+			);
+			return productsResponse;
+		} catch (error) {
+			throw error;
+		}
+	}
+);
+
 const filterSlice = createSlice({
 	name: 'filter',
 	initialState,
