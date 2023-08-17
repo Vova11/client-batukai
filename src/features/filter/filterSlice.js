@@ -15,7 +15,7 @@ const initialState = {
 	currentPage: 1,
 	page: 1,
 	sort: 'price-lowest',
-	uniqueCompanies: [],
+	companies: [],
 	filters: {
 		text: '',
 		company: 'all',
@@ -30,11 +30,9 @@ const initialState = {
 
 export const getFilterProducts = createAsyncThunk(
 	'filter/getFilterProducts',
-	async ({ filters, sort }, thunkAPI) => {
+	async (filters, thunkAPI) => {
 		try {
-			const productsResponse = await thunkAPI.dispatch(
-				getAllProducts({ filters, sort })
-			);
+			const productsResponse = await thunkAPI.dispatch(getAllProducts(filters));
 			return productsResponse;
 		} catch (error) {
 			throw error;
@@ -56,22 +54,21 @@ const filterSlice = createSlice({
 			state.sort = action.payload;
 			// Sort the products based on the selected sort value
 			let tempProducts = [...state.filtered_products];
-			if (action.payload === 'price-lowest') {
-				tempProducts.sort((a, b) => a.price - b.price);
-			} else if (action.payload === 'price-highest') {
-				tempProducts.sort((a, b) => b.price - a.price);
-			} else if (action.payload === 'name-a') {
-				tempProducts.sort((a, b) => a.name.localeCompare(b.name));
-			} else if (action.payload === 'name-z') {
-				tempProducts.sort((a, b) => b.name.localeCompare(a.name));
-			}
+			// if (action.payload === 'price-lowest') {
+			// 	tempProducts.sort((a, b) => a.price - b.price);
+			// } else if (action.payload === 'price-highest') {
+			// 	tempProducts.sort((a, b) => b.price - a.price);
+			// } else if (action.payload === 'name-a') {
+			// 	tempProducts.sort((a, b) => a.name.localeCompare(b.name));
+			// } else if (action.payload === 'name-z') {
+			// 	tempProducts.sort((a, b) => b.name.localeCompare(a.name));
+			// }
 			// Update filtered_products with the sorted array
 			state.filtered_products = tempProducts;
 		},
 		updateFilters: (state, action) => {
-			console.log('updajting');
 			const { name, value } = action.payload;
-			console.log('tu si');
+			console.log('updajting');
 
 			// Update state.filters with the new value for the specified filter
 			state.filters[name] = value;
@@ -118,7 +115,7 @@ const filterSlice = createSlice({
 		builder
 			.addCase(getAllProducts.fulfilled, (state, action) => {
 				state.isLoading = false;
-				console.log('tu si ko');
+				console.log('Get All Products from FILTER');
 				console.log(action.payload);
 				// pagination
 				state.totalProducts = action.payload.totalProducts;
@@ -127,14 +124,12 @@ const filterSlice = createSlice({
 					(product) => product.published === true
 				);
 
-				// Compute unique companies, colors, and categories
-				const uniqueCompanies = [
-					...new Set(onlyPublishedProducts.map((product) => product.company)),
-				];
-
 				state.all_products = [...onlyPublishedProducts];
 				state.filtered_products = [...onlyPublishedProducts];
-				state.uniqueCompanies = ['all', ...uniqueCompanies];
+				state.companies = [
+					'all',
+					...action.payload.companies.map((company) => company.name),
+				];
 				let maxPrice = onlyPublishedProducts.map((p) => p.price);
 				maxPrice = Math.max(...maxPrice);
 				const updatedFilters = {

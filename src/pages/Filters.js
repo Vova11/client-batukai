@@ -5,24 +5,29 @@ import {
 	updateFilters,
 	updateMinPrice,
 	clearFilters,
+	getFilterProducts,
 } from '../features/filter/filterSlice';
 import { getUniqueValues, formatPrice } from '../utils/helpers';
 import { FaCheck } from 'react-icons/fa';
+import { handleChange } from '../features/allProducts/allProductsSlice';
 
 const Filters = () => {
 	const [localSearch, setLocalSearch] = useState('');
 
 	const {
+		filtered_products,
 		filters: { text, category, company, min_price, max_price, price },
-		uniqueCompanies,
+		companies,
 	} = useSelector((store) => store.filter);
 	const dispatch = useDispatch();
 
-	const handleChange = (event) => {
+	const handleInputChange = (event) => {
 		const name = event.target.name;
 		const value = event.target.value;
 
 		dispatch(updateFilters({ name, value }));
+		dispatch(handleChange({ name, value })); // Update sort in the state
+		dispatch(getFilterProducts({ ...filtered_products, company: value }));
 	};
 
 	return (
@@ -36,7 +41,7 @@ const Filters = () => {
 							name='text'
 							value={text}
 							placeholder='search'
-							onChange={handleChange}
+							onChange={handleInputChange}
 							className='search-input'
 						/>
 					</div>
@@ -47,10 +52,10 @@ const Filters = () => {
 						<select
 							name='company'
 							value={company}
-							onChange={handleChange}
+							onChange={handleInputChange}
 							className='company'
 						>
-							{uniqueCompanies.map((c, index) => {
+							{companies.map((c, index) => {
 								return (
 									<option key={index} value={c}>
 										{c}

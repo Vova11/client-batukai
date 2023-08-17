@@ -4,10 +4,11 @@ import { toast } from 'react-toastify';
 import { addToCart, countCartTotal } from '../features/cart/cartSlice';
 import AmountButtons from './AmountButtons';
 import { Link } from 'react-router-dom';
-const AddToCart = ({ item, quantity, setQuantity, size }) => {
+
+const AddToCart = ({ item, quantity, setQuantity, size, hasStock }) => {
 	const dispatch = useDispatch();
 	const { cart } = useSelector((store) => store.cart);
-
+	console.log('Ma stock? : ', hasStock);
 	useEffect(() => {
 		localStorage.setItem('cart', JSON.stringify(cart));
 	}, [cart]);
@@ -42,25 +43,29 @@ const AddToCart = ({ item, quantity, setQuantity, size }) => {
 
 	return (
 		<div>
-			<div>
-				<div className='btn-container'>
-					<AmountButtons
-						increase={handleIncrement}
-						decrease={handleDecrement}
-						amount={quantity}
-					/>
-				</div>
+			{hasStock === true ? (
+				<>
+					<div className='btn-container'>
+						<AmountButtons
+							increase={handleIncrement}
+							decrease={handleDecrement}
+							amount={quantity}
+						/>
+					</div>
 
-				<br />
+					<br />
 
-				<button className='btn margin-right-1' onClick={handleAddToCart}>
-					Add to Cart
-				</button>
+					<button className='btn margin-right-1' onClick={handleAddToCart}>
+						Add to Cart
+					</button>
 
-				<Link to='/cart' className='btn'>
-					Go to cart
-				</Link>
-			</div>
+					<Link to='/cart' className='btn'>
+						Go to cart
+					</Link>
+				</>
+			) : (
+				<p>Product is out of stock</p>
+			)}
 		</div>
 	);
 };

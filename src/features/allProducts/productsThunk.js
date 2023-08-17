@@ -1,10 +1,10 @@
 import customFetch from '../../utils/axios';
 
 export const getAllProductsThunk = async (_, thunkAPI) => {
-	const { page, search, published, featured, sort } =
+	const { page, search, published, featured, sort, company } =
 		thunkAPI.getState().products;
 
-	let url = `/products?published=${published}&featured=${featured}&sort=${sort}&page=${page}`;
+	let url = `/products?published=${published}&company=${company}&featured=${featured}&sort=${sort}&page=${page}`;
 	if (search) {
 		url = url + `&search=${search}`;
 	}

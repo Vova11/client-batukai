@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import AddToCart from './AddToCart.js';
 import { useSelector } from 'react-redux';
-const ProductVariants = ({ product }) => {
+
+const ProductVariants = ({ product, hasStock }) => {
 	const [selectedSize, setSelectedSize] = useState('');
 	const [selectedVariant, setSelectedVariant] = useState({
 		size: '',
@@ -60,6 +61,7 @@ const ProductVariants = ({ product }) => {
 				size={selectedVariant.size}
 				quantity={quantity} // Pass the quantity to AddToCart for incrementing/decrementing
 				setQuantity={setQuantity} // Pass the setQuantity function for updating the quantity
+				hasStock={hasStock}
 			/>
 		</>
 	);

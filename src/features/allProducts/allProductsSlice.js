@@ -9,6 +9,7 @@ const initialFiltersState = {
 	published: 'all',
 	featured: 'all',
 	sort: 'latest',
+	company: 'all',
 	sortOptions: [
 		'latest',
 		'oldest',
