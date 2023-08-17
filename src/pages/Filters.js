@@ -9,7 +9,11 @@ import {
 } from '../features/filter/filterSlice';
 import { getUniqueValues, formatPrice } from '../utils/helpers';
 import { FaCheck } from 'react-icons/fa';
-import { handleChange } from '../features/allProducts/allProductsSlice';
+import {
+	handleChange,
+	clearAllProductsState,
+	getAllProducts,
+} from '../features/allProducts/allProductsSlice';
 
 const Filters = () => {
 	const [localSearch, setLocalSearch] = useState('');
@@ -28,6 +32,11 @@ const Filters = () => {
 		dispatch(updateFilters({ name, value }));
 		dispatch(handleChange({ name, value })); // Update sort in the state
 		dispatch(getFilterProducts({ ...filtered_products, company: value }));
+	};
+	const handleClearingFilters = () => {
+		dispatch(clearAllProductsState());
+		dispatch(clearFilters());
+		dispatch(getAllProducts());
 	};
 
 	return (
@@ -83,7 +92,7 @@ const Filters = () => {
 				<button
 					type='button'
 					className='clear-btn'
-					onClick={() => dispatch(clearFilters())}
+					onClick={handleClearingFilters}
 				>
 					clear filters
 				</button>
