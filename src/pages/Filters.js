@@ -34,8 +34,8 @@ const Filters = () => {
 		dispatch(getFilterProducts({ ...filtered_products, company: value }));
 	};
 	const handleClearingFilters = () => {
-		dispatch(clearAllProductsState());
-		dispatch(clearFilters());
+		// dispatch(clearAllProductsState());
+		// dispatch(clearFilters());
 		dispatch(getAllProducts());
 	};
 

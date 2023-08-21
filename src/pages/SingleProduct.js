@@ -51,7 +51,11 @@ const SingleProduct = () => {
 					back to products
 				</Link>
 				<div className='product-center'>
-					<ProductImages images={single_product.images} />
+					{single_product.images.length > 0 ? (
+						<ProductImages images={single_product.images} />
+					) : (
+						'null'
+					)}
 
 					<section className='content'>
 						<h2>{name}</h2>
