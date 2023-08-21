@@ -7,14 +7,14 @@ const Hero = () => {
 		<Wrapper className='section-center'>
 			<article className='content'>
 				<h1>
-					ShoeBox <br />
+					ShoeBoxLive <br />
 				</h1>
 				<p>
 					Our e-shop offers a wide range of kids shoes that are specifically
 					designed to provide utmost comfort and support for growing feet,
 					ensuring healthy foot development for your little ones.
 				</p>
-				<Link to='/dashboard' className='btn'>
+				<Link to='/products' className='btn'>
 					Shop now
 				</Link>
 			</article>

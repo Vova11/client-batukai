@@ -1,0 +1,170 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+const OrderForm = () => {
+	const navigate = useNavigate();
+	const initialState = {
+		firstName: '',
+		lastName: '',
+		email: '',
+		address: '',
+		houseNumber: '',
+		city: '',
+		zipCode: '',
+		isOver18: false, // Default value
+	};
+
+	const [formData, setFormData] = useState(initialState);
+
+	// Check localStorage on component mount
+	useEffect(() => {
+		const storedFormData = localStorage.getItem('orderForm');
+		if (storedFormData) {
+			const parsedFormData = JSON.parse(storedFormData);
+			setFormData(parsedFormData);
+		}
+	}, []);
+
+	// Function to handle form input changes
+	const handleInputChange = (e) => {
+		const { name, value, type, checked } = e.target;
+		const newValue = type === 'checkbox' ? checked : value;
+		setFormData((prevData) => ({
+			...prevData,
+			[name]: newValue,
+		}));
+	};
+
+	// Function to handle form submission
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		console.log(formData.isOver18);
+		if (formData.isOver18) {
+			localStorage.setItem('orderForm', JSON.stringify(formData));
+			navigate('/review'); // Ensure this is the correct route path
+		} else {
+			toast.error('Please confirm that you are above 18 years old');
+		}
+	};
+
+	return (
+		<form onSubmit={handleSubmit}>
+			<div className='mb-3'>
+				<label htmlFor='firstName' className='form-label'>
+					First Name
+				</label>
+				<input
+					type='text'
+					name='firstName'
+					value={formData.firstName}
+					onChange={handleInputChange}
+					className='form-control'
+					required
+				/>
+			</div>
+			<div className='mb-3'>
+				<label htmlFor='lastName' className='form-label'>
+					Last Name
+				</label>
+				<input
+					type='text'
+					name='lastName'
+					value={formData.lastName}
+					onChange={handleInputChange}
+					className='form-control'
+					required
+				/>
+			</div>
+			<div className='mb-3'>
+				<label htmlFor='email' className='form-label'>
+					Email
+				</label>
+				<input
+					type='email'
+					name='email'
+					value={formData.email}
+					onChange={handleInputChange}
+					className='form-control'
+					required
+				/>
+			</div>
+			<div className='mb-3'>
+				<label htmlFor='address' className='form-label'>
+					Address
+				</label>
+				<input
+					type='text'
+					name='address'
+					value={formData.address}
+					onChange={handleInputChange}
+					className='form-control'
+					required
+				/>
+			</div>
+			<div className='mb-3'>
+				<label htmlFor='houseNumber' className='form-label'>
+					House Number
+				</label>
+				<input
+					type='text'
+					name='houseNumber'
+					value={formData.houseNumber}
+					onChange={handleInputChange}
+					className='form-control'
+					required
+				/>
+			</div>
+			<div className='mb-3'>
+				<label htmlFor='city' className='form-label'>
+					City
+				</label>
+				<input
+					type='text'
+					name='city'
+					value={formData.city}
+					onChange={handleInputChange}
+					className='form-control'
+					required
+				/>
+			</div>
+			<div className='mb-3'>
+				<label htmlFor='zipCode' className='form-label'>
+					Zip Code
+				</label>
+				<input
+					type='text'
+					name='zipCode'
+					value={formData.zipCode}
+					onChange={handleInputChange}
+					className='form-control'
+					required
+				/>
+			</div>
+			<div className='form-check'>
+				<input
+					type='checkbox'
+					className='form-check-input'
+					id='isOver18'
+					name='isOver18'
+					checked={formData.isOver18}
+					onChange={handleInputChange}
+				/>
+				<label className='form-check-label' htmlFor='isOver18'>
+					I am more than 18 years old
+				</label>
+			</div>
+			<button type='submit' className='btn btn-primary'>
+				Submit
+			</button>
+			<button
+				type='button'
+				className='btn remove-btn'
+				onClick={() => console.log('hi')}
+			>
+				Continue shopping
+			</button>
+		</form>
+	);
+};
+
+export default OrderForm;

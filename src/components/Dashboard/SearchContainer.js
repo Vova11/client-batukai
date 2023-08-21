@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form';
@@ -10,10 +10,11 @@ import { useState, useMemo } from 'react';
 import {
 	handleChange,
 	clearFilters,
+	getAllProducts,
 } from '../../features/allProducts/allProductsSlice';
 
 const SearchContainer = () => {
-	const [localSearch, seLocalSearch] = useState('');
+	const [localSearch, setLocalSearch] = useState('');
 	const {
 		isLoading,
 		search,
@@ -28,12 +29,15 @@ const SearchContainer = () => {
 
 	const handleSearch = (e) => {
 		const { value, name } = e.target;
+		// Also update the featured field with the same value
+		// if (isLoading) return;
 		dispatch(handleChange({ name, value }));
+		dispatch(getAllProducts());
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		seLocalSearch('');
+		setLocalSearch('');
 		dispatch(clearFilters());
 	};
 
@@ -41,7 +45,7 @@ const SearchContainer = () => {
 		console.log('debounce');
 		let timeoutID;
 		return (e) => {
-			seLocalSearch(e.target.value);
+			setLocalSearch(e.target.value);
 			clearTimeout(timeoutID);
 			timeoutID = setTimeout(() => {
 				dispatch(handleChange({ name: e.target.name, value: e.target.value }));
@@ -73,9 +77,9 @@ const SearchContainer = () => {
 						value={published}
 						onChange={handleSearch}
 						options={[
-							{ value: 'all', label: 'all' },
-							{ value: 'true', label: 'published' },
-							{ value: 'false', label: 'not published' },
+							{ value: 'all', label: 'All' },
+							{ value: 'true', label: 'Published' },
+							{ value: 'false', label: 'Not published' },
 						]}
 					/>
 
@@ -88,8 +92,9 @@ const SearchContainer = () => {
 						value={featured}
 						onChange={handleSearch}
 						options={[
-							{ value: 'true', label: 'featured' },
-							{ value: 'false', label: 'not featured' },
+							{ value: 'all', label: 'All' },
+							{ value: 'true', label: 'Featured' },
+							{ value: 'false', label: 'Not featured' },
 						]}
 					/>
 

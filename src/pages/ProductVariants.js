@@ -1,206 +1,82 @@
-import React from 'react'
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import AddToCart from './AddToCart.js';
+import { useSelector } from 'react-redux';
 
-const ProductVariants = () => {
-  return (
-    <div>ProductVariants</div>
-  )
-}
+const ProductVariants = ({ product, hasStock }) => {
+	const [selectedSize, setSelectedSize] = useState('');
+	const [selectedVariant, setSelectedVariant] = useState({
+		size: '',
+		stock: 0,
+	});
+	const [quantity, setQuantity] = useState(1);
+
+	const handleClick = (variant) => {
+		setSelectedSize(variant.size);
+		setSelectedVariant({
+			size: variant.size,
+			stock: variant.stock,
+		});
+	};
+
+	// Function to sort the sizes in ascending order
+	const sortSizes = (a, b) => {
+		const sizeA = parseInt(a);
+		const sizeB = parseInt(b);
+		return sizeA - sizeB;
+	};
+	// Sort the unique sizes in ascending order
+	const uniqueSizesWithStock = Array.from(
+		new Set(
+			product.variants.map(({ size, stock }) => ({
+				size,
+				stock,
+			}))
+		)
+	).sort(sortSizes);
+
+	return (
+		<>
+			{uniqueSizesWithStock.map((variant, index) => (
+				<StyledButton
+					key={index}
+					onClick={() => handleClick(variant)}
+					isSelected={selectedSize === variant.size}
+				>
+					{`${variant.size} - ${variant.stock}`}
+				</StyledButton>
+			))}
+
+			<AddToCart
+				item={{
+					productId: product.id,
+					colour: product.colour,
+					name: product.name,
+					price: product.price,
+					image: product.images[0].url,
+					size: selectedSize,
+					quantity: quantity, // Pass the selected quantity to AddToCart
+					stock: selectedVariant.stock,
+				}}
+				size={selectedVariant.size}
+				quantity={quantity} // Pass the quantity to AddToCart for incrementing/decrementing
+				setQuantity={setQuantity} // Pass the setQuantity function for updating the quantity
+				hasStock={hasStock}
+			/>
+		</>
+	);
+};
 
 export default ProductVariants;
 
-
-
-// import React, { useState } from "react";
-// import styled from "styled-components";
-
-// const ProductVariants = ({ variants }) => {
-//   const [selectedColor, setSelectedColor] = useState("");
-//   const [selectedSizes, setSelectedSizes] = useState([]);
-//   const [buy, setBuy] = useState([]);
-
-//   const handleColorSelect = (color) => {
-//     setSelectedColor(color);
-//   };
-
-//   const handleSizeCheckboxChange = (event, size) => {
-//     const isChecked = event.target.checked;
-//     setSelectedSizes((prevSelectedSizes) =>
-//       isChecked
-//         ? [...prevSelectedSizes, size]
-//         : prevSelectedSizes.filter((s) => s !== size)
-//     );
-
-//     // Add or remove selected variant to/from buy state
-//     const selectedVariant = variants.find(
-//       (variant) =>
-//         variant.colour === selectedColor && variant.size === size
-//     );
-
-//     if (isChecked && selectedVariant) {
-//       setBuy((prevBuy) => [...prevBuy, selectedVariant]);
-//     } else {
-//       setBuy((prevBuy) =>
-//         prevBuy.filter(
-//           (variant) => variant.colour !== selectedColor || variant.size !== size
-//         )
-//       );
-//     }
-//   };
-
-//   const uniqueColors = Array.from(new Set(variants.map(({ colour }) => colour)));
-
-//   const filteredVariants = selectedColor
-//     ? variants.filter((variant) => variant.colour === selectedColor)
-//     : variants;
-
-//   const addQuantity = (event, size) => {
-//     console.log(event);
-//     console.log(size);
-//   }
-//   return (
-//     <Wrapper selectedColor={selectedColor}>
-//       {/* <div className="color-options">
-//         {uniqueColors.map((color, index) => (
-//           <button
-//             key={index}
-//             className={`color-option ${
-//               selectedColor === color ? "selected" : ""
-//             }`}
-//             style={{ backgroundColor: color }}
-//             data-color={color}
-//             onClick={() => handleColorSelect(color)}
-//           >
-//             {selectedColor === color && "✓"}
-//           </button>
-//         ))}
-//       </div> */}
-
-// <div className="color-options">
-//         <button
-//           className={`color-option default ${selectedColor === "" ? "selected" : ""}`}
-//           onClick={() => handleColorSelect("")}
-//         >
-//           All
-//         </button>
-//         {uniqueColors.map((color, index) => (
-//           <button
-//             key={index}
-//             className={`color-option ${
-//               selectedColor === color ? "selected" : ""
-//             }`}
-//             style={{ backgroundColor: color }}
-//             data-color={color}
-//             onClick={() => handleColorSelect(color)}
-//           >
-//             {selectedColor === color && "✓"}
-//           </button>
-//         ))}
-//       </div>
-
-//       <div>
-//         <h4>Select Sizes</h4>
-//         <SizeList>
-//           {Array.from(new Set(filteredVariants.map(({ size }) => size))).map(
-//             (size, index) => (
-//               <li key={index}>
-//                 <input
-//                   type="checkbox"
-//                   value={size}
-//                   checked={selectedSizes.includes(size)}
-//                   onChange={(e) => handleSizeCheckboxChange(e, size)}
-//                 />
-//                 {size}
-//               </li>
-//             )
-//           )}
-//         </SizeList>
-//       </div>
-
-//       {/* <div>
-//         {filteredVariants
-//           .filter((variant) =>
-//             selectedSizes.length === 0
-//               ? true
-//               : selectedSizes.includes(variant.size)
-//           )
-//           .map(({ colour, size, stock }, index) => (
-//             <div key={index}>
-//               <h2>Color: {colour}</h2>
-//               <h2>Size: {size}</h2>
-//               <h2>Stock: {stock}</h2>
-//               <hr />
-//             </div>
-//           ))}
-//       </div> */}
-
-//       <div>
-//         <h4>Buy</h4>
-//         <hr />
-//         {buy.map(({ colour, size, stock }, index) => (
-//           <div key={index}>
-//             <p>Color: {colour}</p>
-//             <p>Size: {size}</p>
-//             <p>Stock: {stock}</p>
-//             <button onClick={() => handleSizeCheckboxChange({target: {checked: false}}, size)}>
-//               Remove
-//             </button>
-//             <button onClick={() => addQuantity({colour, size, stock})}>
-//               quantity
-//             </button>
-//             <hr />
-//           </div>
-//         ))}
-//       </div>
-//     </Wrapper>
-//   );
-// };
-
-// export default ProductVariants;
-
-// const Wrapper = styled.section`
-//   .color-options {
-//     display: flex;
-//     gap: 10px;
-//   }
-
-//   .color-option {
-//     width: 50px;
-//     height: 50px;
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     border-radius: 50%;
-//     border: none;
-//     font-size: 16px;
-//     box-shadow: ${(props) =>
-//       props.selectedColor === props.color
-//         ? "0 4px 8px rgba(0, 0, 0, 0.3)"
-//         : "0 2px 4px rgba(0, 0, 0, 0.2)"};
-//   }
-
-//   .color-option[data-color] {
-//     background-color: ${(props) => props.color || "transparent"};
-//     color: #fff;
-//   }
-
-//   .color-option:not([data-color]) {
-//     border: 1px solid #ccc;
-//   }
-// `;
-
-// const SizeList = styled.ul`
-//   display: flex;
-//   flex-wrap: wrap;
-//   gap: 10px;
-//   list-style: none;
-//   padding: 0;
-
-//   li {
-//     padding: 5px 10px;
-//     border: 1px solid #ccc;
-//     border-radius: 5px;
-//     cursor: pointer;
-//     display: flex;
-//     align-items: center;
-//   }
-// `;
+const StyledButton = styled.button`
+	background-color: ${(props) =>
+		props.isSelected ? 'var(--clr-primary-5)' : '#fff'};
+	color: ${(props) => (props.isSelected ? '#fff' : '#000')};
+	border: ${(props) =>
+		props.isSelected ? '1px solid var(--clr-primary-5)' : '1px solid #ccc'};
+	padding: 5px 10px;
+	border-radius: 5px;
+	cursor: pointer;
+	margin: 5px;
+`;

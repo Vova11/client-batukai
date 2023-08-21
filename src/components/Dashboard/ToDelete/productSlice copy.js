@@ -1,24 +1,32 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import customFetch from '../../utils/axios';
-import { logoutUser } from '../user/userSlice';
 import {
-	showLoading,
-	hideLoading,
-	getAllProducts,
-} from '../allProducts/allProductsSlice';
+	createProductThunk,
+	deleteProductThunk,
+	uploadMultipleProductImagesThunk,
+	uploadSingleProductImageThunk,
+	removeImageThunk,
+	editProductThunk,
+	updateProductPublishedThunk,
+	updateProductFeaturedThunk,
+	getProductThunk,
+} from './productThunk';
+
 const initialState = {
+	single_product: {},
 	isLoading: false,
 	name: '',
 	description: '',
 	price: 0,
 	userId: null,
+	published: false,
 	image: [],
 	images: [],
 	variants: [
 		{
 			color: '',
-			sizes: '',
+			size: '',
 			stock: 0,
 		},
 	],
@@ -26,182 +34,60 @@ const initialState = {
 	editProductId: '',
 };
 
-const convertMapToArray = (data) => {
-	const images = new Map(Object.entries(data));
-	return Array.from(images);
-};
-
 export const createProduct = createAsyncThunk(
 	'product/createProduct',
-	async (product, thunkAPI) => {
-		try {
-			const resp = await customFetch.post('/products', product, {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				withCredentials: true,
-			});
-
-			thunkAPI.dispatch(clearValues());
-			return resp.data;
-		} catch (error) {
-			if (error.response.status === 401) {
-				thunkAPI.dispatch(logoutUser());
-				return thunkAPI.rejectWithValue('Unauthorized');
-			}
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	createProductThunk
 );
 
 /* Handle Images Upload */
-
 export const uploadMultipleProductImages = createAsyncThunk(
 	'product/uploadMultiple',
-	async (images, thunkAPI) => {
-		try {
-			const response = await customFetch.post(
-				`/products/uploadMultipleImages`,
-				{
-					images,
-				},
-				{
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					withCredentials: true,
-				}
-			);
-			return response.data;
-		} catch (error) {
-			console.error(error);
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	uploadMultipleProductImagesThunk
 );
 
 export const uploadSingleProductImage = createAsyncThunk(
 	'product/uploadImage',
-	async (base64Image, thunkAPI) => {
-		try {
-			const response = await customFetch.post(
-				'/products/uploadImage',
-				{
-					image: base64Image,
-				},
-				{
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					withCredentials: true,
-				}
-			);
-			return response.data;
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
-);
-
-export const uploadMainProductImage = createAsyncThunk(
-	'product/uploadMainImage',
-	async (base64Image, thunkAPI) => {
-		try {
-			const response = await customFetch.post(
-				'/products/uploadImage',
-				{
-					image: base64Image,
-				},
-				{
-					withCredentials: true,
-				}
-			);
-			return response.data;
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	uploadSingleProductImageThunk
 );
 
 export const removeImage = createAsyncThunk(
 	'product/removeImage',
-	async (publicId, thunkAPI) => {
-		try {
-			const response = customFetch.post(
-				'products/removeImage',
-				{
-					publicId,
-				},
-				{
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					withCredentials: true,
-				}
-			);
-			// Return the response data if needed
-			return response.data;
-		} catch (error) {
-			// Handle the error as needed
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	removeImageThunk
 );
 
 /* DELETE PRODUCT */
 export const deleteProduct = createAsyncThunk(
 	'product/deleteProduct',
-	async (productId, thunkAPI) => {
-		thunkAPI.dispatch(showLoading());
-		try {
-			const response = await customFetch.delete(`products/${productId}`, {
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				withCredentials: true,
-			});
-			// Return the response data if needed
-			thunkAPI.dispatch(getAllProducts());
-			return response.data.message;
-		} catch (error) {
-			thunkAPI.dispatch(hideLoading());
-			return thunkAPI.rejectWithValue(error.response.data.msg);
-		}
-	}
+	deleteProductThunk
 );
 
 /* EDIT PRODUCT */
 export const editProduct = createAsyncThunk(
 	'product/editProduct',
-	async ({ productId, product }, thunkAPI) => {
-		console.log(productId);
-		console.log(product);
-		// try {
-		// 	const response = await customFetch.patch(
-		// 		`products/${productId}`,
-		// 		product,
-		// 		{
-		// 			headers: {
-		// 				'Content-Type': 'application/json',
-		// 			},
-		// 			withCredentials: true,
-		// 		}
-		// 	);
-		// 	// Return the response data if needed
-		// 	thunkAPI.dispatch(clearValues());
-		// 	return response.data;
-		// } catch (error) {
-		// 	thunkAPI.dispatch(hideLoading());
-		// 	return thunkAPI.rejectWithValue(error.response.data.msg);
-		// }
-	}
+	editProductThunk
 );
+
+export const updateProductPublished = createAsyncThunk(
+	'product/publishProduct',
+	updateProductPublishedThunk
+);
+
+export const updateProductFeatured = createAsyncThunk(
+	'product/featureProduct',
+	updateProductFeaturedThunk
+);
+
+export const getProduct = createAsyncThunk(
+	'product/getProduct',
+	getProductThunk
+);
+
 const productSlice = createSlice({
 	name: 'product',
 	initialState,
 	reducers: {
 		handleChange: (state, { payload: { name, value, index } }) => {
-			if (name === 'color' || name === 'sizes' || name === 'stock') {
+			if (name === 'color' || name === 'size' || name === 'stock') {
 				// Handle variant fields individually
 
 				state.variants[index][name] = value;
@@ -212,7 +98,7 @@ const productSlice = createSlice({
 		addVariant: (state) => {
 			state.variants.push({
 				color: '',
-				sizes: '',
+				size: '',
 				stock: 0,
 			});
 		},
@@ -231,14 +117,10 @@ const productSlice = createSlice({
 		},
 		removeImageFromImages: (state, action) => {
 			const publicId = action.payload;
-			const updatedImagesMap = new Map(state.images);
-			updatedImagesMap.delete(publicId);
-			const updatedImages = Array.from(updatedImagesMap);
 
-			return {
-				...state,
-				images: updatedImages,
-			};
+			state.images = state.images.filter(
+				(image) => image.publicId !== publicId
+			);
 		},
 		addImages: (state, action) => {
 			state.images.push(...action.payload);
@@ -247,7 +129,6 @@ const productSlice = createSlice({
 			state.userId = action.payload;
 		},
 		sedEditProduct: (state, { payload }) => {
-			console.log(payload);
 			return { ...state, isEditing: true, ...payload };
 		},
 	},
@@ -269,23 +150,22 @@ const productSlice = createSlice({
 			.addCase(uploadMultipleProductImages.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(uploadMultipleProductImages.fulfilled, (state, action) => {
+			.addCase(uploadMultipleProductImages.fulfilled, (state) => {
 				console.log('Fullfield');
-				console.log(action);
 				state.isLoading = false;
-				toast.success('Image successfully uploaded');
+				toast.success('Images successfully uploaded');
 			})
-			.addCase(uploadMultipleProductImages.rejected, (state, { payload }) => {
+			.addCase(uploadMultipleProductImages.rejected, (state) => {
 				console.log('Rejected');
 				state.isLoading = false;
-				toast.error(payload);
+				toast.error('Error');
 			})
 			.addCase(uploadSingleProductImage.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(uploadSingleProductImage.fulfilled, (state, action) => {
 				console.log('Fullfield');
-				console.log(action);
+				state.image = [...state.image, action.payload];
 				state.isLoading = false;
 				toast.success('Image successfully uploaded');
 			})
@@ -296,28 +176,15 @@ const productSlice = createSlice({
 			.addCase(removeImage.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(removeImage.fulfilled, (state) => {
+			.addCase(removeImage.fulfilled, (state, { payload }) => {
 				console.log('Fullfield');
 				state.isLoading = false;
+				console.log(payload);
+				toast.success('Image removed');
 			})
 			.addCase(removeImage.rejected, (state, action) => {
 				console.log('Rejected');
 				state.isLoading = false;
-			})
-			.addCase(uploadMainProductImage.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(uploadMainProductImage.fulfilled, (state, action) => {
-				state.isLoading = false;
-				const imageUrl = action.payload;
-				const responseConverted = convertMapToArray(imageUrl);
-				state.image.push(...responseConverted);
-				toast.success('Image successfully uploaded');
-			})
-			.addCase(uploadMainProductImage.rejected, (state, { payload }) => {
-				state.isLoading = false;
-				state.error = payload;
-				toast.error(payload);
 			})
 			.addCase(deleteProduct.pending, (state) => {
 				state.isLoading = true;
@@ -336,10 +203,43 @@ const productSlice = createSlice({
 			})
 			.addCase(editProduct.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				console.log(payload);
-				toast.success(payload);
+				toast.success(payload.message);
 			})
 			.addCase(editProduct.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				toast.error(payload);
+			})
+			.addCase(updateProductPublished.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateProductPublished.fulfilled, (state, { payload }) => {
+				// Set isLoading to false if necessary
+				state.isLoading = false;
+			})
+			.addCase(updateProductPublished.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				toast.error(payload);
+			})
+			.addCase(updateProductFeatured.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateProductFeatured.fulfilled, (state, { payload }) => {
+				// Set isLoading to false if necessary
+				state.isLoading = false;
+			})
+			.addCase(updateProductFeatured.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				toast.error(payload);
+			})
+			.addCase(getProduct.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getProduct.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				console.log(payload);
+				state.single_product = payload;
+			})
+			.addCase(getProduct.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				toast.error(payload);
 			});

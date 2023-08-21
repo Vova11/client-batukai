@@ -5,7 +5,6 @@ import moment from 'moment';
 import {
 	updateProductPublished,
 	updateProductFeatured,
-	toggleProductState,
 } from '../../features/product/productSlice.js';
 
 const ProductPage = (product) => {
@@ -18,7 +17,7 @@ const ProductPage = (product) => {
 	};
 
 	const handleFeaturedToggle = (id) => {
-		dispatch(updateProductFeatured({ id }));
+		dispatch(updateProductFeatured(id));
 	};
 
 	return (
@@ -31,7 +30,7 @@ const ProductPage = (product) => {
 					<input
 						type='checkbox'
 						checked={published}
-						onChange={() => handlePublishedToggle({ id })}
+						onChange={() => handlePublishedToggle(id)}
 					/>
 					<span
 						className={`slider ${published ? 'published' : 'unpublished'}`}

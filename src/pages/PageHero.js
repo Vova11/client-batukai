@@ -20,6 +20,7 @@ const Wrapper = styled.section`
 	display: flex;
 	align-items: center;
 	color: var(--clr-primary-1);
+
 	a {
 		color: var(--clr-primary-3);
 		padding: 0.5rem;

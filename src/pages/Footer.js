@@ -7,7 +7,7 @@ const Footer = () => {
 			<h5>
 				&copy; {new Date().getFullYear()}
 				<Link to='/'>
-					<span>Batukai shop</span>
+					<span>CoolSmoke</span>
 				</Link>
 			</h5>
 			<h5>All rights reserved</h5>

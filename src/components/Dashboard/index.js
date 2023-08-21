@@ -12,6 +12,7 @@ import Profile from './Profile';
 import SearchContainer from './SearchContainer';
 import ProductsContainer from './ProductsContainer';
 import ActionButtons from './ActionButtons';
+import PageBtnContainer from './PageBtnContainer';
 export {
 	Dashboard,
 	Order,
@@ -27,4 +28,5 @@ export {
 	ProductsContainer,
 	SearchContainer,
 	ActionButtons,
+	PageBtnContainer,
 };

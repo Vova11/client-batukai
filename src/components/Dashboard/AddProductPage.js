@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form';
-import { Button } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row';
 import FormRow from '../../pages/FormRow';
 import Col from 'react-bootstrap/Col';
@@ -15,18 +14,17 @@ import {
 	addVariant,
 	removeVariant,
 	uploadMultipleProductImages,
-	uploadSingleProductImage,
 	clearValues,
 	removeImage,
 	addImages,
 	removeImageFromImages,
-	removeMainImage,
 	setUserId,
 } from '../../features/product/productSlice.js';
 import { toast } from 'react-toastify';
 
 const AddProductPage = () => {
 	const product = useSelector((store) => store.product);
+	console.log(product);
 	const { isLoading, isEditing, editProductId } = useSelector(
 		(store) => store.product
 	);
@@ -40,6 +38,7 @@ const AddProductPage = () => {
 	};
 
 	const handleRemoveVariant = (index) => {
+		// console.log(index);
 		dispatch(removeVariant(index));
 	};
 
@@ -58,10 +57,10 @@ const AddProductPage = () => {
 			}
 
 			if (!product.name) {
-				return toast.error('Name can`t be empty')
+				return toast.error('Name can`t be empty');
 			}
 			dispatch(setUserId(user.id));
-			
+
 			dispatch(createProduct(updatedProduct));
 		} catch (error) {
 			console.log(error);
@@ -73,27 +72,8 @@ const AddProductPage = () => {
 	};
 
 	//HANDLE IMAGES UPLOAD
-	const [file, setFile] = useState(null);
-	const [base64URL, setBase64URL] = useState('');
 	const [files, setFiles] = useState([]);
 	const [base64URLs, setBase64URLs] = useState([]);
-
-	const handleSingleFileInputChange = async (e) => {
-		const selectedFile = e.target.files[0];
-		if (product.image.length > 0) {
-			toast.error('Before upload please delete existing main image');
-			return;
-		}
-		try {
-			const base64Result = await convertBase64(selectedFile);
-			selectedFile['base64'] = base64Result;
-			setBase64URL(base64Result);
-			setFile(selectedFile);
-			dispatch(uploadSingleProductImage(base64Result));
-		} catch (err) {
-			console.log(err);
-		}
-	};
 
 	const handleMultipleFileInputChange = async (e) => {
 		const selectedFiles = e.target.files;
@@ -116,16 +96,6 @@ const AddProductPage = () => {
 		);
 		dispatch(addImages(result.payload));
 		setFiles(Array.from(selectedFiles));
-	};
-
-	const removeMainProductImage = (publicId, productId, source) => {
-		console.log(publicId, productId, source);
-		try {
-			dispatch(removeImage({ publicId, productId, source }));
-			dispatch(removeMainImage());
-		} catch (error) {
-			console.error(error);
-		}
 	};
 
 	const removeProductImage = async (publicId, productId, source) => {
@@ -152,7 +122,33 @@ const AddProductPage = () => {
 						value={product.name}
 						onChange={handleInputChange}
 					/>
-
+					<FormRow
+						col='12'
+						type='text'
+						id='company'
+						label='Company'
+						name='company'
+						value={product.company}
+						onChange={handleInputChange}
+					/>
+					<FormRow
+						col='6'
+						type='text'
+						id='colour'
+						label='Colour'
+						name='colour'
+						value={product.colour}
+						onChange={handleInputChange}
+					/>
+					<FormRow
+						col='6'
+						type='text'
+						id='hexColourCode'
+						label='Color Code'
+						name='hexColourCode'
+						value={product.hexColourCode}
+						onChange={handleInputChange}
+					/>
 					<FormRow
 						col='12'
 						type='textarea'
@@ -173,22 +169,15 @@ const AddProductPage = () => {
 						onChange={handleInputChange}
 					/>
 				</Row>
+				<h4>Variants: </h4>
+				<hr />
+
 				{product.variants.map((variant, index) => (
 					<div key={index} className='mb-3'>
 						<Row>
 							<FormRow
-								col='4'
-								type='text'
-								id={`color-${index}`}
-								label='Color'
-								name='color'
-								value={variant.color}
-								onChange={(e) => handleInputChange(e, index)}
-							/>
-
-							<FormRow
-								col='4'
-								type='text'
+								col='6'
+								type='number'
 								id={`size-${index}`}
 								name='size'
 								label='Size'
@@ -197,7 +186,7 @@ const AddProductPage = () => {
 							/>
 
 							<FormRow
-								col='4'
+								col='6'
 								type='number'
 								id={`stock-${index}`}
 								name='stock'
@@ -225,13 +214,6 @@ const AddProductPage = () => {
 						<input
 							type='file'
 							name='file'
-							onChange={handleSingleFileInputChange}
-						/>
-					</Col>
-					<Col md={4}>
-						<input
-							type='file'
-							name='file'
 							multiple
 							onChange={handleMultipleFileInputChange}
 						/>
@@ -252,21 +234,6 @@ const AddProductPage = () => {
 					{!isEditing ? 'Submit' : 'Edit'}
 				</button>
 			</Form>
-			<div>
-				{product.image.length > 0 && (
-					<div className='mt-5'>
-						<h4>Main image</h4>
-						<hr />
-					</div>
-				)}
-
-				<ImageList
-					images={product.image}
-					productId={product.editProductId}
-					source='product'
-					removeImage={removeMainProductImage}
-				/>
-			</div>
 			<div>
 				{product.images.length > 0 ? (
 					<div className='mt-5'>

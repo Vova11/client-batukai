@@ -5,6 +5,7 @@ import { Footer, Navbar } from './';
 const SharedLayout = () => {
 	return (
 		<Fragment>
+			<Navbar />
 			<Outlet />
 			<Footer />
 		</Fragment>

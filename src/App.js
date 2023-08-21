@@ -8,12 +8,16 @@ import {
 	About,
 	Products,
 	Product,
+	Cart,
 	SharedLayout,
 	ResetPassword,
 	VerifyPage,
 	ForgotPassword,
 	ErrorPage,
 	SingleProduct,
+	Checkout,
+	ReviewOrder,
+	Payment,
 } from './pages';
 import {
 	Dashboard,
@@ -29,8 +33,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-	console.log('App.js ');
-
 	return (
 		<BrowserRouter>
 			<Routes>
@@ -38,6 +40,11 @@ function App() {
 					<Route index element={<Home />} />
 					<Route path='about' element={<About />} />
 					<Route path='products' element={<Products />} />
+					<Route path='/cart' element={<Cart />} />
+					<Route path='/checkout' element={<Checkout />} />
+					<Route path='/review' element={<ReviewOrder />} />
+					<Route path='/pay' element={<Payment />} />
+
 					<Route path='products/:productId' element={<SingleProduct />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/register' element={<Register />} />

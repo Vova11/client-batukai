@@ -5,6 +5,7 @@ import { FaUserCircle } from 'react-icons/fa';
 import { Dropdown } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser, clearStore } from '../../features/user/userSlice';
+import { Link } from 'react-router-dom';
 function HeaderBar() {
 	const { user } = useSelector((store) => store.user);
 	const dispatch = useDispatch();
@@ -16,7 +17,7 @@ function HeaderBar() {
 		<Wrapper>
 			<Navbar>
 				<Container>
-					<Navbar.Brand href='/'>ShoeBox</Navbar.Brand>
+					<Link to='/'>ShoeBox</Link>
 					<Navbar.Toggle />
 					<Navbar.Collapse className='justify-content-end'>
 						<Dropdown>

@@ -39,26 +39,6 @@ export const deleteProductThunk = async (productId, thunkAPI) => {
 	}
 };
 
-export const uploadSingleProductImageThunk = async (base64Image, thunkAPI) => {
-	try {
-		const response = await customFetch.post(
-			'/products/uploadImage',
-			{
-				image: base64Image,
-			},
-			{
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				withCredentials: true,
-			}
-		);
-		return response.data;
-	} catch (error) {
-		return thunkAPI.rejectWithValue(error.response.data.msg);
-	}
-};
-
 export const uploadMultipleProductImagesThunk = async (images, thunkAPI) => {
 	try {
 		const response = await customFetch.post(
@@ -109,12 +89,12 @@ export const removeImageThunk = async (
 
 export const editProductThunk = async ({ id, product }, thunkAPI) => {
 	try {
-		const response = await customFetch.patch(`products/${id}`, product, {
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			withCredentials: true,
-		});
+		const response = await customFetch.patch(
+			`products/${id}`,
+			product,
+			authHeader()
+		);
+
 		// Return the response data if needed
 		thunkAPI.dispatch(clearValues());
 		return response.data;
@@ -126,12 +106,11 @@ export const editProductThunk = async ({ id, product }, thunkAPI) => {
 
 export const updateProductPublishedThunk = async (id, thunkAPI) => {
 	try {
-		const response = await customFetch.patch(`products/publish/${id}`, id, {
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			withCredentials: true,
-		});
+		const response = await customFetch.patch(
+			`products/publish/${id}`,
+			{},
+			authHeader()
+		);
 		// Return the response data if needed
 		thunkAPI.dispatch(getAllProducts());
 		return response.data;
@@ -142,12 +121,11 @@ export const updateProductPublishedThunk = async (id, thunkAPI) => {
 
 export const updateProductFeaturedThunk = async (id, thunkAPI) => {
 	try {
-		const response = await customFetch.patch(`products/featured/${id}`, id, {
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			withCredentials: true,
-		});
+		const response = await customFetch.patch(
+			`products/featured/${id}`,
+			{},
+			authHeader()
+		);
 		// Return the response data if needed
 		thunkAPI.dispatch(getAllProducts());
 		return response.data;
@@ -164,7 +142,6 @@ export const getProductThunk = async (id, thunkAPI) => {
 			},
 			withCredentials: true,
 		});
-		console.log(response.data);
 		return response.data;
 	} catch (error) {
 		return thunkAPI.rejectWithValue(error.response.data.msg);

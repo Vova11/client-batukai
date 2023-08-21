@@ -7,18 +7,27 @@ const initialFiltersState = {
 	searchStatus: 'all',
 	searchType: 'all',
 	published: 'all',
+	featured: 'all',
 	sort: 'latest',
-	sortOptions: ['latest', 'oldest', 'a-z', 'z-a'],
+	company: 'all',
+	sortOptions: [
+		'latest',
+		'oldest',
+		'a-z',
+		'z-a',
+		'price-lowest',
+		'price-highest',
+	],
 };
 
 const initialState = {
 	isLoading: true,
 	products: [],
+	featured_products: [],
 	totalProducts: 0,
 	numOfPages: 1,
 	currentPage: 1,
 	page: 1,
-	stats: {},
 	error: null,
 	...initialFiltersState,
 };
@@ -53,7 +62,6 @@ const allProductsSlice = createSlice({
 			return { ...state, ...initialFiltersState };
 		},
 		changePage: (state, { payload }) => {
-			state.page = 1;
 			state.page = payload;
 		},
 		clearAllProductsState: (state) => initialState,
@@ -66,6 +74,9 @@ const allProductsSlice = createSlice({
 			.addCase(getAllProducts.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				state.products = payload.products;
+				state.featured_products = payload.products.filter(
+					(product) => product.published && product.featured
+				);
 				state.numOfPages = payload.numOfPages;
 				state.totalProducts = payload.totalProducts;
 			})
@@ -77,7 +88,7 @@ const allProductsSlice = createSlice({
 	},
 });
 export const {
-	handleToggle,
+	// handleToggle,
 	showLoading,
 	hideLoading,
 	clearFilters,
