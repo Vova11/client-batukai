@@ -7,7 +7,7 @@ const Hero = () => {
 		<Wrapper className='section-center'>
 			<article className='content'>
 				<h1>
-					ShoeBox <br />
+					ShoeBoxLive <br />
 				</h1>
 				<p>
 					Our e-shop offers a wide range of kids shoes that are specifically
