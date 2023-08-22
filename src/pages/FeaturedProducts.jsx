@@ -11,6 +11,7 @@ const FeaturedProducts = () => {
 	const { isLoading, featured_products } = useSelector(
 		(store) => store.products
 	);
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {

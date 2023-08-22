@@ -126,10 +126,16 @@ const filterSlice = createSlice({
 
 				state.all_products = [...onlyPublishedProducts];
 				state.filtered_products = [...onlyPublishedProducts];
-				state.companies = [
-					'all',
-					...action.payload.companies.map((company) => company.name),
-				];
+
+				if (action.payload.companies) {
+					state.companies = [
+						'all',
+						...action.payload.companies.map((company) => company.name),
+					];
+				} else {
+					state.companies = ['all'];
+				}
+
 				let maxPrice = onlyPublishedProducts.map((p) => p.price);
 				maxPrice = Math.max(...maxPrice);
 				const updatedFilters = {
