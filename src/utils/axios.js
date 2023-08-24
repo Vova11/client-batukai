@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 const customFetch = axios.create({
-	baseURL: 'https://candysmokes.eu/api/v1',
-	// baseURL: 'http://localhost:3002/api/v1',
+	baseURL: `${process.env.REACT_APP_BASE_URL}/api/v1`,
 });
 
 export default customFetch;
