@@ -101,10 +101,10 @@ const userSlice = createSlice({
 				state.user = user;
 				state.error = null;
 			})
-			.addCase(registerUser.rejected, (state, { payload }) => {
-				state.error = 'Server Error';
+			.addCase(registerUser.rejected, (state, action) => {
+				state.error = action.payload;
 				state.isLoading = false;
-				toast.error('Server Error');
+				toast.error(action.payload);
 			})
 			.addCase(fetchUser.pending, (state) => {
 				state.isLoading = true;
