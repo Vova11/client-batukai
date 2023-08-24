@@ -18,8 +18,10 @@ export const loginUserThunk = async (url, user, thunkAPI) => {
 
 export const registerUserThunk = async (url, user, thunkAPI) => {
 	try {
-		const resp = await customFetch.post(url, user, authHeader());
-		return resp.data;
+		const response = await customFetch.post(url, user, authHeader());
+		console.log('Co pride na register?');
+		console.log(response);
+		return response.data;
 	} catch (error) {
 		return thunkAPI.rejectWithValue(error.response.data.msg);
 	}
