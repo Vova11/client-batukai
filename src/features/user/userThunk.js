@@ -6,10 +6,12 @@ import {
 } from '../../utils/authHeader';
 import { clearAllProductsState } from '../allProducts/allProductsSlice';
 import { clearValues } from '../product/productSlice';
+import { clearUser } from './userSlice';
+
 export const loginUserThunk = async (url, user, thunkAPI) => {
 	try {
 		const resp = await customFetch.post(url, user, authHeader());
-
+		console.log(resp);
 		return resp.data;
 	} catch (error) {
 		return thunkAPI.rejectWithValue(error.response.data.msg);
@@ -97,6 +99,7 @@ export const clearStoreThunk = async (message, thunkAPI) => {
 		thunkAPI.dispatch(logoutUser(message));
 		thunkAPI.dispatch(clearAllProductsState());
 		thunkAPI.dispatch(clearValues());
+		thunkAPI.dispatch(clearUser());
 		return Promise.resolve();
 	} catch (error) {
 		return Promise.reject();

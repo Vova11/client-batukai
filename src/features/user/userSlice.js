@@ -71,6 +71,7 @@ const userSlice = createSlice({
 		clearSuccessState: (state) => {
 			state.success = '';
 		},
+		clearUser: (state) => initialState,
 	},
 	extraReducers: (builder) => {
 		builder
@@ -118,8 +119,6 @@ const userSlice = createSlice({
 			})
 			.addCase(fetchUser.rejected, (state) => {
 				state.isLoading = false;
-				state.user = null;
-				state.userObject = {};
 			})
 			.addCase(logoutUser.pending, (state) => {
 				state.isLoading = true;
@@ -184,5 +183,5 @@ const userSlice = createSlice({
 			});
 	},
 });
-export const { clearSuccessState } = userSlice.actions;
+export const { clearSuccessState, clearUser } = userSlice.actions;
 export default userSlice.reducer;
