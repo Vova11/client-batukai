@@ -29,13 +29,14 @@ const Login = () => {
 			return toast.error('Please fill in all values');
 		}
 		dispatch(loginUser(auth));
+		navigate('/dashboard');
 	};
 
-	useEffect(() => {
-		if (user) {
-			navigate('/dashboard');
-		}
-	}, [user, navigate]);
+	// useEffect(() => {
+	// 	if (user) {
+	// 		navigate('/dashboard');
+	// 	}
+	// }, [user, navigate]);
 
 	return (
 		<>
