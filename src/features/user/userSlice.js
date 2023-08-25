@@ -106,12 +106,14 @@ const userSlice = createSlice({
 				state.isLoading = false;
 				toast.error(action.payload);
 			})
-			.addCase(fetchUser.pending, (state) => {
+			.addCase(fetchUser.pending, (state, action) => {
+				console.log('fetching user');
 				state.isLoading = true;
-				state.error = null;
 			})
 			.addCase(fetchUser.fulfilled, (state, action) => {
 				state.isLoading = false;
+				console.log('user loaded');
+				console.log(action.payload);
 				state.user = action.payload;
 			})
 			.addCase(fetchUser.rejected, (state) => {
