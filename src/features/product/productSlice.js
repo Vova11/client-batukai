@@ -129,6 +129,7 @@ const productSlice = createSlice({
 			})
 			.addCase(createProduct.fulfilled, (state, action) => {
 				console.log('Fullfield');
+				console.log('creating product');
 				state.isLoading = false;
 				toast.success('Product created');
 			})
