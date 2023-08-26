@@ -54,7 +54,9 @@ const ProtectedRoute = ({ children }) => {
 		if (Object.keys(userObject).length === 0 && user) {
 			dispatch(getUser(user.id));
 		}
-	}, [user]);
+	}, [user, dispatch]);
+	//
+	// }, [user, isLoading, userObject, dispatch]);
 
 	if (isLoading) {
 		return <Spinner />;
