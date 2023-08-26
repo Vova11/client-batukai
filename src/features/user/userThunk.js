@@ -49,7 +49,12 @@ export const logoutUserThunk = async (url, thunkAPI) => {
 
 export const fetchUserThunk = async (thunkAPI) => {
 	try {
-		const response = await customFetch.get('/users/showMe', authHeader());
+		const response = await customFetch.get('/users/showMe', {
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			credentials: 'include',
+		});
 		return response.data.user;
 	} catch (error) {
 		console.log(error);
