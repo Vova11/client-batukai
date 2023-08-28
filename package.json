@@ -10,7 +10,6 @@
 		"axios": "^1.4.0",
 		"bootstrap": "^5.3.0",
 		"crypto": "^1.0.1",
-		"env-cmd": "^10.1.0",
 		"immer": "^10.0.2",
 		"js-cookie": "^3.0.5",
 		"lodash": "^4.17.21",
@@ -33,7 +32,7 @@
 		"web-vitals": "^2.1.4"
 	},
 	"scripts": {
-		"start": "env-cmd -f .env.dev react-scripts start",
+		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject"
@@ -58,5 +57,6 @@
 	},
 	"devDependencies": {
 		"dotenv": "^16.3.1"
-	}
+	},
+	"proxy": "https://www.candysmokes.eu/api/v1/"
 }
