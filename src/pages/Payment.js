@@ -32,7 +32,7 @@ const Payment = () => {
 					Country: 'SVK',
 					Timestamp: new Date().toISOString().slice(0, 19).replace('T', ' '),
 					Sign: '',
-					LangCode: 'SK',
+					LangCode: 'sk',
 					RURL: 'http://mojobchod.sk/rurl',
 					NURL: 'http://mojobchod.sk/nurl',
 					Phone: '+421334555',
@@ -41,6 +41,9 @@ const Payment = () => {
 					Zip: '01001',
 					RedirectSign: true,
 					Debug: 'true',
+					NotifyClient: 'vladimir.zembera@gmail.com',
+					NotifyEmail: 'vladimir.zembera@gmail.com',
+					RedirectSign: false,
 				},
 			});
 			setHtmlContent(response.data);
@@ -52,7 +55,6 @@ const Payment = () => {
 			// Redirect the user to the payment gateway's URL
 			// Redirect the user to the payment gateway's URL
 			window.location.href = response.data.url;
-
 			// console.log('Payment response:', response);
 			// Once you have the sign key, construct the payment gateway URL
 			console.log(response);
@@ -71,7 +73,9 @@ const Payment = () => {
 		console.log('redirecting');
 		try {
 			// Send a GET request to the Express backend
-			await axios.get('http://localhost:3002/redirect-to-wikipedia');
+			await axios.get(
+				`${process.env.REACT_APP_BASE_URL}/redirect-to-wikipedia`
+			);
 			console.log('Redirecting to Wikipedia...');
 		} catch (error) {
 			console.error('Error redirecting:', error);

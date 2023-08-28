@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
 const OrderForm = () => {
 	const navigate = useNavigate();
 	const initialState = {
@@ -46,6 +47,8 @@ const OrderForm = () => {
 			toast.error('Please confirm that you are above 18 years old');
 		}
 	};
+
+	const handleContinueShopping = () => {};
 
 	return (
 		<form onSubmit={handleSubmit}>
@@ -153,18 +156,33 @@ const OrderForm = () => {
 					I am more than 18 years old
 				</label>
 			</div>
-			<button type='submit' className='btn btn-primary'>
-				Submit
-			</button>
-			<button
-				type='button'
-				className='btn remove-btn'
-				onClick={() => console.log('hi')}
-			>
-				Continue shopping
-			</button>
+			<Buttons>
+				<button type='submit' className='btn btn-primary'>
+					Submit
+				</button>
+				<button
+					type='button'
+					className='btn btn-primary'
+					onClick={handleContinueShopping}
+				>
+					Continue shopping
+				</button>
+			</Buttons>
 		</form>
 	);
 };
 
 export default OrderForm;
+
+const Buttons = styled.section`
+	display: flex;
+	gap: 10px; /* Adjust spacing as needed */
+`;
+
+const SubmitButton = styled.button`
+	/* Your button styles here */
+`;
+
+const ContinueButton = styled.button`
+	/* Your button styles here */
+`;
