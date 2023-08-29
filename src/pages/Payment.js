@@ -25,7 +25,7 @@ const Payment = () => {
 					MsTxnId: Math.floor(Math.random() * 10000),
 					Amount: '10.50',
 					CurrAlphaCode: 'EUR',
-					ClientId: '100',
+					ClientId: '110',
 					FirstName: 'Test',
 					FamilyName: 'Payment',
 					Email: 'test@test.sk',
@@ -39,14 +39,20 @@ const Payment = () => {
 					Street: 'Kalov',
 					City: 'Žilina',
 					Zip: '01001',
-					RedirectSign: true,
+					RedirectSign: false,
 					Debug: 'false',
 					NotifyClient: 'vladimir.zembera@gmail.com',
 					NotifyEmail: 'vladimir.zembera@gmail.com',
 					RedirectSign: false,
 				},
 			});
-			setHtmlContent(response.data);
+			const newWindow = window.open();
+			newWindow.document.write(response.data);
+			//------- OLD CODE ---- //
+			// setHtmlContent(response.data);
+			// window.location.href = response.data.url;
+			// console.log(response);
+			//------- OLD CODE ---- //
 			// const newTab = window.open();
 			// newTab.document.write(response.data);
 			// Replace the current page content with the received HTML
@@ -54,13 +60,11 @@ const Payment = () => {
 			// console.log('Payment response:', response);
 			// Redirect the user to the payment gateway's URL
 			// Redirect the user to the payment gateway's URL
-			window.location.href = response.data.url;
+
 			// console.log('Payment response:', response);
 			// Once you have the sign key, construct the payment gateway URL
-			console.log(response);
 			// if (response.status === 200) {
 			// 	const paymentGatewayUrl = `https://test.24-pay.eu/pay_gate/paygt`;
-
 			// 	// Redirect the user to the payment gateway URL
 			// 	window.location.href = paymentGatewayUrl;
 			// }
