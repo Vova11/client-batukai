@@ -40,7 +40,7 @@ const Payment = () => {
 					City: 'Žilina',
 					Zip: '01001',
 					RedirectSign: true,
-					Debug: 'true',
+					Debug: 'false',
 					NotifyClient: 'vladimir.zembera@gmail.com',
 					NotifyEmail: 'vladimir.zembera@gmail.com',
 					RedirectSign: false,
