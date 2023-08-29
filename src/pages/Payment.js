@@ -14,10 +14,11 @@ const Payment = () => {
 	const orderFormData = JSON.parse(localStorage.getItem('orderForm'));
 	const cartData = JSON.parse(localStorage.getItem('cart'));
 	const [htmlContent, setHtmlContent] = useState();
+	const [redirectUrl, setRedirectUrl] = useState('');
 
 	const handlePaymentClick = async () => {
 		try {
-			const response = await customFetch.post('/orders/pay', {
+			const res = await customFetch.post('/orders/pay', {
 				// Place your payment data here
 				data: {
 					Mid: 'demoOMED',
@@ -46,30 +47,32 @@ const Payment = () => {
 					RedirectSign: false,
 				},
 			});
-			const newWindow = window.open();
-			newWindow.document.write(response.data);
-			//------- OLD CODE ---- //
-			// setHtmlContent(response.data);
-			// window.location.href = response.data.url;
-			// console.log(response);
-			//------- OLD CODE ---- //
-			// const newTab = window.open();
-			// newTab.document.write(response.data);
-			// Replace the current page content with the received HTML
-			// document.documentElement.innerHTML = response.data;
-			// console.log('Payment response:', response);
-			// Redirect the user to the payment gateway's URL
-			// Redirect the user to the payment gateway's URL
 
-			// console.log('Payment response:', response);
-			// Once you have the sign key, construct the payment gateway URL
-			// if (response.status === 200) {
-			// 	const paymentGatewayUrl = `https://test.24-pay.eu/pay_gate/paygt`;
-			// 	// Redirect the user to the payment gateway URL
-			// 	window.location.href = paymentGatewayUrl;
-			// }
+			// // Perform the second post request
+			const response = await axios.post(
+				'https://test.24-pay.eu/pay_gate/paygt',
+				res.data,
+				{
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+				}
+			);
+
+			// Get the response URL from the axios response
+			const redirectUrl = response.request.res.responseUrl;
+			// Open a new window to the response URL
+			window.open(redirectUrl, '_blank');
+
+			// Open a new window to the response URL
 		} catch (error) {
 			console.error('Error making payment:', error);
+		}
+	};
+
+	const openRedirectUrl = () => {
+		if (redirectUrl) {
+			window.open(redirectUrl, '_blank');
 		}
 	};
 
@@ -98,6 +101,9 @@ const Payment = () => {
 								<h2>Payment gateway</h2>
 								<button onClick={handlePaymentClick}>Make Payment</button>
 								<button onClick={handleRedirect}>Redirect me</button>
+								<button onClick={openRedirectUrl}>
+									Open Redirect URL in New Window
+								</button>
 								<div>
 									{/* Render the received HTML content inside an iframe */}
 									{htmlContent && (
