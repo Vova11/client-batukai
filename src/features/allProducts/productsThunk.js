@@ -12,6 +12,7 @@ export const getAllProductsThunk = async (_, thunkAPI) => {
 		const resp = await customFetch(url);
 		return resp.data;
 	} catch (error) {
-		return thunkAPI.rejectWithValue(error.response.data.msg);
+		// console.log(error.message);
+		return thunkAPI.rejectWithValue(error.message);
 	}
 };

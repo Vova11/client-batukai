@@ -48,21 +48,25 @@ const Payment = () => {
 				},
 			});
 
-			// // Perform the second post request
-			const response = await axios.post(
-				'https://test.24-pay.eu/pay_gate/paygt',
-				res.data,
-				{
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
-				}
-			);
+			console.log(res.data);
+			const newWindow = window.open('', '_blank');
+			newWindow.document.write(res.data);
 
-			// Get the response URL from the axios response
-			const redirectUrl = response.request.res.responseUrl;
-			// Open a new window to the response URL
-			window.open(redirectUrl, '_blank');
+			// // Perform the second post request
+			// const response = await axios.post(
+			// 	'https://test.24-pay.eu/pay_gate/paygt',
+			// 	res.data,
+			// 	{
+			// 		headers: {
+			// 			'Content-Type': 'application/x-www-form-urlencoded',
+			// 		},
+			// 	}
+			// );
+
+			// // Get the response URL from the axios response
+			// const redirectUrl = response.request.res.responseUrl;
+			// // Open a new window to the response URL
+			// window.open(redirectUrl, '_blank');
 
 			// Open a new window to the response URL
 		} catch (error) {
