@@ -36,6 +36,7 @@ import Checkout from './Checkout';
 import OrderForm from './OrderForm';
 import ReviewOrder from './ReviewOrder';
 import Payment from './Payment';
+import GooglePayComponent from './GooglePayComponent';
 export {
 	Login,
 	ProtectedRoute,
@@ -75,4 +76,5 @@ export {
 	OrderForm,
 	ReviewOrder,
 	Payment,
+	GooglePayComponent,
 };
