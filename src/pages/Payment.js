@@ -15,7 +15,7 @@ const Payment = () => {
 	const cartData = JSON.parse(localStorage.getItem('cart'));
 	const [htmlContent, setHtmlContent] = useState();
 	const [redirectUrl, setRedirectUrl] = useState('');
-
+	const [data, setData] = useState();
 	const handlePaymentClick = async () => {
 		try {
 			const res = await customFetch.post('/orders/pay', {
@@ -48,9 +48,12 @@ const Payment = () => {
 				},
 			});
 
-			console.log(res.data);
-			const newWindow = window.open('', '_blank');
-			newWindow.document.write(res.data);
+			setData(res.data);
+
+			// The condition to render the button depends on the data
+
+			// const newWindow = window.open('', '_blank');
+			// newWindow.document.write(res.data);
 
 			// // Perform the second post request
 			// const response = await axios.post(
@@ -80,16 +83,47 @@ const Payment = () => {
 		}
 	};
 
-	const handleRedirect = async () => {
+	const handleRedirectWiki = async () => {
 		console.log('redirecting');
 		try {
-			// Send a GET request to the Express backend
-			await axios.get(
-				`${process.env.REACT_APP_BASE_URL}/redirect-to-wikipedia`
-			);
-			console.log('Redirecting to Wikipedia...');
+			const response = await fetch('https://en.wikipedia.org/wiki/Main_Page');
+
+			if (response.ok) {
+				const data = await response.text();
+				console.log(data); // Here you can work with the fetched HTML content
+			} else {
+				console.error('Request failed with status:', response.status);
+			}
 		} catch (error) {
-			console.error('Error redirecting:', error);
+			console.error('An error occurred:', error);
+		}
+	};
+
+	const handleRedirect = async () => {
+		console.log(data);
+		try {
+			const response = await fetch('https://test.24-pay.eu/pay_gate/paygt', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				dataType: 'json',
+				mode: 'no-cors',
+				cache: 'default',
+				body: data, // Replace with your actual form data
+			});
+			console.log(response);
+
+			if (response.ok) {
+				// Handle successful response
+				console.log('Payment successful');
+			} else {
+				// Handle error response
+				console.log(response);
+				console.error('Payment failed');
+			}
+		} catch (error) {
+			console.error('An error occurred', error);
 		}
 	};
 
@@ -103,8 +137,13 @@ const Payment = () => {
 						<Wrapper className=''>
 							<div className='empty'>
 								<h2>Payment gateway</h2>
-								<button onClick={handlePaymentClick}>Make Payment</button>
-								<button onClick={handleRedirect}>Redirect me</button>
+								{data ? (
+									<button onClick={handleRedirect}>Submit Payment</button>
+								) : (
+									<button onClick={handlePaymentClick}>Initiate Payment</button>
+								)}
+
+								<button onClick={handleRedirectWiki}>Redirect me</button>
 								<button onClick={openRedirectUrl}>
 									Open Redirect URL in New Window
 								</button>

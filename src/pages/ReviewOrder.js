@@ -102,6 +102,9 @@ const ReviewOrder = () => {
 							<Link to='/pay' className='link-btn'>
 								Pay
 							</Link>
+							<Link to='/gpay' className='link-btn'>
+								go to GPay
+							</Link>
 						</div>
 					</Col>
 				</Row>

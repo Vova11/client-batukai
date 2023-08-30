@@ -18,6 +18,7 @@ import {
 	Checkout,
 	ReviewOrder,
 	Payment,
+	GooglePayComponent,
 } from './pages';
 import {
 	Dashboard,
@@ -44,6 +45,7 @@ function App() {
 					<Route path='/checkout' element={<Checkout />} />
 					<Route path='/review' element={<ReviewOrder />} />
 					<Route path='/pay' element={<Payment />} />
+					<Route path='/gpay' element={<GooglePayComponent />} />
 
 					<Route path='products/:productId' element={<SingleProduct />} />
 					<Route path='/login' element={<Login />} />
