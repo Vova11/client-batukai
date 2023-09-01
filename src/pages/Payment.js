@@ -16,6 +16,11 @@ const Payment = () => {
 	const [htmlContent, setHtmlContent] = useState();
 	const [redirectUrl, setRedirectUrl] = useState('');
 	const [data, setData] = useState();
+
+	const handleRedirect = (url) => {
+		window.location.href = url;
+	};
+
 	const handlePaymentClick = async () => {
 		try {
 			const res = await customFetch.post('/orders/pay', {
@@ -41,30 +46,82 @@ const Payment = () => {
 					City: 'Žilina',
 					Zip: '01001',
 					RedirectSign: false,
-					Debug: 'false',
+					Debug: true,
 					NotifyClient: 'vladimir.zembera@gmail.com',
 					NotifyEmail: 'vladimir.zembera@gmail.com',
 					RedirectSign: false,
 				},
 			});
 
-			setData(res.data);
+			axios
+				.post('https://test.24-pay.eu/pay_gate/paygt', res.data, {
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+				})
+				.then((response) => {
+					if (response.status === 200) {
+						// Redirect to the desired URL
+						window.location.href = 'https://test.24-pay.eu/pay_gate/paygt';
+					} else {
+						// Handle other status codes or errors
+						console.error('Error:', response.status);
+					}
+				})
+				.catch((error) => {
+					// Handle errors here
+					console.error('Error:', error);
+				});
+
+			// console.log('send..');
+			// console.log(res);
+			// fetch('https://test.24-pay.eu/pay_gate/paygt', {
+			// 	method: 'POST',
+			// 	headers: {
+			// 		'Content-Type': 'application/x-www-form-urlencoded',
+			// 	},
+			// 	body: JSON.stringify(res.data),
+			// })
+			// 	.then((success) => console.log(success))
+			// 	.catch((err) => console.log(err));
+			// console.log(res);
+			// window.open('https://test.24-pay.eu/pay_gate/paygt');
+			// setHtmlContent(res.data.resData);
+
+			// const htmlContent = res.data;
+			// const newWindow = window.open(
+			// 	'https://test.24-pay.eu/pay_gate/paygt',
+			// 	'_blank'
+			// );
+			// newWindow.document.write(htmlContent);
+
+			// const htmlContent = res.data; // Replace this with your HTML content
+			// const newWindow = window.open(
+			// 	'https://test.24-pay.eu/pay_gate/paygt',
+			// 	'_blank'
+			// );
+
+			// // Check if the new window has finished loading
+			// newWindow.onload = function () {
+			// 	// Add your HTML content to the new window's document
+			// 	newWindow.document.body.innerHTML = htmlContent;
+			// };
+
+			// Perform the second post request
+
+			// const redirectUrl = `https://admin.24-pay.eu/pay_gate/paygt?${new URLSearchParams(
+			// 	res.data
+			// ).toString()}`;
+			// window.location.href = redirectUrl;
 
 			// The condition to render the button depends on the data
 
 			// const newWindow = window.open('', '_blank');
 			// newWindow.document.write(res.data);
 
-			// // Perform the second post request
-			// const response = await axios.post(
-			// 	'https://test.24-pay.eu/pay_gate/paygt',
-			// 	res.data,
-			// 	{
-			// 		headers: {
-			// 			'Content-Type': 'application/x-www-form-urlencoded',
-			// 		},
-			// 	}
-			// );
+			// Perform the second post request
+
+			// window.open(res.data.url, '_self');
 
 			// // Get the response URL from the axios response
 			// const redirectUrl = response.request.res.responseUrl;
@@ -77,55 +134,18 @@ const Payment = () => {
 		}
 	};
 
-	const openRedirectUrl = () => {
-		if (redirectUrl) {
-			window.open(redirectUrl, '_blank');
-		}
-	};
+	// const handleRedirect = async () => {
+	// 	console.log('redirect.....');
+	// 	try {
+	// 		const response = await axios.get(
+	// 			`${process.env.REACT_APP_BASE_URL}/redirect`
+	// 		);
 
-	const handleRedirectWiki = async () => {
-		console.log('redirecting');
-		try {
-			const response = await fetch('https://en.wikipedia.org/wiki/Main_Page');
-
-			if (response.ok) {
-				const data = await response.text();
-				console.log(data); // Here you can work with the fetched HTML content
-			} else {
-				console.error('Request failed with status:', response.status);
-			}
-		} catch (error) {
-			console.error('An error occurred:', error);
-		}
-	};
-
-	const handleRedirect = async () => {
-		console.log(data);
-		try {
-			const response = await fetch('https://test.24-pay.eu/pay_gate/paygt', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-				},
-				dataType: 'json',
-				mode: 'no-cors',
-				cache: 'default',
-				body: data, // Replace with your actual form data
-			});
-			console.log(response);
-
-			if (response.ok) {
-				// Handle successful response
-				console.log('Payment successful');
-			} else {
-				// Handle error response
-				console.log(response);
-				console.error('Payment failed');
-			}
-		} catch (error) {
-			console.error('An error occurred', error);
-		}
-	};
+	// 		window.open(response.data.url, '_self');
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 	}
+	// };
 
 	return (
 		<Wrapper>
@@ -137,16 +157,11 @@ const Payment = () => {
 						<Wrapper className=''>
 							<div className='empty'>
 								<h2>Payment gateway</h2>
-								{data ? (
-									<button onClick={handleRedirect}>Submit Payment</button>
-								) : (
-									<button onClick={handlePaymentClick}>Initiate Payment</button>
-								)}
 
-								<button onClick={handleRedirectWiki}>Redirect me</button>
-								<button onClick={openRedirectUrl}>
-									Open Redirect URL in New Window
-								</button>
+								<button onClick={handleRedirect}>Redirect</button>
+
+								<button onClick={handlePaymentClick}>Initiate Payment</button>
+
 								<div>
 									{/* Render the received HTML content inside an iframe */}
 									{htmlContent && (
