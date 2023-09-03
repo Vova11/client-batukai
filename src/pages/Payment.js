@@ -53,26 +53,7 @@ const Payment = () => {
 				},
 			});
 
-			axios
-				.post('https://test.24-pay.eu/pay_gate/paygt', res.data, {
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
-				})
-				.then((response) => {
-					if (response.status === 200) {
-						// Redirect to the desired URL
-						window.location.href = 'https://test.24-pay.eu/pay_gate/paygt';
-					} else {
-						// Handle other status codes or errors
-						console.error('Error:', response.status);
-					}
-				})
-				.catch((error) => {
-					// Handle errors here
-					console.error('Error:', error);
-				});
-
+			console.log(res);
 			// console.log('send..');
 			// console.log(res);
 			// fetch('https://test.24-pay.eu/pay_gate/paygt', {
@@ -161,17 +142,6 @@ const Payment = () => {
 								<button onClick={handleRedirect}>Redirect</button>
 
 								<button onClick={handlePaymentClick}>Initiate Payment</button>
-
-								<div>
-									{/* Render the received HTML content inside an iframe */}
-									{htmlContent && (
-										<iframe
-											title='Payment Response'
-											srcDoc={htmlContent} // Set the received HTML content here
-											style={{ width: '100%', height: '500px' }}
-										></iframe>
-									)}
-								</div>
 							</div>
 						</Wrapper>
 					</Col>
