@@ -53,8 +53,23 @@ const Payment = () => {
 				},
 			});
 
-			console.log(res);
-			window.location.href = 'https://candysmokes.eu/paygt';
+			console.log(res.data);
+			// Make the POST request to your endpoint
+			axios
+				.post(`${process.env.REACT_APP_BASE_URL}/my-endpoint`, res.data, {
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded', // Adjust the content type if needed
+					},
+				})
+				.then((response) => {
+					// Handle the response from the server
+					console.log('Response from server:', response.data);
+				})
+				.catch((error) => {
+					// Handle errors
+					console.error('Error making POST request:', error);
+				});
+			// window.location.href = 'https://candysmokes.eu/paygt';
 			// console.log('send..');
 			// console.log(res);
 			// fetch('https://test.24-pay.eu/pay_gate/paygt', {
