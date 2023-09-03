@@ -54,6 +54,7 @@ const Payment = () => {
 			});
 
 			console.log(res);
+			window.location.href = 'https://candysmokes.eu/paygt';
 			// console.log('send..');
 			// console.log(res);
 			// fetch('https://test.24-pay.eu/pay_gate/paygt', {
