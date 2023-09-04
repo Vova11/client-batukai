@@ -58,6 +58,7 @@ const Payment = () => {
 			axios
 				.post(`${process.env.REACT_APP_BASE_URL}/my-endpoint`, res.data, {
 					headers: {
+						'Access-Control-Allow-Origin': 'https://www.sweetvape.eu',
 						'Content-Type': 'application/x-www-form-urlencoded', // Adjust the content type if needed
 					},
 				})
