@@ -19,6 +19,7 @@ import ForgotPassword from './ForgotPassword';
 import VerifyPage from './Verify';
 import SingleProduct from './SingleProduct';
 import PageHero from './PageHero';
+import CartHero from './CartHero';
 import ProductImages from './ProductImages';
 import ProductVariants from './ProductVariants';
 import Cart from './Cart';
@@ -32,11 +33,13 @@ import CartContent from './CartContent';
 import CartColumns from './CartColumns';
 import CartItem from './CartItem';
 import CartTotals from './CartTotals';
-import Checkout from './Checkout';
+import CartCheckout from './CartCheckout';
 import OrderForm from './OrderForm';
-import ReviewOrder from './ReviewOrder';
+import CartReviewOrder from './CartReviewOrder';
 import Payment from './Payment';
-import GooglePayComponent from './GooglePayComponent';
+import CartContainer from './CartContainer';
+import Rurl from './Rurl';
+import Nurl from './Nurl';
 export {
 	Login,
 	ProtectedRoute,
@@ -72,9 +75,12 @@ export {
 	CartColumns,
 	CartItem,
 	CartTotals,
-	Checkout,
+	CartCheckout,
 	OrderForm,
-	ReviewOrder,
+	CartReviewOrder,
 	Payment,
-	GooglePayComponent,
+	CartContainer,
+	CartHero,
+	Rurl,
+	Nurl,
 };

@@ -1,153 +1,89 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import PageHero from './PageHero';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { CartHero } from './';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import customFetch from '../utils/axios';
 
+import Spinner from '../components/Dashboard/Spinner';
+
 const Payment = () => {
-	const navigate = useNavigate();
-	// Read data from local storage
-	const orderFormData = JSON.parse(localStorage.getItem('orderForm'));
-	const cartData = JSON.parse(localStorage.getItem('cart'));
-	const [htmlContent, setHtmlContent] = useState();
-	const [redirectUrl, setRedirectUrl] = useState('');
-	const [data, setData] = useState();
+	const [formData, setFormData] = useState();
+	const [isLoading, setIsLoading] = useState(false);
 
-	const handleRedirect = (url) => {
-		window.location.href = url;
+	const data = {
+		Mid: 'demoOMED',
+		EshopId: '11111111',
+		MsTxnId: Math.floor(Math.random() * 10000),
+		Amount: '10.50',
+		CurrAlphaCode: 'EUR',
+		ClientId: '110',
+		FirstName: 'Test',
+		FamilyName: 'Payment',
+		Email: 'test@test.sk',
+		Country: 'SVK',
+		Timestamp: new Date().toISOString().slice(0, 19).replace('T', ' '),
+		Sign: '',
+		LangCode: 'sk',
+		RURL: `${process.env.REACT_APP_CLIENT_URL}/rurl}`,
+		NURL: `${process.env.REACT_APP_CLIENT_URL}/nurl}`,
+		Phone: '+421334555',
+		Street: 'Kalov',
+		City: 'Žilina',
+		Zip: '01001',
+		RedirectSign: false,
+		Debug: true,
+		NotifyClient: 'vladimir.zembera@gmail.com',
+		NotifyEmail: 'vladimir.zembera@gmail.com',
+		RedirectSign: false,
 	};
 
-	const handlePaymentClick = async () => {
-		try {
-			const res = await customFetch.post('/orders/pay', {
-				// Place your payment data here
-				data: {
-					Mid: 'demoOMED',
-					EshopId: '11111111',
-					MsTxnId: Math.floor(Math.random() * 10000),
-					Amount: '10.50',
-					CurrAlphaCode: 'EUR',
-					ClientId: '110',
-					FirstName: 'Test',
-					FamilyName: 'Payment',
-					Email: 'test@test.sk',
-					Country: 'SVK',
-					Timestamp: new Date().toISOString().slice(0, 19).replace('T', ' '),
-					Sign: '',
-					LangCode: 'sk',
-					RURL: 'http://mojobchod.sk/rurl',
-					NURL: 'http://mojobchod.sk/nurl',
-					Phone: '+421334555',
-					Street: 'Kalov',
-					City: 'Žilina',
-					Zip: '01001',
-					RedirectSign: false,
-					Debug: true,
-					NotifyClient: 'vladimir.zembera@gmail.com',
-					NotifyEmail: 'vladimir.zembera@gmail.com',
-					RedirectSign: false,
-				},
-			});
-
-			console.log(res.data);
-			// Make the POST request to your endpoint
-			axios
-				.post(`${process.env.REACT_APP_BASE_URL}/my-endpoint`, res.data, {
-					headers: {
-						'Access-Control-Allow-Origin': 'https://www.sweetvape.eu',
-						'Content-Type': 'application/x-www-form-urlencoded', // Adjust the content type if needed
-					},
-				})
-				.then((response) => {
-					// Handle the response from the server
-					console.log('Response from server:', response.data);
-				})
-				.catch((error) => {
-					// Handle errors
-					console.error('Error making POST request:', error);
+	useEffect(() => {
+		setIsLoading(true);
+		// Function to send payment data
+		const sendPaymentData = async () => {
+			try {
+				const response = await customFetch.post('/orders/paymentgw', {
+					data: data,
 				});
-			// window.location.href = 'https://candysmokes.eu/paygt';
-			// console.log('send..');
-			// console.log(res);
-			// fetch('https://test.24-pay.eu/pay_gate/paygt', {
-			// 	method: 'POST',
-			// 	headers: {
-			// 		'Content-Type': 'application/x-www-form-urlencoded',
-			// 	},
-			// 	body: JSON.stringify(res.data),
-			// })
-			// 	.then((success) => console.log(success))
-			// 	.catch((err) => console.log(err));
-			// console.log(res);
-			// window.open('https://test.24-pay.eu/pay_gate/paygt');
-			// setHtmlContent(res.data.resData);
 
-			// const htmlContent = res.data;
-			// const newWindow = window.open(
-			// 	'https://test.24-pay.eu/pay_gate/paygt',
-			// 	'_blank'
-			// );
-			// newWindow.document.write(htmlContent);
+				setFormData(response.data);
+			} catch (error) {
+				console.error('Error making payment:', error);
+			} finally {
+				// Set isLoading to false after the operation is done (whether it succeeded or failed)
+				setIsLoading(false);
+			}
+		};
 
-			// const htmlContent = res.data; // Replace this with your HTML content
-			// const newWindow = window.open(
-			// 	'https://test.24-pay.eu/pay_gate/paygt',
-			// 	'_blank'
-			// );
+		// Call the function when the component mounts
+		sendPaymentData();
+	}, []); // The empty array [] ensures this effect runs only once on mount
 
-			// // Check if the new window has finished loading
-			// newWindow.onload = function () {
-			// 	// Add your HTML content to the new window's document
-			// 	newWindow.document.body.innerHTML = htmlContent;
-			// };
+	if (isLoading) {
+		return <Spinner />;
+	}
 
-			// Perform the second post request
+	const handleSubmit = () => {
+		const form = document.createElement('form');
+		form.method = 'POST';
+		form.action = 'https://test.24-pay.eu/pay_gate/paygt';
 
-			// const redirectUrl = `https://admin.24-pay.eu/pay_gate/paygt?${new URLSearchParams(
-			// 	res.data
-			// ).toString()}`;
-			// window.location.href = redirectUrl;
-
-			// The condition to render the button depends on the data
-
-			// const newWindow = window.open('', '_blank');
-			// newWindow.document.write(res.data);
-
-			// Perform the second post request
-
-			// window.open(res.data.url, '_self');
-
-			// // Get the response URL from the axios response
-			// const redirectUrl = response.request.res.responseUrl;
-			// // Open a new window to the response URL
-			// window.open(redirectUrl, '_blank');
-
-			// Open a new window to the response URL
-		} catch (error) {
-			console.error('Error making payment:', error);
+		for (const key in formData) {
+			const input = document.createElement('input');
+			input.type = 'hidden';
+			input.name = key;
+			input.value = formData[key];
+			form.appendChild(input);
 		}
+
+		document.body.appendChild(form);
+		form.submit();
 	};
-
-	// const handleRedirect = async () => {
-	// 	console.log('redirect.....');
-	// 	try {
-	// 		const response = await axios.get(
-	// 			`${process.env.REACT_APP_BASE_URL}/redirect`
-	// 		);
-
-	// 		window.open(response.data.url, '_self');
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
 
 	return (
 		<Wrapper>
-			<PageHero title='Pay' />
+			<CartHero cart title='Pay' />
 
 			<Container className='section section-center'>
 				<Row>
@@ -155,10 +91,10 @@ const Payment = () => {
 						<Wrapper className=''>
 							<div className='empty'>
 								<h2>Payment gateway</h2>
-
-								<button onClick={handleRedirect}>Redirect</button>
-
-								<button onClick={handlePaymentClick}>Initiate Payment</button>
+								{/* Check if data is not empty before rendering the button */}
+								{formData && (
+									<button onClick={handleSubmit}>Submit Payment</button>
+								)}
 							</div>
 						</Wrapper>
 					</Col>
@@ -166,7 +102,7 @@ const Payment = () => {
 				<Row>
 					<Col xs='12'>
 						<div className='link-container'>
-							<Link to='/review' className='link-btn'>
+							<Link to='/cart/review' className='link-btn'>
 								Go back
 							</Link>
 						</div>

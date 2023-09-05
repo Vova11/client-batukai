@@ -4,16 +4,16 @@ import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { PageHero, OrderForm } from './';
+import { CartHero, OrderForm } from './';
 import Card from 'react-bootstrap/Card';
 import { formatPrice } from '../utils/helpers';
-const Checkout = () => {
+const CartCheckout = () => {
 	const { cart, total_items, total_amount, shipping_fee } = useSelector(
 		(store) => store.cart
 	);
 	return (
 		<Wrapper>
-			<PageHero title='Checkout' />
+			<CartHero cart title='Checkout' />
 
 			<Container className='section section-center'>
 				<h2>Place your order</h2>
@@ -23,7 +23,7 @@ const Checkout = () => {
 						<OrderForm />
 					</Col>
 					<Col xs lg='6'>
-						<Wrapper>
+						<Wrapper className='addMarginTop'>
 							<h4>Your order:</h4>
 							<Card>
 								<Card.Body>
@@ -71,6 +71,8 @@ const Checkout = () => {
 	);
 };
 
+export default CartCheckout;
+
 const Wrapper = styled.section`
 	.text-xs {
 		font-size: 0.75rem;
@@ -110,6 +112,12 @@ const Wrapper = styled.section`
 		font-weight: 400;
 		cursor: pointer;
 	}
+	/* Define a CSS class with a margin-top property */
+	/* Use @media to conditionally apply the class on xs screens */
+	@media (max-width: 989px) {
+		/* xs screen size according to Bootstrap */
+		.addMarginTop {
+			margin-top: 50px;
+		}
+	}
 `;
-
-export default Checkout;

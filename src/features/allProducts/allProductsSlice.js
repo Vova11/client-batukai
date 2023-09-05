@@ -72,6 +72,8 @@ const allProductsSlice = createSlice({
 				state.isLoading = true;
 			})
 			.addCase(getAllProducts.fulfilled, (state, { payload }) => {
+				console.log('Hurraaa');
+				console.log(payload.products);
 				state.isLoading = false;
 				state.products = payload.products;
 				state.featured_products = payload.products.filter(
@@ -83,6 +85,7 @@ const allProductsSlice = createSlice({
 			.addCase(getAllProducts.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.error = payload;
+				console.log(payload);
 				toast.error(payload);
 			});
 	},

@@ -182,6 +182,7 @@ const productSlice = createSlice({
 			})
 			.addCase(editProduct.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
+				console.log('here i am ');
 				toast.success(payload.message);
 			})
 			.addCase(editProduct.rejected, (state, { payload }) => {

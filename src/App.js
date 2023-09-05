@@ -15,10 +15,12 @@ import {
 	ForgotPassword,
 	ErrorPage,
 	SingleProduct,
-	Checkout,
-	ReviewOrder,
+	CartCheckout,
+	CartReviewOrder,
 	Payment,
-	GooglePayComponent,
+	CartContainer,
+	Rurl,
+	Nurl,
 } from './pages';
 import {
 	Dashboard,
@@ -41,12 +43,14 @@ function App() {
 					<Route index element={<Home />} />
 					<Route path='about' element={<About />} />
 					<Route path='products' element={<Products />} />
-					<Route path='/cart' element={<Cart />} />
-					<Route path='/checkout' element={<Checkout />} />
-					<Route path='/review' element={<ReviewOrder />} />
-					<Route path='/pay' element={<Payment />} />
-					<Route path='/gpay' element={<GooglePayComponent />} />
-
+					<Route path='/cart' element={<CartContainer />}>
+						<Route index element={<Cart />} />
+						<Route path='checkout' element={<CartCheckout />} />
+						<Route path='review' element={<CartReviewOrder />} />
+						<Route path='pay' element={<Payment />} />
+					</Route>
+					<Route path='/rurl' element={<Rurl />} />
+					<Route path='/nurl' element={<Nurl />} />
 					<Route path='products/:productId' element={<SingleProduct />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/register' element={<Register />} />

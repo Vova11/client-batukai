@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
+
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { CartContent, PageHero } from '../pages';
 import { addToCart, countCartTotal } from '../features/cart/cartSlice';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 const Cart = () => {
 	const { cart, clearCart, totalCost } = useSelector((store) => store.cart);
 
@@ -28,6 +29,7 @@ const Cart = () => {
 			<PageHero title='Cart' />
 			<Wrapper className='section section-center'>
 				<CartContent />
+				<Outlet />
 			</Wrapper>
 		</main>
 	);

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const customFetch = axios.create({
-	baseURL: `${process.env.REACT_APP_BASE_URL}/api/v1`,
+	baseURL: `${process.env.REACT_APP_SERVER_URL}`,
 	withCredentials: true,
 });
 
@@ -15,7 +15,7 @@ customFetch.interceptors.response.use(
 	},
 	function (error) {
 		if (error.code === 'ECONNREFUSED') {
-			console.error('Connection refused error:', 'ERRRORRRR');
+			console.error('Connection refused error:', 'ERROR from axios');
 			// Handle the connection refused error here
 			// For example, show an error message to the user or retry the request
 		}

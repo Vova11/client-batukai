@@ -152,6 +152,8 @@ const AddProductPage = () => {
 					<FormRow
 						col='12'
 						type='textarea'
+						rows={6} // Set the number of initial visible rows
+						style={{ minHeight: '200px!' }} // Use CSS to control the minimum height
 						id='description'
 						label='Description'
 						name='description'

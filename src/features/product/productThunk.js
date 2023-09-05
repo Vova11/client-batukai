@@ -15,7 +15,6 @@ export const createProductThunk = async (product, thunkAPI) => {
 	try {
 		const resp = await customFetch.post('/products', product, authHeader());
 		thunkAPI.dispatch(clearValues());
-		console.log(resp.data);
 		return resp.data;
 	} catch (error) {
 		checkForUnauthorizedResponse(error, thunkAPI);
@@ -126,6 +125,7 @@ export const updateProductFeaturedThunk = async (id, thunkAPI) => {
 			{},
 			authHeader()
 		);
+
 		// Return the response data if needed
 		thunkAPI.dispatch(getAllProducts());
 		return response.data;
@@ -142,6 +142,7 @@ export const getProductThunk = async (id, thunkAPI) => {
 			},
 			withCredentials: true,
 		});
+
 		return response.data;
 	} catch (error) {
 		return thunkAPI.rejectWithValue(error.response.data.msg);

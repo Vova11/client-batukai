@@ -13,6 +13,7 @@ const OrderForm = () => {
 		city: '',
 		zipCode: '',
 		isOver18: false, // Default value
+		agreeWithConditions: false,
 	};
 
 	const [formData, setFormData] = useState(initialState);
@@ -40,11 +41,17 @@ const OrderForm = () => {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		console.log(formData.isOver18);
-		if (formData.isOver18) {
-			localStorage.setItem('orderForm', JSON.stringify(formData));
-			navigate('/review'); // Ensure this is the correct route path
-		} else {
+		if (!formData.isOver18) {
 			toast.error('Please confirm that you are above 18 years old');
+		}
+
+		if (!formData.agreeWithConditions) {
+			toast.error('Please agree to the conditions');
+		}
+
+		if (formData.isOver18 && formData.agreeWithConditions) {
+			localStorage.setItem('orderForm', JSON.stringify(formData));
+			navigate('/cart/review'); // Ensure this is the correct route path
 		}
 	};
 
@@ -156,6 +163,20 @@ const OrderForm = () => {
 					I am more than 18 years old
 				</label>
 			</div>
+			<div className='form-check'>
+				<input
+					type='checkbox'
+					className='form-check-input'
+					id='agreeWithConditions'
+					name='agreeWithConditions'
+					checked={formData.agreeWithConditions}
+					onChange={handleInputChange}
+				/>
+				<label className='form-check-label' htmlFor='agreeWithConditions'>
+					Vseobecne obchodne podmienky
+				</label>
+			</div>
+
 			<Buttons>
 				<button type='submit' className='btn btn-primary'>
 					Submit

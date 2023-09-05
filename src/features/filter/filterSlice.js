@@ -68,7 +68,7 @@ const filterSlice = createSlice({
 		},
 		updateFilters: (state, action) => {
 			const { name, value } = action.payload;
-			console.log('updajting');
+			console.log('updajting filter');
 
 			// Update state.filters with the new value for the specified filter
 			state.filters[name] = value;

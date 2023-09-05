@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import FormRow from '../../pages/FormRow';
 import { getUser, updateUser } from '../../features/user/userSlice';
 const Profile = () => {
-	const { isLoading, user, userObject } = useSelector((store) => store.user);
+	const { user, userObject } = useSelector((store) => store.user);
 
 	const dispatch = useDispatch();
 

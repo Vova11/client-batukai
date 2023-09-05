@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import PageHero from './PageHero';
+import { CartHero } from './';
 import { useNavigate } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import { formatPrice } from '../utils/helpers';
@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-const ReviewOrder = () => {
+const CartReviewOrder = () => {
 	const navigate = useNavigate();
 	// Read data from local storage
 	const orderFormData = JSON.parse(localStorage.getItem('orderForm'));
@@ -24,7 +24,7 @@ const ReviewOrder = () => {
 	};
 	return (
 		<Wrapper>
-			<PageHero title='Review order' />
+			<CartHero cart title='Review order' />
 
 			<Container className='section section-center'>
 				<Row>
@@ -38,7 +38,7 @@ const ReviewOrder = () => {
 						<p>House number: {orderFormData.houseNumber}</p>
 						<p>Zip Code: {orderFormData.zipCode}</p>
 					</Col>
-					<Col xs lg='6'>
+					<Col xs lg='6' className={window.innerWidth < 576 ? 'mt-5' : ''}>
 						<Wrapper>
 							<h2>Your order:</h2>
 							<Card>
@@ -99,11 +99,8 @@ const ReviewOrder = () => {
 							<Link to='/checkout' className='link-btn'>
 								Go back
 							</Link>
-							<Link to='/pay' className='link-btn'>
+							<Link to='/cart/pay' className='link-btn'>
 								Pay
-							</Link>
-							<Link to='/gpay' className='link-btn'>
-								go to GPay
 							</Link>
 						</div>
 					</Col>
@@ -113,7 +110,7 @@ const ReviewOrder = () => {
 	);
 };
 
-export default ReviewOrder;
+export default CartReviewOrder;
 
 const Wrapper = styled.section`
 	.text-xs {
