@@ -25,7 +25,7 @@ const Payment = () => {
 		Timestamp: new Date().toISOString().slice(0, 19).replace('T', ' '),
 		Sign: '',
 		LangCode: 'sk',
-		RURL: `${process.env.REACT_APP_CLIENT_URL}/rurl}`,
+		RURL: `${process.env.REACT_APP_CLIENT_URL}/thankyou}`,
 		NURL: `${process.env.REACT_APP_CLIENT_URL}/nurl}`,
 		Phone: '+421334555',
 		Street: 'Kalov',

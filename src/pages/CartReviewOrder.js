@@ -96,7 +96,7 @@ const CartReviewOrder = () => {
 				<Row>
 					<Col xs='12'>
 						<div className='link-container'>
-							<Link to='/checkout' className='link-btn'>
+							<Link to='/cart/checkout' className='link-btn'>
 								Go back
 							</Link>
 							<Link to='/cart/pay' className='link-btn'>

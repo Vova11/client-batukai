@@ -55,7 +55,9 @@ const OrderForm = () => {
 		}
 	};
 
-	const handleContinueShopping = () => {};
+	const handleContinueShopping = () => {
+		navigate('/products');
+	};
 
 	return (
 		<form onSubmit={handleSubmit}>

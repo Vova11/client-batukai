@@ -5,15 +5,10 @@ import styled from 'styled-components';
 
 const CartContainer = () => {
 	return (
-		<Wrapper>
-			<main className='bg-color'>
-				{/* Stack the columns on mobile by making one full-width and the other half-width */}
-
-				<div className='page-dashboard'>
-					<Outlet />
-				</div>
-			</main>
-		</Wrapper>
+		<div>
+			{/* Stack the columns on mobile by making one full-width and the other half-width */}
+			<Outlet />
+		</div>
 	);
 };
 
