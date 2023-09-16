@@ -8,9 +8,11 @@ const OrderForm = () => {
 		firstName: '',
 		lastName: '',
 		email: '',
-		address: '',
+		street: '',
+		phone: '',
 		houseNumber: '',
 		city: '',
+		country: '',
 		zipCode: '',
 		isOver18: false, // Default value
 		agreeWithConditions: false,
@@ -101,13 +103,13 @@ const OrderForm = () => {
 				/>
 			</div>
 			<div className='mb-3'>
-				<label htmlFor='address' className='form-label'>
-					Address
+				<label htmlFor='street' className='form-label'>
+					Street
 				</label>
 				<input
 					type='text'
-					name='address'
-					value={formData.address}
+					name='street'
+					value={formData.street}
 					onChange={handleInputChange}
 					className='form-control'
 					required
@@ -147,6 +149,32 @@ const OrderForm = () => {
 					type='text'
 					name='zipCode'
 					value={formData.zipCode}
+					onChange={handleInputChange}
+					className='form-control'
+					required
+				/>
+			</div>
+			<div className='mb-3'>
+				<label htmlFor='country' className='form-label'>
+					Country
+				</label>
+				<input
+					type='text'
+					name='country'
+					value={formData.country}
+					onChange={handleInputChange}
+					className='form-control'
+					required
+				/>
+			</div>
+			<div className='mb-3'>
+				<label htmlFor='phone' className='form-label'>
+					Phone number
+				</label>
+				<input
+					type='text'
+					name='phone'
+					value={formData.phone}
 					onChange={handleInputChange}
 					className='form-control'
 					required

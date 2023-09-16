@@ -12,7 +12,7 @@ const CartReviewOrder = () => {
 	const navigate = useNavigate();
 	// Read data from local storage
 	const orderFormData = JSON.parse(localStorage.getItem('orderForm'));
-	const cartData = JSON.parse(localStorage.getItem('cart'));
+	const cartData = JSON.parse(localStorage.getItem('cartItems'));
 
 	const { cart, total_items, total_amount, shipping_fee } = useSelector(
 		(store) => store.cart
@@ -33,10 +33,12 @@ const CartReviewOrder = () => {
 						<p>First Name: {orderFormData.firstName}</p>
 						<p>Last Name: {orderFormData.lastName}</p>
 						<p>Email: {orderFormData.email}</p>
-						<p>City: {orderFormData.city}</p>
-						<p>Address: {orderFormData.address}</p>
+						<p>Phone: {orderFormData.phone}</p>
+						<p>Street: {orderFormData.street}</p>
 						<p>House number: {orderFormData.houseNumber}</p>
+						<p>City: {orderFormData.city}</p>
 						<p>Zip Code: {orderFormData.zipCode}</p>
+						<p>Country: {orderFormData.country}</p>
 					</Col>
 					<Col xs lg='6' className={window.innerWidth < 576 ? 'mt-5' : ''}>
 						<Wrapper>

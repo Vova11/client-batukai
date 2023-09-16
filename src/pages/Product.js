@@ -27,13 +27,16 @@ const Product = ({ images, name, price, id }) => {
 const Wrapper = styled.article`
 	.container-product {
 		position: relative;
-		background: var(--clr-black);
+		/* background: var(--clr-black); */
+		background: transparent;
 		border-radius: var(--radius);
 	}
 	img {
 		width: 100%;
 		display: block;
 		object-fit: cover;
+		height: 100% !important;
+
 		border-radius: var(--radius);
 		transition: var(--transition);
 	}

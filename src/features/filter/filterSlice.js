@@ -116,7 +116,6 @@ const filterSlice = createSlice({
 			.addCase(getAllProducts.fulfilled, (state, action) => {
 				state.isLoading = false;
 				console.log('Get All Products from FILTER');
-				console.log(action.payload);
 				// pagination
 				state.totalProducts = action.payload.totalProducts;
 				state.numOfPages = action.payload.numOfPages;

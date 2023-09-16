@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const getLocalStorage = () => {
-	let cart = localStorage.getItem('cart');
+	let cart = localStorage.getItem('cartItems');
 	if (cart) {
-		return JSON.parse(localStorage.getItem('cart'));
+		return JSON.parse(localStorage.getItem('cartItems'));
 	} else {
 		return [];
 	}
@@ -13,7 +13,7 @@ export const clearCart = () => (dispatch) => {
 	// Perform any async operations here if needed
 	// Then dispatch the actual clearCart action
 	dispatch(clearCartAction());
-	dispatch(countCartTotal());
+	// dispatch(countCartTotal()); //IS IT NEEDED?
 };
 
 export const countCartTotal = () => (dispatch) => {
@@ -36,7 +36,7 @@ const initialState = {
 	cart: getLocalStorage(),
 	total_items: 0,
 	total_amount: 0,
-	shipping_fee: 534,
+	shipping_fee: 6,
 };
 const cartSlice = createSlice({
 	name: 'cart',
@@ -52,6 +52,7 @@ const cartSlice = createSlice({
 				stock,
 				image,
 				price,
+				company,
 			} = action.payload;
 			const tempItem = state.cart.find((i) => i.id === productId + size);
 			if (tempItem) {
@@ -81,6 +82,7 @@ const cartSlice = createSlice({
 					max: stock, //its stock
 					stock,
 					size,
+					company,
 				};
 				return { ...state, cart: [...state.cart, newItem] };
 			}
@@ -90,15 +92,13 @@ const cartSlice = createSlice({
 			console.log('removeItem.....');
 			const tempCart = state.cart.filter((item) => item.id !== itemId);
 			// Update local storage
-			localStorage.setItem('cart', JSON.stringify(tempCart));
+			localStorage.setItem('cartItems', JSON.stringify(tempCart));
 			return { ...state, cart: tempCart };
 		},
 		toggleAmountAction: (state, action) => {
 			const { id, value } = action.payload;
 			const tempCart = state.cart.map((item) => {
 				if (item.id === id) {
-					console.log('itemId', item.id);
-					console.log('ID', id);
 					if (value === 'increase') {
 						let newAmount = item.amount + 1;
 						if (newAmount > item.max) {
@@ -117,7 +117,7 @@ const cartSlice = createSlice({
 					return item;
 				}
 			});
-			localStorage.setItem('cart', JSON.stringify(tempCart));
+			localStorage.setItem('cartItems', JSON.stringify(tempCart));
 			return { ...state, cart: tempCart };
 		},
 		setQuantityToOne: (state) => {
@@ -143,9 +143,17 @@ const cartSlice = createSlice({
 			);
 			return { ...state, total_items, total_amount };
 		},
+		updateShippingFee: (state, action) => {
+			const newShippingFee = action.payload; // Assuming action.payload is the new shipping fee value
+			// Create a new state object with the updated shipping_fee
+			return {
+				...state, // Copy the current state
+				shipping_fee: newShippingFee, // Update the shipping_fee with the new value
+			};
+		},
 		clearCartAction: (state) => {
 			console.log('clear cart');
-			localStorage.setItem('cart', JSON.stringify([])); // Update the local storage
+			localStorage.setItem('cartItems', JSON.stringify([])); // Update the local storage
 			return {
 				...state,
 				cart: [], // Update the Redux state
@@ -161,6 +169,7 @@ export const {
 	removeItemAction,
 	toggleAmountAction,
 	countCartTotalAction,
+	updateShippingFee,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

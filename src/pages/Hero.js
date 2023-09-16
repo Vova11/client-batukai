@@ -10,9 +10,10 @@ const Hero = () => {
 					ShoeBoxLive <br />
 				</h1>
 				<p>
-					Our e-shop offers a wide range of kids shoes that are specifically
-					designed to provide utmost comfort and support for growing feet,
-					ensuring healthy foot development for your little ones.
+					Unleash your taste buds and elevate your vaping experience with our
+					premium e-liquids. Dive into a world of rich flavors, unbeatable
+					quality, and pure vaping satisfaction. Why settle for ordinary when
+					you can vape extraordinary?
 				</p>
 				<Link to='/products' className='btn'>
 					Shop now

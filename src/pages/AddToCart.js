@@ -8,9 +8,9 @@ import { Link } from 'react-router-dom';
 const AddToCart = ({ item, quantity, setQuantity, size, hasStock }) => {
 	const dispatch = useDispatch();
 	const { cart } = useSelector((store) => store.cart);
-	console.log('Ma stock? : ', hasStock);
+
 	useEffect(() => {
-		localStorage.setItem('cart', JSON.stringify(cart));
+		localStorage.setItem('cartItems', JSON.stringify(cart));
 	}, [cart]);
 
 	const handleIncrement = () => {

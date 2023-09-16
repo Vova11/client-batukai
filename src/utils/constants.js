@@ -12,6 +12,12 @@ export const links = [
 		text: 'Products',
 		url: '/products',
 	},
+
+	{
+		id: 3,
+		text: 'Brands',
+		url: '/brands',
+	},
 ];
 
 export const products_url = 'https://course-api.com/react-store-products';
@@ -27,18 +33,18 @@ export const services = [
 		id: 1,
 		icon: <GiCompass />,
 		title: 'mission',
-		text: 'We prioritize the safety of your children, which is why all our kids shoes are made from high-quality materials and undergo rigorous testing to meet the highest industry standards, giving you peace of mind while they play and explore.',
+		text: 'Our mission is to provide premium vaping experiences tailored to your preferences, helping you lead a healthier lifestyle through innovation and quality.',
 	},
 	{
 		id: 2,
 		icon: <GiDiamondHard />,
 		title: 'vision',
-		text: `With our diverse collection of styles, colors, and sizes, you'll find the perfect pair of shoes to match your child's unique personality and outfit, allowing them to express themselves with confidence and style.'`,
+		text: 'With a vision to become a leading name in the vaping industry, we aspire to set new standards by continually evolving and delivering products that enhance your well-being.',
 	},
 	{
 		id: 3,
 		icon: <GiStabbedNote />,
 		title: 'history',
-		text: `We understand that kids grow quickly, which is why we offer affordable prices without compromising on quality, making it easy and cost-effective for you to keep up with their changing shoe needs as they continue to grow.'`,
+		text: `Our passion and dedication drive us to create a history of excellence in every product we offer, ensuring that every customer feels valued and satisfied.`,
 	},
 ];

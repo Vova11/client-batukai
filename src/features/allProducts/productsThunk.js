@@ -9,7 +9,7 @@ export const getAllProductsThunk = async (_, thunkAPI) => {
 		url = url + `&search=${search}`;
 	}
 	try {
-		const resp = await customFetch(url);
+		const resp = await customFetch.get(url);
 		return resp.data;
 	} catch (error) {
 		// console.log(error.message);

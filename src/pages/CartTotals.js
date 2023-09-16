@@ -1,14 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { formatPrice } from '../utils/helpers';
 import { Link } from 'react-router-dom';
+import { updateShippingFee } from '../features/cart/cartSlice'; // Import your action for updating shipping fee
+
 const CartTotals = () => {
+	const dispatch = useDispatch();
 	const { cart, total_amount, shipping_fee } = useSelector(
 		(store) => store.cart
 	);
 
-	console.log('total amount je :', total_amount);
+	const TOTAL_IS_ABOVE = 30;
+	const DEFAULT_SHIPPING_FEE = 6;
+
+	useEffect(() => {
+		if (total_amount > TOTAL_IS_ABOVE && shipping_fee !== 0) {
+			// If total_amount is greater than 30 and shipping_fee is not already 0, update shipping_fee to 0
+			dispatch(updateShippingFee(0));
+		} else if (
+			total_amount <= TOTAL_IS_ABOVE &&
+			shipping_fee !== DEFAULT_SHIPPING_FEE
+		) {
+			// If total_amount is less than or equal to 30 and shipping_fee is not your default value, reset it to the default value
+			dispatch(updateShippingFee(DEFAULT_SHIPPING_FEE)); // Dispatch an action to update the shipping_fee
+		}
+	}, [total_amount, shipping_fee, dispatch]);
 
 	return (
 		<Wrapper>

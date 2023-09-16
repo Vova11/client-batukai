@@ -1,7 +1,7 @@
 import AddProductPage from './AddProductPage';
 import Dashboard from './Dashboard';
-import Order from './Order';
 import Orders from './Orders';
+import OrderDetail from './OrderDetail';
 import ProductPage from './ProductPage';
 import ProductsPage from './ProductsPage';
 import Stats from './Stats';
@@ -15,8 +15,8 @@ import ActionButtons from './ActionButtons';
 import PageBtnContainer from './PageBtnContainer';
 export {
 	Dashboard,
-	Order,
 	Orders,
+	OrderDetail,
 	ProductPage,
 	ProductsPage,
 	Stats,

@@ -7,15 +7,16 @@ const Services = () => {
 			<div className='section-center'>
 				<article className='header'>
 					<h3>
-						Unleash Your Sole's Personality
+						Unparalleled Customer Service & Cutting-Edge Products
 						<br />
 					</h3>
 					<p>
-						Our customer service team is dedicated to ensuring your complete
-						satisfaction, providing prompt assistance and support throughout
-						your shopping experience, from selecting the right size to
-						addressing any concerns you may have, making us your trusted choice
-						for kids shoes.
+						At our vape shop, exceptional customer service is not just a
+						promise; it's our commitment to you. Our knowledgeable staff is
+						always ready to assist you, ensuring your vaping journey is smooth
+						and enjoyable. Plus, we constantly update our inventory with the
+						latest and greatest products, so you can stay ahead in the world of
+						vaping innovation
 					</p>
 				</article>
 				<div className='services-center'>

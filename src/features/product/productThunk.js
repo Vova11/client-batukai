@@ -20,6 +20,7 @@ export const createProductThunk = async (product, thunkAPI) => {
 		checkForUnauthorizedResponse(error, thunkAPI);
 	}
 };
+
 export const deleteProductThunk = async (productId, thunkAPI) => {
 	thunkAPI.dispatch(showLoading());
 	try {
@@ -142,7 +143,7 @@ export const getProductThunk = async (id, thunkAPI) => {
 			},
 			withCredentials: true,
 		});
-
+		console.log(response.data);
 		return response.data;
 	} catch (error) {
 		return thunkAPI.rejectWithValue(error.response.data.msg);

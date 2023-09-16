@@ -30,6 +30,8 @@ import {
 	Stats,
 	Profile,
 	SharedLayout as Layout,
+	Orders,
+	OrderDetail,
 } from './components/Dashboard';
 
 import { ToastContainer } from 'react-toastify';
@@ -72,6 +74,8 @@ function App() {
 					<Route path='add-product' element={<AddProductPage />} />
 					<Route path='stats' element={<Stats />} />
 					<Route path='profile' element={<Profile />} />
+					<Route path='orders' element={<Orders />} />
+					<Route path='orders/:id' element={<OrderDetail />} />
 				</Route>
 				<Route path='*' element={<ErrorPage />} />
 			</Routes>

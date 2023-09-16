@@ -37,7 +37,7 @@ const SingleProduct = () => {
 
 	const { name, price, description, id, averageRating, numberOfReviews } =
 		single_product;
-
+	console.log(single_product);
 	// Check if any variant has stock > 0
 	const hasVariantWithStock = single_product.variants.some(
 		(variant) => variant.stock > 0
@@ -72,6 +72,34 @@ const SingleProduct = () => {
 						<p className='info'>
 							<span>Brand :</span>
 							{single_product.company?.name}
+						</p>
+						<p className='info'>
+							<span>Počet potiahnutí:</span>
+							{single_product.puffs}
+						</p>
+						<p className='info'>
+							<span>MNOŽSTVO NIKOTÍNOVEJ SOLI:</span>
+							{single_product.nicotineSaltQuantity}
+						</p>
+						<p className='info'>
+							<span>Množstvo nikotínovej soli:</span>
+							{single_product.eLiquidVolume}
+						</p>
+						<p className='info'>
+							<span>Objem nálne:</span>
+							{single_product.battery}
+						</p>
+						<p className='info'>
+							<span>Batéria:</span>
+							{single_product.battery}
+						</p>
+						<p className='info'>
+							<span>Nikotín:</span>
+							{single_product.nicotine}
+						</p>
+						<p className='info'>
+							<span>Multipack 10ks:</span>
+							{single_product.multipack ? 'Áno' : 'Nie'}
 						</p>
 						<hr />
 						<p className='info'>

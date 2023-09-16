@@ -35,6 +35,12 @@ const initialState = {
 	],
 	isEditing: false,
 	editProductId: '',
+	puffs: '',
+	nicotineSaltQuantity: '',
+	eLiquidVolume: '',
+	battery: '',
+	nicotine: '',
+	multipack: '',
 };
 
 export const createProduct = createAsyncThunk(
@@ -128,8 +134,6 @@ const productSlice = createSlice({
 				state.isLoading = true;
 			})
 			.addCase(createProduct.fulfilled, (state, action) => {
-				console.log('Fullfield');
-				console.log('creating product');
 				state.isLoading = false;
 				toast.success('Product created');
 			})
@@ -156,9 +160,7 @@ const productSlice = createSlice({
 				state.isLoading = true;
 			})
 			.addCase(removeImage.fulfilled, (state, { payload }) => {
-				console.log('Fullfield');
 				state.isLoading = false;
-				console.log(payload);
 				toast.success('Image removed');
 			})
 			.addCase(removeImage.rejected, (state, action) => {
@@ -182,7 +184,6 @@ const productSlice = createSlice({
 			})
 			.addCase(editProduct.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				console.log('here i am ');
 				toast.success(payload.message);
 			})
 			.addCase(editProduct.rejected, (state, { payload }) => {
