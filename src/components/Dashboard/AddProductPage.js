@@ -38,7 +38,6 @@ const AddProductPage = () => {
 	};
 
 	const handleRemoveVariant = (index) => {
-		// console.log(index);
 		dispatch(removeVariant(index));
 	};
 

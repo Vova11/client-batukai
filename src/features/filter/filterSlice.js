@@ -17,9 +17,10 @@ const initialState = {
 	sort: 'price-lowest',
 	companies: [],
 	filters: {
-		text: '',
+		search: '',
 		company: 'all',
 		category: 'all',
+		nicotine: 'all',
 		colour: '',
 		min_price: 0,
 		max_price: 0,
@@ -54,21 +55,11 @@ const filterSlice = createSlice({
 			state.sort = action.payload;
 			// Sort the products based on the selected sort value
 			let tempProducts = [...state.filtered_products];
-			// if (action.payload === 'price-lowest') {
-			// 	tempProducts.sort((a, b) => a.price - b.price);
-			// } else if (action.payload === 'price-highest') {
-			// 	tempProducts.sort((a, b) => b.price - a.price);
-			// } else if (action.payload === 'name-a') {
-			// 	tempProducts.sort((a, b) => a.name.localeCompare(b.name));
-			// } else if (action.payload === 'name-z') {
-			// 	tempProducts.sort((a, b) => b.name.localeCompare(a.name));
-			// }
 			// Update filtered_products with the sorted array
 			state.filtered_products = tempProducts;
 		},
 		updateFilters: (state, action) => {
 			const { name, value } = action.payload;
-			console.log('updajting filter');
 
 			// Update state.filters with the new value for the specified filter
 			state.filters[name] = value;
@@ -78,20 +69,27 @@ const filterSlice = createSlice({
 			if (numericalFields.includes(name)) {
 				state.filters[name] = Number(value);
 			}
-			const { text, category, company, color, price, shipping } = state.filters;
+			const { search, category, company, color, price, shipping, nicotine } =
+				state.filters;
 			let tempProducts = [...state.all_products];
 			// Apply the filter logic based on the filter name
 
 			// filter by text
-			if (text) {
+			if (search) {
 				tempProducts = [...tempProducts].filter((product) =>
-					product.name.toLowerCase().startsWith(text.toLowerCase())
+					product.name.toLowerCase().startsWith(search.toLowerCase())
 				);
 			}
 
 			if (company !== 'all') {
 				tempProducts = [...tempProducts].filter(
 					(product) => company === 'all' || product.company === company
+				);
+			}
+
+			if (nicotine !== 'all') {
+				tempProducts = [...tempProducts].filter(
+					(product) => nicotine === 'all' || product.company === nicotine
 				);
 			}
 
@@ -103,6 +101,8 @@ const filterSlice = createSlice({
 			state.filtered_products = state.all_products;
 			const updatedFilters = {
 				...state.filters,
+				search: '',
+				nicotine: 'all',
 				company: 'all',
 				category: 'all',
 				price: state.filters.max_price,
@@ -115,7 +115,7 @@ const filterSlice = createSlice({
 		builder
 			.addCase(getAllProducts.fulfilled, (state, action) => {
 				state.isLoading = false;
-				console.log('Get All Products from FILTER');
+				console.log('Get all Products to FILTER');
 				// pagination
 				state.totalProducts = action.payload.totalProducts;
 				state.numOfPages = action.payload.numOfPages;

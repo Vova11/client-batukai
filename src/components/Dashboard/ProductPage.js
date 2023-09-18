@@ -2,10 +2,11 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import ActionButtons from './ActionButtons.js';
 import moment from 'moment';
+
 import {
-	updateProductPublished,
 	updateProductFeatured,
-} from '../../features/product/productSlice.js';
+	updateProductPublished,
+} from '../../features/allProducts/allProductsSlice.js';
 
 const ProductPage = (product) => {
 	const dispatch = useDispatch();

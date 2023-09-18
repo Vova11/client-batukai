@@ -78,16 +78,12 @@ const SingleProduct = () => {
 							{single_product.puffs}
 						</p>
 						<p className='info'>
-							<span>MNOŽSTVO NIKOTÍNOVEJ SOLI:</span>
+							<span>Množstvo nikotínovej soli:</span>
 							{single_product.nicotineSaltQuantity}
 						</p>
 						<p className='info'>
-							<span>Množstvo nikotínovej soli:</span>
+							<span>Objem náplne</span>
 							{single_product.eLiquidVolume}
-						</p>
-						<p className='info'>
-							<span>Objem nálne:</span>
-							{single_product.battery}
 						</p>
 						<p className='info'>
 							<span>Batéria:</span>
@@ -95,7 +91,7 @@ const SingleProduct = () => {
 						</p>
 						<p className='info'>
 							<span>Nikotín:</span>
-							{single_product.nicotine}
+							{single_product.nicotine ? 'Áno' : 'Nie'}
 						</p>
 						<p className='info'>
 							<span>Multipack 10ks:</span>
@@ -144,9 +140,9 @@ const Wrapper = styled.main`
 	}
 	.info {
 		text-transform: capitalize;
-		width: 300px;
+		width: 100%;
 		display: grid;
-		grid-template-columns: 125px 1fr;
+		grid-template-columns: 80% 1fr;
 		span {
 			font-weight: 700;
 		}

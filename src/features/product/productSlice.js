@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import customFetch from '../../utils/axios';
+
 import {
 	createProductThunk,
 	deleteProductThunk,
@@ -39,8 +39,8 @@ const initialState = {
 	nicotineSaltQuantity: '',
 	eLiquidVolume: '',
 	battery: '',
-	nicotine: '',
-	multipack: '',
+	nicotine: false,
+	multipack: false,
 };
 
 export const createProduct = createAsyncThunk(
@@ -69,16 +69,6 @@ export const deleteProduct = createAsyncThunk(
 export const editProduct = createAsyncThunk(
 	'product/editProduct',
 	editProductThunk
-);
-
-export const updateProductPublished = createAsyncThunk(
-	'product/publishProduct',
-	updateProductPublishedThunk
-);
-
-export const updateProductFeatured = createAsyncThunk(
-	'product/featureProduct',
-	updateProductFeaturedThunk
 );
 
 export const getProduct = createAsyncThunk(
@@ -135,6 +125,7 @@ const productSlice = createSlice({
 			})
 			.addCase(createProduct.fulfilled, (state, action) => {
 				state.isLoading = false;
+				console.log(action);
 				toast.success('Product created');
 			})
 			.addCase(createProduct.rejected, (state, { payload }) => {
@@ -190,28 +181,6 @@ const productSlice = createSlice({
 				state.isLoading = false;
 				toast.error(payload);
 			})
-			.addCase(updateProductPublished.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(updateProductPublished.fulfilled, (state, { payload }) => {
-				// Set isLoading to false if necessary
-				state.isLoading = false;
-			})
-			.addCase(updateProductPublished.rejected, (state, { payload }) => {
-				state.isLoading = false;
-				toast.error(payload);
-			})
-			.addCase(updateProductFeatured.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(updateProductFeatured.fulfilled, (state, { payload }) => {
-				// Set isLoading to false if necessary
-				state.isLoading = false;
-			})
-			.addCase(updateProductFeatured.rejected, (state, { payload }) => {
-				state.isLoading = false;
-				toast.error(payload);
-			})
 			.addCase(getProduct.pending, (state) => {
 				state.isLoading = true;
 			})
@@ -234,5 +203,6 @@ export const {
 	removeImageFromImages,
 	setUserId,
 	sedEditProduct,
+	changeToggleValue,
 } = productSlice.actions;
 export default productSlice.reducer;

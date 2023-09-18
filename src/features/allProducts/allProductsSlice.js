@@ -1,6 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { getAllProductsThunk } from './productsThunk';
+import {
+	getAllProductsThunk,
+	updateProductFeaturedThunk,
+	updateProductPublishedThunk,
+} from './productsThunk';
 
 const initialFiltersState = {
 	search: '',
@@ -10,6 +14,7 @@ const initialFiltersState = {
 	featured: 'all',
 	sort: 'latest',
 	company: 'all',
+	nicotine: 'all',
 	sortOptions: [
 		'latest',
 		'oldest',
@@ -37,6 +42,16 @@ export const getAllProducts = createAsyncThunk(
 	getAllProductsThunk
 );
 
+export const updateProductFeatured = createAsyncThunk(
+	'products/featureProduct',
+	updateProductFeaturedThunk
+);
+
+export const updateProductPublished = createAsyncThunk(
+	'product/publishProduct',
+	updateProductPublishedThunk
+);
+
 const allProductsSlice = createSlice({
 	name: 'allProducts',
 	initialState,
@@ -55,6 +70,7 @@ const allProductsSlice = createSlice({
 			}
 		},
 		handleChange: (state, { payload: { name, value } }) => {
+			console.log('Handle change in productsSlice');
 			state.page = 1;
 			state[name] = value;
 		},
@@ -72,8 +88,7 @@ const allProductsSlice = createSlice({
 				state.isLoading = true;
 			})
 			.addCase(getAllProducts.fulfilled, (state, { payload }) => {
-				console.log('Hurraaa');
-				console.log(payload.products);
+				console.log('All PRODUTCTS SLICE');
 				state.isLoading = false;
 				state.products = payload.products;
 				state.featured_products = payload.products.filter(
@@ -87,9 +102,79 @@ const allProductsSlice = createSlice({
 				state.error = payload;
 				console.log(payload);
 				toast.error(payload);
+			})
+			.addCase(updateProductFeatured.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateProductFeatured.fulfilled, (state, { payload }) => {
+				const { featured, productId } = payload;
+
+				// Find the index of the product in the array by its ID
+				const productIndex = state.products.findIndex(
+					(p) => p.id === +productId
+				);
+				console.log(productIndex);
+				if (productIndex !== -1) {
+					// Create a new copy of the product with the updated 'featured' value
+					const updatedProduct = {
+						...state.products[productIndex],
+						featured: featured,
+					};
+					console.log(updatedProduct);
+					// Create a new copy of the products array with the updated product
+					const updatedProducts = [...state.products];
+					updatedProducts[productIndex] = updatedProduct;
+
+					return {
+						...state,
+						products: updatedProducts,
+						isLoading: false,
+					};
+				}
+				// If the product is not found, return the current state
+				return state;
+			})
+			.addCase(updateProductFeatured.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				toast.error(payload);
+			})
+			.addCase(updateProductPublished.pending, (state, { payload }) => {
+				state.isLoading = true;
+			})
+			.addCase(updateProductPublished.fulfilled, (state, { payload }) => {
+				const { published, productId } = payload;
+
+				// Find the index of the product in the array by its ID
+				const productIndex = state.products.findIndex(
+					(p) => p.id === +productId
+				);
+
+				if (productIndex !== -1) {
+					// Create a new copy of the product with the updated 'featured' value
+					const updatedProduct = {
+						...state.products[productIndex],
+						published: published,
+					};
+					console.log(updatedProduct);
+					// Create a new copy of the products array with the updated product
+					const updatedProducts = [...state.products];
+					updatedProducts[productIndex] = updatedProduct;
+					return {
+						...state,
+						products: updatedProducts,
+						isLoading: false,
+					};
+				}
+				// If the product is not found, return the current state
+				return state;
+			})
+			.addCase(updateProductPublished.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				toast.error(payload);
 			});
 	},
 });
+
 export const {
 	// handleToggle,
 	showLoading,
@@ -99,4 +184,6 @@ export const {
 	changePage,
 	clearAllProductsState,
 } = allProductsSlice.actions;
+// Define the selector function to access state.products within the same file
+export const selectProducts = (state) => state.products;
 export default allProductsSlice.reducer;

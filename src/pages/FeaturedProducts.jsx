@@ -8,9 +8,11 @@ import { Product } from './';
 import { getThreeRandomProducts } from '../utils/helpers';
 
 const FeaturedProducts = () => {
-	const { isLoading, featured_products } = useSelector(
-		(store) => store.products
-	);
+	// const { isLoading, featured_products } = useSelector(
+	// 	(store) => store.products
+	// );
+
+	const { isLoading, products } = useSelector((store) => store.products);
 
 	const dispatch = useDispatch();
 
@@ -22,7 +24,7 @@ const FeaturedProducts = () => {
 		return <Spinner />;
 	}
 
-	if (featured_products.length === 0) {
+	if (products.length === 0) {
 		return (
 			<Wrapper className='section'>
 				<div className='title'>
@@ -37,7 +39,7 @@ const FeaturedProducts = () => {
 	}
 
 	// Randomly select 3 products
-	const randomFeaturedProducts = getThreeRandomProducts(featured_products);
+	const randomFeaturedProducts = getThreeRandomProducts(products);
 
 	return (
 		<Wrapper className='section'>

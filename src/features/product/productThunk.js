@@ -12,6 +12,7 @@ import {
 } from '../../utils/authHeader';
 
 export const createProductThunk = async (product, thunkAPI) => {
+	console.log(product);
 	try {
 		const resp = await customFetch.post('/products', product, authHeader());
 		thunkAPI.dispatch(clearValues());
@@ -100,37 +101,6 @@ export const editProductThunk = async ({ id, product }, thunkAPI) => {
 		return response.data;
 	} catch (error) {
 		thunkAPI.dispatch(hideLoading());
-		return thunkAPI.rejectWithValue(error.response.data.msg);
-	}
-};
-
-export const updateProductPublishedThunk = async (id, thunkAPI) => {
-	try {
-		const response = await customFetch.patch(
-			`products/publish/${id}`,
-			{},
-			authHeader()
-		);
-		// Return the response data if needed
-		thunkAPI.dispatch(getAllProducts());
-		return response.data;
-	} catch (error) {
-		return thunkAPI.rejectWithValue(error.response.data.msg);
-	}
-};
-
-export const updateProductFeaturedThunk = async (id, thunkAPI) => {
-	try {
-		const response = await customFetch.patch(
-			`products/featured/${id}`,
-			{},
-			authHeader()
-		);
-
-		// Return the response data if needed
-		thunkAPI.dispatch(getAllProducts());
-		return response.data;
-	} catch (error) {
 		return thunkAPI.rejectWithValue(error.response.data.msg);
 	}
 };

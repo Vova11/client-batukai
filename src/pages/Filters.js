@@ -1,14 +1,15 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import {
 	updateFilters,
 	updateMinPrice,
 	clearFilters,
+	fetchInitialData,
 	getFilterProducts,
 } from '../features/filter/filterSlice';
-import { getUniqueValues, formatPrice } from '../utils/helpers';
-import { FaCheck } from 'react-icons/fa';
+import { formatPrice } from '../utils/helpers';
+
 import {
 	handleChange,
 	clearAllProductsState,
@@ -17,52 +18,77 @@ import {
 
 const Filters = () => {
 	const [localSearch, setLocalSearch] = useState('');
-
 	const {
 		filtered_products,
-		filters: { text, category, company, min_price, max_price, price },
+		filters: {
+			search,
+			category,
+			company,
+			min_price,
+			max_price,
+			price,
+			nicotine,
+		},
 		companies,
 	} = useSelector((store) => store.filter);
 	const dispatch = useDispatch();
 
-	const handleInputChange = (event) => {
-		const name = event.target.name;
-		const value = event.target.value;
-
+	const handleInputChange = (e) => {
+		const name = e.target.name;
+		const value = e.target.value;
 		dispatch(updateFilters({ name, value }));
 		dispatch(handleChange({ name, value })); // Update sort in the state
-		dispatch(getFilterProducts({ ...filtered_products, company: value }));
+		dispatch(getFilterProducts({ ...filtered_products, filters: value }));
 	};
+
 	const handleClearingFilters = () => {
-		// dispatch(clearAllProductsState());
-		// dispatch(clearFilters());
+		setLocalSearch('');
+		dispatch(clearAllProductsState());
+		dispatch(clearFilters());
 		dispatch(getAllProducts());
 	};
+
+	const debounce = () => {
+		console.log('debounce');
+		let timeoutID;
+		return (e) => {
+			const name = e.target.name;
+			const value = e.target.value;
+			setLocalSearch(value);
+			clearTimeout(timeoutID);
+			timeoutID = setTimeout(() => {
+				dispatch(updateFilters({ name, value }));
+				dispatch(handleChange({ name, value })); // Update sort in the state
+				dispatch(getFilterProducts({ ...filtered_products, filters: value }));
+			}, 1000);
+		};
+	};
+	const optimizedDebounce = useMemo(() => debounce(), []);
 
 	return (
 		<Wrapper>
 			<div className='content'>
 				<form onSubmit={(e) => e.preventDefault()}>
 					{/* search input */}
-					<div className='form-control-product'>
+					<div className='form-control-product form-control-product-filters'>
 						<input
-							type='text'
-							name='text'
-							value={text}
+							type='search'
+							name='search'
 							placeholder='search'
-							onChange={handleInputChange}
-							className='search-input'
+							value={localSearch}
+							onChange={optimizedDebounce}
+							className='search-input setwidth'
 						/>
 					</div>
 					{/* end of search input */}
 					{/* company */}
-					<div className='form-control-product'>
+					<div className='form-control-product form-control-product-filters'>
 						<h5>company</h5>
 						<select
 							name='company'
 							value={company}
 							onChange={handleInputChange}
-							className='company'
+							className='company setwidth'
 						>
 							{companies.map((c, index) => {
 								return (
@@ -74,20 +100,27 @@ const Filters = () => {
 						</select>
 					</div>
 					{/* end of company */}
-					{/* price */}
-					<div className='form-control-product'>
-						<h5>price</h5>
-						<p className='price'>{formatPrice(price)}</p>
-						<input
-							type='range'
-							name='price'
-							onChange={handleChange}
-							min={min_price}
-							max={max_price}
-							value={price}
-						/>
+					{/* start of nicotine */}
+					<div className='form-control-product form-control-product-filters'>
+						<h5>Nikotín</h5>
+						<select
+							name='nicotine'
+							value={nicotine} // Assuming you have a 'nicotine' state to store the selected value
+							onChange={handleInputChange} // Assuming this function handles changes in the state
+							className='nicotine setwidth' // You may want to use a suitable class name here
+						>
+							{[
+								{ label: 'Všetky', value: 'all' },
+								{ label: 'Áno', value: true },
+								{ label: 'Nie', value: false },
+							].map((option, index) => (
+								<option key={index} value={option.value}>
+									{option.label}
+								</option>
+							))}
+						</select>
 					</div>
-					{/* end of price */}
+					{/* end of nicotine */}
 				</form>
 				<button
 					type='button'
@@ -109,6 +142,9 @@ const Wrapper = styled.section`
 		h5 {
 			margin-bottom: 0.5rem;
 		}
+		.setwidth {
+			width: 80%;
+		}
 	}
 	.search-input {
 		padding: 0.5rem;
@@ -116,7 +152,6 @@ const Wrapper = styled.section`
 		border-radius: var(--radius);
 		border-color: transparent;
 		letter-spacing: var(--spacing);
-		margin-bottom: 20px;
 	}
 	.search-input::placeholder {
 		text-transform: capitalize;
@@ -136,7 +171,8 @@ const Wrapper = styled.section`
 	.active {
 		border-color: var(--clr-grey-5);
 	}
-	.company {
+	.company,
+	.nicotine {
 		background: var(--clr-grey-10);
 		border-radius: var(--radius);
 		border-color: transparent;
@@ -201,3 +237,22 @@ const Wrapper = styled.section`
 		}
 	}
 `;
+
+// Implement later
+// 	/* price */
+// }
+// <div className='form-control-product'>
+// 	<h5>Price</h5>
+// 	<p className='price'>{formatPrice(price)}</p>
+// 	<input
+// 		type='range'
+// 		name='price'
+// 		onChange={handleInputChange}
+// 		min={min_price}
+// 		max={max_price}
+// 		value={price}
+// 	/>
+// </div>;
+// {
+// 	/* end of price */
+// }
