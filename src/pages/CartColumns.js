@@ -6,9 +6,10 @@ const CartColumns = () => {
 			<div className='content'>
 				<h5>item</h5>
 				<h5>price</h5>
-				<h5>Size</h5>
+				{/*<h5>Size</h5>*/}
 				<h5>quantity</h5>
 				<h5>subtotal</h5>
+				<h5>Remove</h5>
 			</div>
 			<hr />
 		</Wrapper>

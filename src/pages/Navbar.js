@@ -1,14 +1,7 @@
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import Offcanvas from 'react-bootstrap/Offcanvas';
-import { Link, NavLink } from 'react-router-dom';
+import { Nav, Navbar, Offcanvas, Container } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { links } from '../utils/constants';
-import { Fragment } from 'react';
-import logo from '../assets/images/logo.svg';
+import { Logo } from './';
 import { CartButtons } from './';
 import styled from 'styled-components';
 function OffcanvasExample() {
@@ -18,7 +11,7 @@ function OffcanvasExample() {
 				<Navbar key={expand} expand={expand} className='bg-body-tertiary'>
 					<Container fluid>
 						<Navbar.Brand as={Link} to='/'>
-							<img src={logo} alt='ShoeBox' />
+							<Logo />
 						</Navbar.Brand>
 						<Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
 						<Navbar.Offcanvas
@@ -28,7 +21,7 @@ function OffcanvasExample() {
 						>
 							<Offcanvas.Header closeButton>
 								<Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>
-									Offcanvas
+									OffcanvasXXXX
 								</Offcanvas.Title>
 							</Offcanvas.Header>
 							<Offcanvas.Body>

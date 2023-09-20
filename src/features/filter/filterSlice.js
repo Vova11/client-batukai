@@ -81,17 +81,11 @@ const filterSlice = createSlice({
 				);
 			}
 
-			if (company !== 'all') {
-				tempProducts = [...tempProducts].filter(
-					(product) => company === 'all' || product.company === company
-				);
-			}
-
-			if (nicotine !== 'all') {
-				tempProducts = [...tempProducts].filter(
-					(product) => nicotine === 'all' || product.company === nicotine
-				);
-			}
+			// if (company !== 'all') {
+			// 	tempProducts = [...tempProducts].filter(
+			// 		(product) => company === 'all' || product.company === company
+			// 	);
+			// }
 
 			tempProducts = tempProducts.filter((product) => product.price <= price);
 

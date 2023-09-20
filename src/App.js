@@ -21,6 +21,7 @@ import {
 	CartContainer,
 	Rurl,
 	Nurl,
+	Brands,
 } from './pages';
 import {
 	Dashboard,
@@ -51,8 +52,11 @@ function App() {
 						<Route path='review' element={<CartReviewOrder />} />
 						<Route path='pay' element={<Payment />} />
 					</Route>
+					<Route path='/brands' element={<Brands />} />
+					{/* Start Payment gateway routes */}
 					<Route path='/thankyou' element={<Rurl />} />
 					<Route path='/nurl' element={<Nurl />} />
+					{/* End Payment gateway routes */}
 					<Route path='products/:productId' element={<SingleProduct />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/register' element={<Register />} />

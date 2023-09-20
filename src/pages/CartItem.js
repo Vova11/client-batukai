@@ -6,7 +6,16 @@ import { removeItem, toggleAmount } from '../features/cart/cartSlice';
 import styled from 'styled-components';
 import AmountButtons from './AmountButtons';
 
-const CartItem = ({ id, image, color, name, price, size, amount }) => {
+const CartItem = ({
+	id,
+	productId,
+	image,
+	color,
+	name,
+	price,
+	size,
+	amount,
+}) => {
 	const dispatch = useDispatch();
 
 	const increase = () => {
@@ -16,7 +25,8 @@ const CartItem = ({ id, image, color, name, price, size, amount }) => {
 		dispatch(toggleAmount({ id, value: 'decrease' }));
 	};
 	const removeItemFromCart = (id) => {
-		dispatch(removeItem(id));
+		console.log(size);
+		dispatch(removeItem(id + size));
 	};
 	return (
 		<Wrapper>
@@ -24,23 +34,19 @@ const CartItem = ({ id, image, color, name, price, size, amount }) => {
 				<img src={image} alt={name} />
 				<div>
 					<h5 className='name'>{name}</h5>
-					<p className='color'>
-						color :
-						<span style={{ background: color }} />
-					</p>
-					<h5 className='price-small'>{formatPrice(price)}</h5>
-					<h5 className='price-small'>Amount: {amount}</h5>
+					{/*<h5 className='price-small'>{formatPrice(price)}</h5>*/}
+					{/*<h5 className='price-small'>Amount: {name}</h5>*/}
 				</div>
 			</div>
-			<span className='item-price'>${formatPrice(price)}</span>
+			<span className='item-price'>{formatPrice(price)}</span>
 			{/* Size */}
-			<span className='item-price'>{size}</span>
+			{/*<span className='item-price'>{size}</span> */}
 			<AmountButtons amount={amount} increase={increase} decrease={decrease} />
 			<h5 className='subtotal'>{formatPrice(price * amount)}</h5>
 			<button
 				type='button'
 				className='remove-btn'
-				onClick={() => removeItemFromCart(id)}
+				onClick={() => removeItemFromCart(productId)}
 			>
 				<FaTrash />
 			</button>

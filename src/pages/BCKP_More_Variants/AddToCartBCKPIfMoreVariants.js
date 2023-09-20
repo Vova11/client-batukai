@@ -29,6 +29,12 @@ const AddToCart = ({ item, quantity, setQuantity, size, hasStock }) => {
 
 	const handleAddToCart = () => {
 		// Check if the item with the same productId and size already exists in the cart
+		if (!size) {
+			toast.warning('Please select the size');
+			return;
+		}
+
+		// Add the item to the cart
 		dispatch(addToCart(item));
 		dispatch(countCartTotal());
 		toast.success('Item added to cart');

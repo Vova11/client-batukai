@@ -40,6 +40,8 @@ import Payment from './Payment';
 import CartContainer from './CartContainer';
 import Rurl from './Rurl';
 import Nurl from './Nurl';
+import Brands from './Brands';
+import Logo from './Logo';
 export {
 	Login,
 	ProtectedRoute,
@@ -83,4 +85,6 @@ export {
 	CartHero,
 	Rurl,
 	Nurl,
+	Brands,
+	Logo,
 };

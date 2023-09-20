@@ -37,6 +37,7 @@ const SingleProduct = () => {
 
 	const { name, price, description, id, averageRating, numberOfReviews } =
 		single_product;
+	console.log(single_product);
 	// Check if any variant has stock > 0
 	const hasVariantWithStock = single_product.variants.some(
 		(variant) => variant.stock > 0
@@ -97,7 +98,15 @@ const SingleProduct = () => {
 							{single_product.multipack ? 'Áno' : 'Nie'}
 						</p>
 						<hr />
+						<p className='info'>
+							<span>Colour :</span>
+							<span>
+								<ColorCircle color={single_product.hexColourCode} />
+								{single_product.colour}
+							</span>
+						</p>
 						<div className='info size-container'>
+							<span>Select Size:</span>
 							<ProductVariants
 								product={single_product}
 								hasStock={hasVariantWithStock}

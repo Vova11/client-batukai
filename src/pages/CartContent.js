@@ -11,11 +11,12 @@ const CartContent = () => {
 	const handleClearCart = () => {
 		dispatch(clearCart());
 	};
+
 	return (
 		<Wrapper>
 			<CartColumns />
 			{cart.map((item) => {
-				return <CartItem key={item.id} {...item} />;
+				return <CartItem key={item.productId} {...item} />;
 			})}
 			<hr />
 			<div className='link-container'>

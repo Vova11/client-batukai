@@ -43,6 +43,7 @@ const cartSlice = createSlice({
 	initialState,
 	reducers: {
 		addToCart: (state, action) => {
+			console.log('addToCart Action');
 			const {
 				productId,
 				name,
@@ -89,8 +90,9 @@ const cartSlice = createSlice({
 		},
 		removeItemAction: (state, action) => {
 			const itemId = action.payload;
+
 			console.log('removeItem.....');
-			const tempCart = state.cart.filter((item) => item.id !== itemId);
+			const tempCart = state.cart.filter((item) => +item.id !== +itemId);
 			// Update local storage
 			localStorage.setItem('cartItems', JSON.stringify(tempCart));
 			return { ...state, cart: tempCart };
