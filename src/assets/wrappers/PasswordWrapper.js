@@ -55,6 +55,7 @@ const Wrapper = styled.section`
 		position: relative;
 		top: 200px;
 		top: 40px;
+    z-index: 999999;
 		.spinner-border {
 			width: 100px;
 			height: 100px;

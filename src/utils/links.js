@@ -11,6 +11,7 @@ const links = [
 	{ id: 4, text: 'profile', path: 'profile', icon: <ImProfile /> },
 	{ id: 5, text: 'dashboard', path: '/dashboard', icon: <ImProfile /> },
 	{ id: 6, text: 'Orders', path: 'orders', icon: <AiFillEuroCircle /> },
+  { id: 7, text: 'Brands', path: 'brands', icon: <AiFillEuroCircle /> },
 ];
 
 export default links;

@@ -5,11 +5,12 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import FormRow from '../../pages/FormRow';
 import Col from 'react-bootstrap/Col';
-import ImageList from './ImageList';
-import MainImage from './MainImage';
-import MainImageUpload from './MainImageUpload';
-import MultipleImagesUpload from './MultipleImagesUpload';
-import Spinner from './Spinner';
+import ImageList from './ImageList.js';
+import MainImage from './MainImage.js';
+import MainImageUpload from './MainImageUpload.js';
+import MultipleImagesUpload from './MultipleImagesUpload.js';
+import Spinner from './Spinner.js';
+//TODO NO NEEDED? 
 import {
 	convertMapToArray,
 	convertBase64,

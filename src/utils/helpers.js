@@ -63,3 +63,20 @@ export const getThreeRandomProducts = (productsArray) => {
 
 	return randomProducts;
 };
+
+
+export const countries = [
+  { name: 'Slovakia', nameSlovak: 'Slovensko', codeForDB: 'SK', codeForPaymentGateway: 'SVK' },
+  { name: 'Czech Republic', nameSlovak: 'Česká republika', codeForDB: 'CZ', codeForPaymentGateway: 'CZE' },
+  { name: 'Poland', nameSlovak: 'Poľsko', codeForDB: 'PL', codeForPaymentGateway: 'POL' },
+  { name: 'Hungary', nameSlovak: 'Maďarsko', codeForDB: 'HU', codeForPaymentGateway: 'HUN' },
+];
+
+export function getCountryCode(code, codeType = 'codeForDB') {
+  const country = countries.find((c) => c.codeForDB === code);
+  return country ? country[codeType] || '' : '';
+}
+
+// const countryCodeForGateway = getCountryCode('SK', 'codeForPaymentGateway'); // Retrieves 'SVK'
+// const countryNameSlovak = getCountryCode('CZ', 'nameSlovak'); // Retrieves 'Česká republika'
+// const countryCodeForDB = getCountryCode('PL'); // Retrieves 'PL' (defaults to 'codeForDB')

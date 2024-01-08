@@ -37,7 +37,6 @@ const SingleProduct = () => {
 
 	const { name, price, description, id, averageRating, numberOfReviews } =
 		single_product;
-	console.log(single_product);
 	// Check if any variant has stock > 0
 	const hasVariantWithStock = single_product.variants.some(
 		(variant) => variant.stock > 0
@@ -78,16 +77,12 @@ const SingleProduct = () => {
 							{single_product.puffs}
 						</p>
 						<p className='info'>
-							<span>MNOŽSTVO NIKOTÍNOVEJ SOLI:</span>
+							<span>Množstvo nikotínovej soli:</span>
 							{single_product.nicotineSaltQuantity}
 						</p>
 						<p className='info'>
-							<span>Množstvo nikotínovej soli:</span>
+							<span>Objem náplne</span>
 							{single_product.eLiquidVolume}
-						</p>
-						<p className='info'>
-							<span>Objem nálne:</span>
-							{single_product.battery}
 						</p>
 						<p className='info'>
 							<span>Batéria:</span>
@@ -95,22 +90,14 @@ const SingleProduct = () => {
 						</p>
 						<p className='info'>
 							<span>Nikotín:</span>
-							{single_product.nicotine}
+							{single_product.nicotine ? 'Áno' : 'Nie'}
 						</p>
 						<p className='info'>
 							<span>Multipack 10ks:</span>
 							{single_product.multipack ? 'Áno' : 'Nie'}
 						</p>
 						<hr />
-						<p className='info'>
-							<span>Colour :</span>
-							<span>
-								<ColorCircle color={single_product.hexColourCode} />
-								{single_product.colour}
-							</span>
-						</p>
 						<div className='info size-container'>
-							<span>Select Size:</span>
 							<ProductVariants
 								product={single_product}
 								hasStock={hasVariantWithStock}
@@ -144,9 +131,9 @@ const Wrapper = styled.main`
 	}
 	.info {
 		text-transform: capitalize;
-		width: 300px;
+		width: 100%;
 		display: grid;
-		grid-template-columns: 125px 1fr;
+		grid-template-columns: 80% 1fr;
 		span {
 			font-weight: 700;
 		}

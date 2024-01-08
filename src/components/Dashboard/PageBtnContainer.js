@@ -33,7 +33,7 @@ const PageBtnContainer = () => {
 
 	return (
 		<Wrapper>
-			<Pagination size='lg'>
+			<Pagination size='lg mt-5'>
 				<Pagination.Prev
 					disabled={page === 1}
 					onClick={() => onPageChange(page - 1)}

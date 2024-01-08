@@ -1,145 +1,127 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { showOrder } from '../../features/orders/ordersSlice.js';
-import { saveAs } from 'file-saver';
-import Spinner from './Spinner.js';
-import customFetch from '../../utils/axios.js';
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { showOrder, sendConfirmationEmail, createInvoice, downloadInvoice } from '../../features/orders/ordersSlice.js'
+import Spinner from './Spinner.js'
+import customFetch from '../../utils/axios.js'
+import { Row, Col } from 'react-bootstrap'
+import styled from 'styled-components'
+import { OrderCustomer, OrderSummary } from '../../shared'
+import { toast } from 'react-toastify'
+import ShippingPacketaDetails from './ShippingPacketaDetails.js'
 
 const OrderDetail = () => {
-	const { id } = useParams();
-	const dispatch = useDispatch();
-	const [loading, setLoading] = useState(false);
-	const { isLoading, orderDetail } = useSelector((store) => store.orders);
-	useEffect(() => {
-		dispatch(showOrder(id));
-	}, []);
+  const { id } = useParams()
+  const dispatch = useDispatch()
+  const [shippingCreated, setShippingCreated] = useState(false)
+  const { isLoading, orderDetail } = useSelector((store) => store.orders)
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch(showOrder(id))
+    }
+    fetchData()
+  }, [shippingCreated])
 
-	if (isLoading || loading) {
-		return <Spinner />;
-	}
+  const downloadInvoicePdf = async () => {
+    await dispatch(createInvoice(orderDetail))
+    await dispatch(downloadInvoice(orderDetail))
+  }
+  
+  const sendEmailToCustomer = async () => {
+    const data = {
+        id: orderDetail.id,
+        name: orderDetail.id + orderDetail.msTxnId,
+        link: `https://tracking.packeta.com/sk_SK/?id=${orderDetail.resultId}`,
+        user: {
+          firstName: orderDetail.firstName,
+          lastName: orderDetail.lastName
+        }
+      }
+    dispatch(sendConfirmationEmail(data))  
+  }
+    
+  const createPacketa = async () => {
+    try {
+      await customFetch.post('/shipping/create-packeta', {
+        orderId: id,
+      })
+      toast.success('Packeta bola vytvorena')
+      setShippingCreated(true)
+    } catch (error) {
+      console.error(
+        error.response.data.detail[0].attributes[0].fault[0].fault[0]
+      )
+      const errorMessage =
+        error.response.data.detail[0].attributes[0].fault[0].fault[0]
+      toast.error(errorMessage)
+    }
+  }
 
-	// // Check if orderDetail is null before destructuring its properties
-	// const orderId = orderDetail?.id || '';
+  if (isLoading) {
+    return <Spinner />
+  }
 
-	const {
-		id: orderId,
-		firstName,
-		lastName,
-		email,
-		phone,
-		city,
-		street,
-		country,
-		msTxnId,
-		subtotal,
-		total,
-		shippingFee,
-		createdAt,
-		orderItems,
-	} = orderDetail;
+  return (
+    <div>
+      {orderDetail && (
+        <div>
+          <Row>
+            <Col xs='12' lg='6'>
+              <OrderCustomer orderDetail={orderDetail} />
+            </Col>
+            <Col xs lg='6' className={window.innerWidth < 576 ? 'mt-5' : ''}>
+              <OrderSummary orderDetail={orderDetail} />
+            </Col>
+          </Row>
+          {orderDetail.delivery.status === 'ok' ? (
+            <Row>
+              <Col xs='12'>
+                <ShippingPacketaDetails orderDetail={orderDetail} />
+              </Col>
+            </Row>
+          ) : null}
+          <Row>
+            <Col xs='12'>
+              <ButtonWrapper className='mb-5'>
+                <button onClick={downloadInvoicePdf} className='btn'>
+                  Download Invoice
+                </button>
+                <button
+                  onClick={createPacketa}
+                  className={`btn ${
+                    orderDetail.delivery.status === 'ok' ? 'disabled' : ''
+                  }`}
+                  disabled={orderDetail.delivery.status === 'ok'}
+                >
+                  Send To Packeta
+                </button>
+                <button
+                  onClick={sendEmailToCustomer}
+                  className={`btn ${
+                    orderDetail.delivery.status !== 'ok' ? 'disabled' : ''
+                  }`}
+                >
+                  Send invoice to customer
+                </button>
+              </ButtonWrapper>
+            </Col>
+          </Row>
+        </div>
+      )}
+    </div>
+  )
+}
 
-	const data = {
-		id: orderId,
-		firstName,
-		lastName,
-		email,
-		phone,
-		city,
-		street,
-		country,
-		msTxnId,
-		subtotal,
-		total,
-		shippingFee,
-		createdAt,
-		orderItems,
-	};
+export default OrderDetail
 
-	const generatePDF = async () => {
-		setLoading(true);
-		const res = await customFetch.post('/orders/create-pdf', data);
-		console.log(res);
-		setLoading(false);
-	};
-
-	const downloadPDF = async () => {
-		setLoading(true);
-		const invoiceFileName = id + data.msTxnId;
-		//Use customFetch to request the PDF from the server
-
-		const response = await customFetch.get(
-			`/orders/fetch-pdf/${invoiceFileName}`,
-			{
-				responseType: 'blob', // Specify blob as the response type
-			}
-		);
-		// Create a blob containing the PDF data
-		const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-		// Use a library like `file-saver` to save the PDF as a file
-		saveAs(pdfBlob, `invoice_${invoiceFileName}.pdf`);
-		setLoading(false);
-	};
-
-	// console.log(orderDetail);
-	const confirmOrder = async () => {
-		try {
-			// Make an API request to your Express server to send the confirmation email
-
-			const res = await customFetch.post('/orders/send-confirmation-email', {
-				name: id + data.msTxnId,
-				//add another attributes
-			});
-			console.log(res);
-			console.log('Confirmation email sent successfully');
-		} catch (error) {
-			console.error('Error sending confirmation email:', error);
-		}
-	};
-
-	const renderOrderDetail = () => {
-		return (
-			<div>
-				<h2>Order: #{orderDetail.id}</h2>
-				<hr />
-				<ul>
-					{Object.entries(orderDetail).map(([key, value]) => (
-						<li key={key}>
-							<strong>{key}:</strong>{' '}
-							{key === 'orderItems' ? (
-								<ul>
-									{value.map((item, index) => (
-										<li key={index}>
-											<strong>Item {index + 1}:</strong>
-											<ul>
-												{Object.entries(item).map(([itemKey, itemValue]) => (
-													<li key={itemKey}>
-														<strong>{itemKey}:</strong> {itemValue}
-													</li>
-												))}
-											</ul>
-										</li>
-									))}
-								</ul>
-							) : (
-								value
-							)}
-						</li>
-					))}
-				</ul>
-				<div>
-					<h1>Generate PDF</h1>
-					<button onClick={generatePDF}>Generate PDF</button>
-					<button onClick={downloadPDF}>Download PDF</button>
-					<button onClick={confirmOrder}>Send invoice to customer</button>
-				</div>
-			</div>
-		);
-	};
-
-	return (
-		<div>{orderDetail ? renderOrderDetail() : <p>Order not found</p>}</div>
-	);
-};
-
-export default OrderDetail;
+const ButtonWrapper = styled.div`
+  button {
+    margin-right: 10px;
+  }
+  .disabled {
+    background-color: #ccc; /* Gray background color */
+    color: #888; /* Gray text color */
+    cursor: not-allowed; /* Change the cursor to indicate it's not clickable */
+  }
+`

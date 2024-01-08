@@ -13,6 +13,11 @@ import SearchContainer from './SearchContainer';
 import ProductsContainer from './ProductsContainer';
 import ActionButtons from './ActionButtons';
 import PageBtnContainer from './PageBtnContainer';
+import PdfViewer from './PdfViewer'
+import PacketaLabelPrint from './PacketaLabelPrint';
+import PacketaStatusInfo from './PacketaStatusInfo';
+import Brands from './Brands';
+import BrandPage from './BrandPage'
 export {
 	Dashboard,
 	Orders,
@@ -25,8 +30,13 @@ export {
 	HeaderBar,
 	SideBar,
 	Profile,
-	ProductsContainer,
+  ProductsContainer,
 	SearchContainer,
 	ActionButtons,
 	PageBtnContainer,
+  PdfViewer,
+  PacketaLabelPrint,
+  PacketaStatusInfo,
+  Brands,
+  BrandPage
 };

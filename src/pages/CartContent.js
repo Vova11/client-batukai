@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { CartColumns, CartItem, CartTotals } from './';
+import { CartColumns, CartItem, CartTotals } from '.';
 import { Link } from 'react-router-dom';
 import { clearCart } from '../features/cart/cartSlice';
 const CartContent = () => {
@@ -11,11 +11,12 @@ const CartContent = () => {
 	const handleClearCart = () => {
 		dispatch(clearCart());
 	};
+
 	return (
 		<Wrapper>
 			<CartColumns />
 			{cart.map((item) => {
-				return <CartItem key={item.id} {...item} />;
+				return <CartItem key={item.productId} {...item} />;
 			})}
 			<hr />
 			<div className='link-container'>

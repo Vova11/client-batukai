@@ -7,7 +7,6 @@ import {
 	ProtectedRoute,
 	About,
 	Products,
-	Product,
 	Cart,
 	SharedLayout,
 	ResetPassword,
@@ -21,6 +20,12 @@ import {
 	CartContainer,
 	Rurl,
 	Nurl,
+	Brands,
+	WidgetSps,
+	WidgetPacketa,
+  BrandProducts,
+  Contact,
+  ContactForm
 } from './pages';
 import {
 	Dashboard,
@@ -32,7 +37,11 @@ import {
 	SharedLayout as Layout,
 	Orders,
 	OrderDetail,
+  PdfViewer,
+  Brands as BrandsAdmin,
+  BrandPage,
 } from './components/Dashboard';
+
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -45,20 +54,31 @@ function App() {
 					<Route index element={<Home />} />
 					<Route path='about' element={<About />} />
 					<Route path='products' element={<Products />} />
+          
+					{/* Start CART */}
 					<Route path='/cart' element={<CartContainer />}>
 						<Route index element={<Cart />} />
 						<Route path='checkout' element={<CartCheckout />} />
 						<Route path='review' element={<CartReviewOrder />} />
+						<Route path='sps' element={<WidgetSps />} />
+						<Route path='packeta' element={<WidgetPacketa />} />
 						<Route path='pay' element={<Payment />} />
 					</Route>
+					{/* End CART */}
+					<Route path='/brands' element={<Brands />} />
+          <Route path='/brands/:brandName' element={<BrandProducts />} />
+					{/* Start Payment gateway routes */}
 					<Route path='/thankyou' element={<Rurl />} />
 					<Route path='/nurl' element={<Nurl />} />
+					{/* End Payment gateway routes */}
 					<Route path='products/:productId' element={<SingleProduct />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/register' element={<Register />} />
 					<Route path='/user/verify-email' element={<VerifyPage />} />
 					<Route path='/user/forgot-password' element={<ForgotPassword />} />
 					<Route path='/user/reset-password' element={<ResetPassword />} />
+          <Route path='contact' element={<Contact />} />
+          <Route path='contact-form' element={<ContactForm />} />
 				</Route>
 				<Route
 					path='/dashboard'
@@ -75,7 +95,10 @@ function App() {
 					<Route path='stats' element={<Stats />} />
 					<Route path='profile' element={<Profile />} />
 					<Route path='orders' element={<Orders />} />
-					<Route path='orders/:id' element={<OrderDetail />} />
+          <Route path='brands' element={<BrandsAdmin />} />
+          <Route path='brands/:id' element={<BrandPage />} />
+          <Route path='orders/:id' element={<OrderDetail />} />
+          <Route path="print-label/:pdfId" element={<PdfViewer />} />
 				</Route>
 				<Route path='*' element={<ErrorPage />} />
 			</Routes>
