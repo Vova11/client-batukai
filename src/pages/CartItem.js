@@ -15,6 +15,7 @@ const CartItem = ({
 	price,
 	size,
 	amount,
+  todo
 }) => {
 	const dispatch = useDispatch();
 
@@ -26,7 +27,12 @@ const CartItem = ({
 	};
 	const removeItemFromCart = (id) => {
 		console.log(size);
-		dispatch(removeItem(id + size));
+		// TODO SIZE DOES NOT EXIST? Or is is default t
+    // TODO SEARCH TEXT in admin
+    // TODO CHECK where i need pagination (brands, orders)
+    // TODO show DELETE button for order only when status is PENDING ()
+    // TODO create
+    dispatch(removeItem(id + size)); 
 	};
 	return (
 		<Wrapper>

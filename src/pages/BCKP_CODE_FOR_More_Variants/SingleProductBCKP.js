@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getProduct } from '../features/product/productSlice';
 import Spinner from '../components/Dashboard/Spinner.js';
 import { formatPrice } from '../utils/helpers';
-import { PageHero, ProductImages, ProductVariants, Stars } from './';
+import { PageHero, ProductImages, ProductVariants, Stars } from '.';
 
 const SingleProduct = () => {
 	const { productId } = useParams();

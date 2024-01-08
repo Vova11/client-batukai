@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { CartColumns, CartItem, CartTotals } from './';
+import { CartColumns, CartItem, CartTotals } from '.';
 import { Link } from 'react-router-dom';
 import { clearCart } from '../features/cart/cartSlice';
 const CartContent = () => {

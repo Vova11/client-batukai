@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { HeaderBar } from './';
+import { HeaderBar } from '.';
 import styled from 'styled-components';
 
 const CartContainer = () => {

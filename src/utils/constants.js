@@ -19,8 +19,8 @@ export const links = [
 	},
 	{
 		id: 4,
-		text: 'Kontak',
-		url: '/contact',
+		text: 'Kontakt',
+		url: '/contact-form',
 	},
 ];
 

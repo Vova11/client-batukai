@@ -21,6 +21,17 @@ export const getAllProductsThunk = async (_, thunkAPI) => {
 	}
 };
 
+export const getThreeRandomProductsThunk = async (_, thunkAPI) => {
+	try {
+		const resp = await customFetch.get('products/get-random-products');
+		return resp.data;
+	} catch (error) {
+		// console.log(error.message);
+		return thunkAPI.rejectWithValue(error.message);
+	}
+};
+
+
 export const updateProductFeaturedThunk = async (id, thunkAPI) => {
 	try {
 		const response = await customFetch.patch(
